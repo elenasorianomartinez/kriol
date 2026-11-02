@@ -371,32 +371,65 @@ $("#list").addEventListener("click",e=>{
   togglePlay(id);
 });
 
-/* ---------- recording ---------- */
-let rec=null,stream=null,chunks=[],t0=0,acc=0,paused=false,tick=null,actx=null,analyser=null,raf=null,cancelled=false,levels=[],allLevels=[];
+/* ---------- recording ----------
+   iOS notes: the AudioContext is created inside the tap (before any await) so it starts "running";
+   the mic stream is kept open while the app is visible so iOS asks for permission once per session;
+   audio is captured twice (MediaRecorder + raw PCM). If the MediaRecorder file is empty or can't be
+   decoded, the PCM is saved as WAV, so a recording is never lost. */
+let rec=null,stream=null,chunks=[],t0=0,acc=0,paused=false,recording=false,tick=null,actx=null,analyser=null,proc=null,srcNode=null,raf=null,cancelled=false,levels=[],allLevels=[],pcm=[],pcmLen=0;
 function pickMime(){
-  for(const m of ["audio/mp4;codecs=mp4a.40.2","audio/mp4","audio/aac","audio/webm;codecs=opus","audio/webm","audio/ogg;codecs=opus"])
-    if(MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(m)) return m;
+  if(!window.MediaRecorder||!MediaRecorder.isTypeSupported) return "";
+  for(const m of ["audio/mp4","audio/aac","audio/webm;codecs=opus","audio/webm","audio/ogg;codecs=opus"])
+    if(MediaRecorder.isTypeSupported(m)) return m;
   return "";
 }
+function ensureCtx(){
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC) return null;
+  if(!actx||actx.state==="closed") actx=new AC();
+  if(actx.state!=="running") actx.resume().catch(()=>{});
+  return actx;
+}
+function streamAlive(){return stream&&stream.getAudioTracks().some(t=>t.readyState==="live");}
+async function getMic(){
+  if(streamAlive()) return stream;
+  stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  srcNode=null;return stream;
+}
+function releaseMic(){
+  if(recording) return;
+  if(stream) stream.getTracks().forEach(t=>t.stop());stream=null;
+  try{if(srcNode)srcNode.disconnect();}catch(e){}srcNode=null;
+}
+function wireGraph(){
+  if(!actx) return;
+  if(!srcNode){srcNode=actx.createMediaStreamSource(stream);}
+  analyser=actx.createAnalyser();analyser.fftSize=1024;srcNode.connect(analyser);
+  proc=actx.createScriptProcessor(4096,1,1);
+  proc.onaudioprocess=e=>{if(recording&&!paused){const d=e.inputBuffer.getChannelData(0);pcm.push(new Float32Array(d));pcmLen+=d.length;}};
+  const mute=actx.createGain();mute.gain.value=0;
+  srcNode.connect(proc);proc.connect(mute);mute.connect(actx.destination);
+}
+function unwireGraph(){try{if(srcNode)srcNode.disconnect();}catch(e){}try{if(proc){proc.onaudioprocess=null;proc.disconnect();}}catch(e){}proc=null;analyser=null;}
 async function startRec(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){toast("Este navegador no permite grabar. Actualiza iOS.");return;}
+  if(recording) return;clearTimeout(idleT);
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast("Este navegador no permite grabar. Actualiza iOS.");return;}
+  ensureCtx(); // must happen inside the tap, before any await
   stopPlayer();render();
-  try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});}
-  catch(e){toast("Sin permiso de micrófono. Actívalo en Ajustes › Safari › Micrófono.");return;}
-  const mime=pickMime();
-  try{rec=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);}catch(e){rec=new MediaRecorder(stream);}
-  chunks=[];cancelled=false;levels=[];allLevels=[];
-  rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
-  rec.onstop=onRecStop;rec.start(1000);
-  t0=Date.now();acc=0;paused=false;setPausedUI();$("#timer").textContent="0:00";
-  $("#pauseBtn").style.visibility=typeof rec.pause==="function"?"visible":"hidden";
+  try{await getMic();}
+  catch(e){toast(e&&e.name==="NotAllowedError"?"Sin permiso de micrófono. Dale a «Permitir» cuando te lo pida.":"No se pudo abrir el micrófono");return;}
+  if(actx&&actx.state!=="running"){try{await actx.resume();}catch(e){}}
+  chunks=[];pcm=[];pcmLen=0;cancelled=false;levels=[];allLevels=[];
+  wireGraph();
+  rec=null;
+  if(window.MediaRecorder){
+    const mime=pickMime();
+    try{rec=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);}catch(e){try{rec=new MediaRecorder(stream);}catch(e2){rec=null;}}
+    if(rec){rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};try{rec.start();}catch(e){rec=null;}}
+  }
+  recording=true;t0=Date.now();acc=0;paused=false;setPausedUI();$("#timer").textContent="0:00";
   tick=setInterval(()=>{$("#timer").textContent=fmt(elapsed());},200);
   show("#recSheet");
-  try{
-    actx=new (window.AudioContext||window.webkitAudioContext)();
-    const src=actx.createMediaStreamSource(stream);analyser=actx.createAnalyser();analyser.fftSize=1024;src.connect(analyser);
-    drawLive();
-  }catch(e){}
+  if(analyser) drawLive();
 }
 function elapsed(){return (acc+(paused?0:Date.now()-t0))/1000;}
 const ICON_MIC_W='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
@@ -406,10 +439,10 @@ function setPausedUI(){
   $("#pauseIcon").innerHTML=paused?ICON_MIC_W:ICON_PAUSE;$("#pauseLabel").textContent=paused?"Seguir":"Pausa";
 }
 function togglePause(){
-  if(!rec)return;
+  if(!recording)return;
   try{
-    if(!paused){rec.pause();acc+=Date.now()-t0;paused=true;}
-    else{rec.resume();t0=Date.now();paused=false;}
+    if(!paused){if(rec)rec.pause();acc+=Date.now()-t0;paused=true;}
+    else{if(rec)rec.resume();t0=Date.now();paused=false;}
   }catch(e){toast("No se puede pausar en este dispositivo");return;}
   setPausedUI();
 }
@@ -427,21 +460,64 @@ function drawLive(){
     if(g.roundRect)g.roundRect(x,(h-bh)/2,bw,bh,2);else g.rect(x,(h-bh)/2,bw,bh);g.fill();});
   raf=requestAnimationFrame(drawLive);
 }
-function cleanupRec(){clearInterval(tick);cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;if(actx){actx.close().catch(()=>{});actx=null;}}
-function stopRec(cancel){if(!rec)return;cancelled=!!cancel;pending={duration:elapsed(),peaks:resample(allLevels,BARS)};if(rec.state!=="inactive")rec.stop();else onRecStop();}
-async function onRecStop(){
-  const r=rec;rec=null;cleanupRec();
-  if(cancelled){pending=null;hide();return;}
-  const mime=(r&&r.mimeType)||(chunks[0]&&chunks[0].type)||"audio/mp4";
-  const blob=new Blob(chunks,{type:mime});chunks=[];
-  if(!blob.size||pending.duration<.5){pending=null;hide();toast("Demasiado corta, no se ha guardado");return;}
-  pending.mime=mime.split(";")[0];pending.audio=await blob.arrayBuffer();
+function stopMR(){
+  return new Promise(res=>{
+    if(!rec||rec.state==="inactive"){res();return;}
+    let done=false;const fin=()=>{if(!done){done=true;res();}};
+    rec.onstop=()=>setTimeout(fin,50);rec.onerror=fin;
+    try{rec.stop();}catch(e){fin();}
+    setTimeout(fin,2500);
+  });
+}
+function decodeDur(ab){
+  return new Promise(res=>{
+    if(!actx){res(0);return;}
+    let done=false;const fin=v=>{if(!done){done=true;res(v);}};
+    try{const p=actx.decodeAudioData(ab,b=>fin(b.duration),()=>fin(0));if(p&&p.catch)p.catch(()=>fin(0));}catch(e){fin(0);}
+    setTimeout(()=>fin(0),4000);
+  });
+}
+function encodeWav(){
+  const inRate=actx?actx.sampleRate:44100,outRate=16000,ratio=inRate/outRate;
+  const all=new Float32Array(pcmLen);let o=0;for(const c of pcm){all.set(c,o);o+=c.length;}
+  const n=Math.floor(all.length/ratio),buf=new ArrayBuffer(44+n*2),v=new DataView(buf);
+  const w=(p,str)=>{for(let i=0;i<str.length;i++)v.setUint8(p+i,str.charCodeAt(i));};
+  w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVE");w(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+  v.setUint32(24,outRate,true);v.setUint32(28,outRate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,n*2,true);
+  for(let i=0;i<n;i++){const a=Math.floor(i*ratio),b=Math.min(all.length,Math.floor((i+1)*ratio));let sum=0;for(let j=a;j<b;j++)sum+=all[j];let x=b>a?sum/(b-a):0;x=Math.max(-1,Math.min(1,x));v.setInt16(44+i*2,x<0?x*0x8000:x*0x7fff,true);}
+  return {buf,dur:n/outRate};
+}
+async function stopRec(cancel){
+  if(!recording) return;
+  cancelled=!!cancel;
+  if(paused){paused=false;}else{acc+=Date.now()-t0;}
+  const timerDur=acc/1000,peaks=resample(allLevels,BARS);
+  recording=false;clearInterval(tick);cancelAnimationFrame(raf);
+  if(rec&&rec.state==="paused"){try{rec.resume();}catch(e){}}
+  await stopMR();
+  unwireGraph();
+  scheduleRelease();
+  if(cancelled){rec=null;chunks=[];pcm=[];hide();return;}
+  $("#recLabel").textContent="Guardando…";
+  let audio=null,mime="",dur=0;
+  const mrMime=((rec&&rec.mimeType)||(chunks[0]&&chunks[0].type)||"audio/mp4").split(";")[0];
+  const blob=new Blob(chunks,{type:mrMime});rec=null;chunks=[];
+  if(blob.size>800){
+    const ab=await blob.arrayBuffer();const d=await decodeDur(ab.slice(0));
+    if(d>=.3){audio=ab;mime=mrMime;dur=d;}
+  }
+  if(!audio&&pcmLen&&actx&&pcmLen/actx.sampleRate>=.3){const w=encodeWav();audio=w.buf;mime="audio/wav";dur=w.dur;}
+  pcm=[];pcmLen=0;
+  if(!audio){hide();toast(timerDur<.6?"Mantén la grabación un poco más":"No ha llegado sonido del micrófono. Cierra la app del todo y vuelve a abrirla.");return;}
+  pending={duration:dur||timerDur,peaks,mime,audio};
   openSave(null);
 }
+let idleT=null;
+function scheduleRelease(){clearTimeout(idleT);idleT=setTimeout(releaseMic,90000);}
 $("#recBtn").onclick=startRec;
 $("#stopBtn").onclick=()=>stopRec(false);
 $("#cancelRec").onclick=()=>stopRec(true);
-document.addEventListener("visibilitychange",()=>{if(document.hidden&&rec)stopRec(false);});
+document.addEventListener("visibilitychange",()=>{if(document.hidden){if(recording)stopRec(false).then(releaseMic);else releaseMic();}});
 
 /* ---------- save / edit ---------- */
 let pickTag=null;
