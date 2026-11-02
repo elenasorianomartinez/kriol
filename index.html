@@ -706,11 +706,16 @@ async function copy(t){ try{ await navigator.clipboard.writeText(t); toast("Copi
 $("p-share").onclick=async()=>{ const t=summary();
   if(navigator.share){ try{ await navigator.share({text:t}); return; }catch(e){ if(e.name==="AbortError") return; } }
   copy(t); };
-$("p-export").onclick=()=>copy("KRIOL1:"+btoa(unescape(encodeURIComponent(JSON.stringify(S)))));
-$("p-import").onclick=()=>{ $("p-code").hidden=false; $("p-load").hidden=false; $("p-code").focus(); };
-$("p-load").onclick=()=>{ try{ const v=$("p-code").value.trim().replace(/^KRIOL1:/,"");
-  const d=JSON.parse(decodeURIComponent(escape(atob(v)))); if(!d.cards) throw 0; S=Object.assign(S,d); save(); toast("Progreso cargado"); show("home"); }
-  catch(e){ toast("Ese código no es válido"); } };
+$("p-export").onclick=async()=>{ const code="KRIOL1:"+btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+  $("p-code").hidden=false; $("p-code").value=code; $("p-load").hidden=true;
+  try{ await navigator.clipboard.writeText(code); toast("Código copiado ✅"); }
+  catch(e){ $("p-code").focus(); $("p-code").select(); toast("Mantén pulsado el código y dale a Copiar"); } };
+$("p-import").onclick=()=>{ $("p-code").hidden=false; $("p-code").value=""; $("p-load").hidden=false; $("p-code").focus(); };
+$("p-load").onclick=()=>{ const raw=$("p-code").value; const m=raw.replace(/\s+/g,"").match(/KRIOL1:([A-Za-z0-9+/=_-]+)/);
+  if(!m){ toast(raw.trim()? "Eso no es un código: tiene que empezar por KRIOL1:" : "Pega primero el código"); return; }
+  try{ const v=m[1].replace(/-/g,"+").replace(/_/g,"/"); const d=JSON.parse(decodeURIComponent(escape(atob(v))));
+    if(typeof d!=="object"||!d) throw 0; S=Object.assign({xp:0,days:{},cards:{},streak:0,last:null,lessons:0,ok:0,bad:0},d); save(); toast("Progreso cargado ✅"); show("home"); }
+  catch(e){ toast("El código está incompleto: cópialo otra vez entero"); } };
 
 /* ---------- offline ---------- */
 if("serviceWorker" in navigator && location.protocol.startsWith("http")){
