@@ -52,6 +52,8 @@ h1{font-size:26px;margin:4px 0 2px} h2{font-size:21px;margin:8px 0 12px} h3{font
 .tilebtn .ic{font-size:24px;display:block;margin-bottom:4px}
 .tilebtn b{display:block}
 .tilebtn span{font-size:13px;color:var(--muted)}
+.grid .tilebtn{min-width:0}
+.grid .tilebtn > span:not(.ic){display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .goal{height:12px;border-radius:9px;background:var(--line);overflow:hidden}
 .goal i{display:block;height:100%;background:var(--brand-2);border-radius:9px;transition:width .4s}
 /* lesson */
@@ -145,7 +147,7 @@ code{background:var(--line);padding:1px 6px;border-radius:6px}
   <div class="grid">
     <button class="tilebtn" id="b-order" style="grid-column:1/-1"><span class="ic">🧱</span><b>Ordenar frases</b><span>Monta frases palabra a palabra para pillar el orden</span></button>
     <button class="tilebtn" id="b-tr" style="grid-column:1/-1"><span class="ic">🔎</span><b>Traductor</b><span>Pregúntale a Claude cómo se dice algo</span></button>
-    <button class="tilebtn" id="b-conv"><span class="ic">💬</span><b>Conversaciones</b><span id="conv-sub">Mercado, toca-toca, Junior…</span></button>
+    <button class="tilebtn" id="b-conv"><span class="ic">💬</span><b>Conversaciones</b><span id="conv-sub">8 situaciones</span></button>
     <button class="tilebtn" id="b-gram"><span class="ic">🧩</span><b>Mini gramática</b><span>na, ta, ka, -ba…</span></button>
     <button class="tilebtn" id="b-review"><span class="ic">🔁</span><b>Repasar fallos</b><span id="rev-sub">Lo que más te cuesta</span></button>
     <button class="tilebtn" id="b-topics"><span class="ic">🗂️</span><b>Por temas</b><span>Gimnasio, mercado…</span></button>
@@ -426,7 +428,7 @@ function home(){
   const hard = hardCards().length; $("rev-sub").textContent = hard? hard+" frases con fallos":"Aún sin fallos";
   $("list-sub").textContent = CARDS.length+" frases";
   if(TODAY){ $("today-date").textContent=TODAY.d; $("today-kr").textContent=TODAY.kr; $("today-es").textContent=TODAY.es; } else $("today-card").hidden=true;
-  const dn=SCENES.filter(s=>(S.scenes||{})[s.id]).length; $("conv-sub").textContent = dn? `${dn}/${SCENES.length} hechas` : "Mercado, toca-toca, Junior…";
+  const dn=SCENES.filter(s=>(S.scenes||{})[s.id]).length; $("conv-sub").textContent = dn? `${dn}/${SCENES.length} hechas` : `${SCENES.length} situaciones`;
 }
 function hardCards(){ return CARDS.filter(c=>{const x=S.cards[c.kr];return x&&x.bad>0&&x.l<4})
   .sort((a,b)=>(st(b).bad-st(b).ok)-(st(a).bad-st(a).ok)); }
