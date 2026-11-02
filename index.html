@@ -156,7 +156,7 @@ code{background:var(--line);padding:1px 6px;border-radius:6px}
     <button class="tilebtn" id="b-prog"><span class="ic">📊</span><b>Mi progreso</b><span>Enviar a Claude</span></button>
     <button class="tilebtn" id="b-list"><span class="ic">📖</span><b>Todas las frases</b><span id="list-sub"></span></button>
   </div>
-  <p class="muted small" style="margin-top:18px">Funciona sin conexión. El progreso se guarda en este móvil. <span id="offline-ok"></span></p>
+  <p class="muted small" style="margin-top:18px">Funciona sin conexión. El progreso se guarda en este móvil. <span id="offline-ok"></span><br><span id="cloud"></span></p>
 </div>
 
 <!-- CONVERSACIONES (lista) -->
@@ -392,7 +392,22 @@ const KEY="kriol-app-v1";
 let S;
 try{ S = JSON.parse(localStorage.getItem(KEY)) }catch(e){}
 S = Object.assign({xp:0,days:{},cards:{},streak:0,last:null,lessons:0,ok:0,bad:0}, S||{});
-function save(){ try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} }
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} cloudSoon(); }
+/* ---------- copia en la nube (Supabase) ---------- */
+const SB_URL = "", SB_KEY = "", SB_ROW = "elena";
+let cloudT=null, cloudOk=null;
+function cloudSoon(){ if(!SB_URL) return; clearTimeout(cloudT); cloudT=setTimeout(cloudPush,3000); }
+async function cloudPush(){ if(!SB_URL||!navigator.onLine) return;
+  try{ const r=await fetch(SB_URL+"/rest/v1/progreso",{method:"POST",headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY,"Content-Type":"application/json",Prefer:"resolution=merge-duplicates"},
+    body:JSON.stringify({id:SB_ROW,data:S,updated_at:new Date().toISOString()})}); if(r.ok){ cloudOk=new Date(); cloudLabel(); } }catch(e){} }
+async function cloudPull(){ if(!SB_URL||!navigator.onLine) return;
+  try{ const r=await fetch(SB_URL+"/rest/v1/progreso?id=eq."+SB_ROW+"&select=data",{headers:{apikey:SB_KEY,Authorization:"Bearer "+SB_KEY}});
+    if(!r.ok) return; const rows=await r.json(); const remote=rows[0]&&rows[0].data;
+    if(remote && (remote.xp||0) > (S.xp||0)){ S=Object.assign(S,remote); try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} toast("Progreso recuperado de la nube ☁️"); if(!$("s-home").hidden) home(); }
+    else cloudPush(); }catch(e){} }
+function cloudLabel(){ const el=document.getElementById("cloud"); if(!el) return; el.textContent = !SB_URL? "" : cloudOk? `☁️ Copia en la nube: ${cloudOk.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"})}` : "☁️ Copia en la nube activada (se guarda con internet)"; }
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="hidden") cloudPush(); });
+window.addEventListener("online",cloudPull);
 if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
 const st = c => S.cards[c.kr] || (S.cards[c.kr] = {l:0,due:0,ok:0,bad:0,seen:0});
 const known = () => CARDS.filter(c=>(S.cards[c.kr]||{}).l>=3).length;
@@ -850,7 +865,7 @@ function startGram(g){
   show("lesson"); render();
 }
 
-show("home");
+show("home"); cloudLabel(); cloudPull();
 </script>
 </body>
 </html>
