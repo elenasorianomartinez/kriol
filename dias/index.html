@@ -36,6 +36,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* Detalle */
 #det{overflow:hidden;padding:calc(14px + env(safe-area-inset-top)) 24px calc(80px + env(safe-area-inset-bottom))}
 .back{font-weight:700;font-size:17px;align-self:flex-start;padding:10px 0}
+#dback{padding:10px 14px 10px 0;line-height:0}
 #dn{font:400 200px/0.8 'Archivo Black';letter-spacing:-.05em;margin:60px 0 0 -6px;white-space:nowrap;display:inline-block;align-self:flex-start}
 #dn.w{font-size:70px;line-height:1}
 #dt{font-weight:700;font-size:26px;margin-top:18px;overflow-wrap:anywhere}
@@ -69,7 +70,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <div class="scr on" id="home"></div>
 
 <div class="scr" id="det">
- <button class="back" id="dback">Todos</button>
+ <button class="back" id="dback" aria-label="Volver"><svg width="14" height="24" viewBox="0 0 14 24"><path d="M11 3 3 12l8 9" fill="none" stroke="#111" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
  <div id="dn"></div>
  <div id="dt"></div>
  <div id="grid"></div>
