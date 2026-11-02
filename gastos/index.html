@@ -87,6 +87,13 @@ h2 span{text-transform:none;letter-spacing:0}
 .addchip input{flex:1;min-width:0;background:var(--card);border:0;border-radius:14px;color:var(--ink);font:inherit;font-size:17px;padding:12px 14px;outline:none}
 .addchip input:focus{box-shadow:0 0 0 2px var(--lime) inset}
 .addchip button{width:50px;border-radius:14px;background:var(--lime);color:#000;font-size:26px;font-weight:800}
+.tagbtn{width:100%;margin-top:26px;background:var(--card);border-radius:18px;padding:18px 16px;display:flex;align-items:center;gap:12px;font-weight:800;font-size:17px;text-align:left}
+.tagbtn svg{width:24px;height:24px;color:var(--lime);flex:none}
+.tagbtn span{flex:1}
+.tagbtn .chev{color:var(--muted);width:20px;height:20px}
+.tagbtn:active{background:var(--card2)}
+.back{display:flex;align-items:center;gap:2px;color:var(--lime);font-weight:700;font-size:16px;margin:2px 0 4px -6px;padding:6px 0}
+.back svg{width:22px;height:22px}
 .wide{width:100%;background:var(--card);border-radius:16px;padding:14px;font-weight:700;margin-top:12px}
 .note{font-size:13px;color:var(--muted);text-align:center;margin:12px 6px 0}
 .note.warn{color:var(--lime)}
@@ -168,9 +175,16 @@ h2 span{text-transform:none;letter-spacing:0}
 
   <div id="days"></div>
 
-  <h2>Conceptos rápidos</h2>
-  <div class="list" id="chiplist"></div>
-  <div class="addchip"><input id="newchip" placeholder="Nuevo concepto" maxlength="40" enterkeyhint="done"><button id="b-addchip" aria-label="Añadir">+</button></div>
+  <button class="tagbtn" id="b-tags"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9z"/><circle cx="8" cy="8" r="1.6" fill="currentColor"/></svg><span>Etiquetas</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+</section>
+
+<!-- ============ ETIQUETAS ============ -->
+<section class="view" id="tags" hidden>
+  <button class="back" id="b-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>Más</button>
+  <h1>Etiquetas</h1>
+  <div class="sub">Las que salen en Inicio para apuntar rápido. Ordénalas, bórralas o añade nuevas.</div>
+  <div class="list" id="chiplist" style="margin-top:14px"></div>
+  <div class="addchip"><input id="newchip" placeholder="Nueva etiqueta" maxlength="40" enterkeyhint="done"><button id="b-addchip" aria-label="Añadir">+</button></div>
 </section>
 
 <!-- ============ TAB BAR ============ -->
@@ -228,12 +242,16 @@ function save(){ try{ localStorage.setItem(KEY, JSON.stringify(G)) }catch(e){ to
 
 // ---------- pestañas ----------
 function show(tab){
-  $("home").hidden = tab !== "home"; $("more").hidden = tab !== "more";
-  $("t-home").classList.toggle("on", tab === "home"); $("t-more").classList.toggle("on", tab === "more");
+  $("toast").classList.remove("on");
+  $("home").hidden = tab !== "home"; $("more").hidden = tab !== "more"; $("tags").hidden = tab !== "tags";
+  $("t-home").classList.toggle("on", tab === "home"); $("t-more").classList.toggle("on", tab === "more" || tab === "tags");
   if (tab === "more") { renderMore(); $("more").scrollTop = 0; }
+  if (tab === "tags") { renderChipList(); $("tags").scrollTop = 0; }
 }
 $("t-home").onclick = () => show("home");
 $("t-more").onclick = () => show("more");
+$("b-tags").onclick = () => show("tags");
+$("b-back").onclick = () => show("more");
 
 // ---------- inicio ----------
 let digits = "", concept = "", day = ymd(new Date());
@@ -333,7 +351,6 @@ function dayLabel(s){
   return dmy(s);
 }
 function renderMore(){
-  renderChipList();
   const tx = G.reduce((s,g) => s + g.xof, 0);
   $("all").textContent = G.length ? "Total: " + fmtX(tx) + " XOF · " + fmtE(toEur(tx)) + " · " + G.length + " gasto" + (G.length>1?"s":"") : "Aún no hay gastos.";
   const wrap = $("days"); wrap.innerHTML = "";
@@ -374,7 +391,7 @@ const DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const XX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 function renderChipList(){
   const wrap = $("chiplist"); wrap.innerHTML = "";
-  if (!CH.length){ wrap.innerHTML = '<div class="empty">No hay conceptos. Añade uno abajo.</div>'; return; }
+  if (!CH.length){ wrap.innerHTML = '<div class="empty">No hay etiquetas. Añade una abajo.</div>'; return; }
   CH.forEach((c,i) => {
     const r = document.createElement("div"); r.className = "crow";
     r.innerHTML = '<span class="n"></span><button class="ib" aria-label="Subir">'+UP+'</button><button class="ib" aria-label="Bajar">'+DOWN+'</button><button class="ib x" aria-label="Borrar">'+XX+'</button>';
@@ -385,7 +402,7 @@ function renderChipList(){
     down.onclick = () => { [CH[i+1], CH[i]] = [CH[i], CH[i+1]]; saveChips(); renderChipList(); renderChips(); };
     del.onclick = () => {
       CH.splice(i,1); saveChips(); if (concept === c) concept = ""; renderChipList(); renderChips();
-      toast("Concepto borrado", () => { CH.splice(i,0,c); saveChips(); renderChipList(); renderChips(); });
+      toast("Etiqueta borrada", () => { CH.splice(i,0,c); saveChips(); renderChipList(); renderChips(); });
     };
     wrap.appendChild(r);
   });
@@ -393,7 +410,7 @@ function renderChipList(){
 function addFromInput(){
   const v = $("newchip").value.trim(); if (!v) return;
   if (addChip(v)) { $("newchip").value = ""; renderChipList(); renderChips(); toast("Añadido «" + v + "»"); }
-  else toast("Ese concepto ya está");
+  else toast("Esa etiqueta ya está");
 }
 $("b-addchip").onclick = addFromInput;
 $("newchip").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); addFromInput(); $("newchip").blur(); } });
