@@ -256,6 +256,11 @@ code{background:var(--line);padding:1px 6px;border-radius:6px}
   <div id="p-topics"></div>
   <h3>Lo que más te cuesta</h3>
   <div class="list" id="p-hard"></div>
+  <h3>Mis dudas</h3>
+  <div class="list" id="p-dudas"></div>
+  <button class="big" id="p-dudas-send" hidden>Enviar dudas a Claude</button>
+  <p class="muted small" id="p-dudas-note" hidden>Se abre GitHub con tus dudas: dale a <b>Create</b>. Luego, en el chat, pregúntame «¿qué dudas he tenido?» y te las resuelvo.</p>
+  <button class="tilebtn" id="p-dudas-done" hidden style="text-align:center;width:100%">Hecho, ya las he enviado</button>
   <h3>Enviar a Claude</h3>
   <p class="muted small">Cuando tengas conexión, mándame el resumen en el chat y adapto la frase del día a lo que más te cuesta.</p>
   <button class="big" id="p-share">Compartir mi progreso</button>
@@ -358,6 +363,28 @@ const SCENES = [
   {you:"Dile que estás muy cansada.", kr:"N' kansa mal.", es:"Estoy muy cansada."},
   {you:"Pídele que lo repita despacio.", kr:"Bu pudi ripiti divagar, di fabur?", es:"¿Puedes repetirlo despacio, por favor?"}
  ]}
+];
+
+/* Cambiar el tiempo: sujeto + verbo + complemento, con el aspecto del libro de Gelso */
+const TIEMPOS_FORMS = {
+  pas:  {lab:"Pasado (ya pasó)",            mk:(s,v,c)=>`${s} ${v} ${c}`},
+  na:   {lab:"Ahora o va a pasar (na)",      mk:(s,v,c)=>`${s} na ${v} ${c}`},
+  ta:   {lab:"Costumbre (ta)",               mk:(s,v,c)=>`${s} ta ${v} ${c}`},
+  ka:   {lab:"Negativo, pasado (ka)",        mk:(s,v,c)=>`${s} ka ${v} ${c}`},
+  kata: {lab:"No suele (ka ta)",             mk:(s,v,c)=>`${s} ka ta ${v} ${c}`},
+  ba:   {lab:"Había… (-ba)",                 mk:(s,v,c)=>`${s} ${v}ba ${c}`}
+};
+const TIEMPOS = [
+ {s:"n'", v:"bai", c:"fera", es:{pas:"Fui al mercado.",na:"Voy al mercado (ahora o luego).",ta:"Suelo ir al mercado.",ka:"No fui al mercado.",kata:"No suelo ir al mercado.",ba:"Había ido al mercado."}},
+ {s:"bu", v:"kume", c:"pis", es:{pas:"Comiste pescado.",na:"Vas a comer (estás comiendo) pescado.",ta:"Sueles comer pescado.",ka:"No comiste pescado.",kata:"No sueles comer pescado.",ba:"Habías comido pescado."}},
+ {s:"i", v:"tarbadja", c:"na ospital", es:{pas:"Trabajó en el hospital.",na:"Está trabajando / va a trabajar en el hospital.",ta:"Trabaja (siempre) en el hospital.",ka:"No trabajó en el hospital.",kata:"No suele trabajar en el hospital.",ba:"Había trabajado en el hospital."}},
+ {s:"no", v:"kumpra", c:"kamati", es:{pas:"Compramos tomates.",na:"Vamos a comprar tomates.",ta:"Solemos comprar tomates.",ka:"No compramos tomates.",kata:"No solemos comprar tomates.",ba:"Habíamos comprado tomates."}},
+ {s:"e", v:"papia", c:"kriol", es:{pas:"Hablaron crioulo.",na:"Están hablando / van a hablar crioulo.",ta:"Suelen hablar crioulo.",ka:"No hablaron crioulo.",kata:"No suelen hablar crioulo.",ba:"Habían hablado crioulo."}},
+ {s:"i", v:"lanta", c:"sedu", es:{pas:"Se levantó temprano.",na:"Se va a levantar temprano.",ta:"Suele levantarse temprano.",ka:"No se levantó temprano.",kata:"No suele levantarse temprano.",ba:"Se había levantado temprano."}},
+ {s:"n'", v:"kusnha", c:"arus", es:{pas:"Cociné arroz.",na:"Voy a cocinar (estoy cocinando) arroz.",ta:"Suelo cocinar arroz.",ka:"No cociné arroz.",kata:"No suelo cocinar arroz.",ba:"Había cocinado arroz."}},
+ {s:"no", v:"sai", c:"di ospital", es:{pas:"Salimos del hospital.",na:"Vamos a salir del hospital.",ta:"Solemos salir del hospital.",ka:"No salimos del hospital.",kata:"No solemos salir del hospital.",ba:"Habíamos salido del hospital."}},
+ {s:"bu", v:"laba", c:"ropa", es:{pas:"Lavaste la ropa.",na:"Vas a lavar (estás lavando) la ropa.",ta:"Sueles lavar la ropa.",ka:"No lavaste la ropa.",kata:"No sueles lavar la ropa.",ba:"Habías lavado la ropa."}},
+ {s:"e", v:"bin", c:"li", es:{pas:"Vinieron aquí.",na:"Van a venir aquí.",ta:"Suelen venir aquí.",ka:"No vinieron aquí.",kata:"No suelen venir aquí.",ba:"Habían venido aquí."}}
 ];
 
 const CHAT = [
@@ -499,7 +526,7 @@ function startOrder(){
   show("lesson"); render();
 }
 $("b-order").onclick=startOrder;
-$("e-more").onclick=()=>{ if(L&&L.order) return startOrder(); if(L&&L.gram) return startGram(GR.find(g=>g.id===L.gram)); startLesson(L&&L.pool||CARDS); };
+$("e-more").onclick=()=>{ if(L&&L.tiempos) return startTiempos(); if(L&&L.order) return startOrder(); if(L&&L.gram) return startGram(GR.find(g=>g.id===L.gram)); startLesson(L&&L.pool||CARDS); };
 $("e-home").onclick=()=>show("home");
 $("b-review").onclick=()=>{ const h=hardCards(); if(h.length<3){toast("Todavía no hay fallos suficientes. ¡Haz una lección!");return;}
   h.forEach(c=>st(c).due=0); startLesson(h.slice(0,10)); };
@@ -535,6 +562,25 @@ function render(){
       b.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel")); btn.classList.add("sel");
       answer = opts[+btn.dataset.i]===c; e._btn=btn; e._right=b.querySelectorAll(".opt")[opts.indexOf(c)]; setCheck(true); });
     return;
+  }
+  if(e.type==="tiempo"){
+    const it=e.it, from=TIEMPOS_FORMS[e.from], to=TIEMPOS_FORMS[e.to];
+    const src=from.mk(it.s,it.v,it.c), target=to.mk(it.s,it.v,it.c).split(" ");
+    const pool=["na","ta","ka",it.v,it.v+"ba"].filter(w=>!target.includes(w));
+    const bank=shuffle([...target,...pick(pool,Math.min(3,pool.length))].map((w,i)=>({w,i}))); const chosen=[];
+    e.c={kr:target.join(" ").replace(/^./,m=>m.toUpperCase())+".", es:it.es[e.to], t:"Tiempos"};
+    b.innerHTML=`<div class="kind">⏱️ Cambia el tiempo</div>
+      <div class="fc" style="text-align:left;padding:12px 14px;margin-bottom:12px"><div class="small muted">${esc(from.lab)}</div><div class="kr" style="font-size:20px">${esc(src.replace(/^./,m=>m.toUpperCase()))}.</div><div class="small muted">${esc(it.es[e.from])}</div></div>
+      <div class="prompt" style="font-size:19px">→ ${esc(to.lab)}<br><span class="muted" style="font-weight:500;font-size:16px">«${esc(it.es[e.to])}»</span></div>
+      <div class="answer" id="ans"></div><div class="bank" id="bank"></div>`;
+    const draw=()=>{
+      $("ans").innerHTML=chosen.map((t,k)=>`<button class="w" data-k="${k}">${esc(t.w)}</button>`).join("");
+      $("bank").innerHTML=bank.map(t=>`<button class="w ${chosen.includes(t)?"used":""}" data-i="${t.i}">${esc(t.w)}</button>`).join("");
+      $("ans").querySelectorAll(".w").forEach(x=>x.onclick=()=>{ if(checked)return; chosen.splice(+x.dataset.k,1); draw(); });
+      $("bank").querySelectorAll(".w").forEach(x=>x.onclick=()=>{ if(checked)return; const t=bank.find(q=>q.i==x.dataset.i); if(!chosen.includes(t)) chosen.push(t); draw(); });
+      e._mine = chosen.map(t=>t.w).join(" ");
+      answer = chosen.length? chosen.map(t=>t.w).join(" ")===target.join(" ") : null; setCheck(chosen.length>0);
+    }; draw(); return;
   }
   if(e.type==="explain"){
     b.innerHTML=`<div class="kind">🧩 ${esc(e.g.t)}</div><div class="fc" style="text-align:left">${e.g.html}</div>`;
@@ -578,6 +624,7 @@ function render(){
       $("bank").innerHTML = bank.map(t=>`<button class="w ${chosen.includes(t)?"used":""}" data-i="${t.i}">${esc(t.w)}</button>`).join("");
       $("ans").querySelectorAll(".w").forEach(x=>x.onclick=()=>{ if(checked)return; chosen.splice(+x.dataset.k,1); draw(); });
       $("bank").querySelectorAll(".w").forEach(x=>x.onclick=()=>{ if(checked)return; const t=bank.find(q=>q.i==x.dataset.i); if(!chosen.includes(t)) chosen.push(t); draw(); });
+      e._mine = chosen.map(t=>t.w).join(" ");
       answer = chosen.length? norm(chosen.map(t=>t.w).join(" "))===norm(target.join(" ")) : null;
       setCheck(chosen.length>0);
     }; draw(); return;
@@ -626,15 +673,22 @@ function checkAnswer(){
   }
   checked=true;
   const ok=!!answer;
-  if(e.type!=="pairs"){ grade(c,ok); }
-  else e.set.forEach(o=>{ const x=st(o); x.seen=1; if(ok){x.ok++; if(x.l<2){x.l++; x.due=today()+STEP[x.l];}} });
-  if(ok){ L.ok++; L.xp+=10; addXP(10); } else { L.bad++; S.bad++; if(e.type!=="pairs") L.retry.push(e.type==="gram"?Object.assign({},e):{type: e.type==="write"?"tiles":e.type, c, retry:true}); }
+  if(e.type!=="pairs" && e.type!=="tiempo"){ grade(c,ok); }
+  else if(e.type==="pairs") e.set.forEach(o=>{ const x=st(o); x.seen=1; if(ok){x.ok++; if(x.l<2){x.l++; x.due=today()+STEP[x.l];}} });
+  if(ok){ L.ok++; L.xp+=10; addXP(10); } else { L.bad++; S.bad++; if(e.type!=="pairs") L.retry.push((e.type==="gram"||e.type==="tiempo")?Object.assign({},e):{type: e.type==="write"?"tiles":e.type, c, retry:true}); }
   if(ok) S.ok++;
   beep(ok);
   if(e._btn){ e._btn.classList.add(ok?"right":"wrong"); if(!ok&&e._right) e._right.classList.add("right"); }
   const showSol = e.type!=="pairs";
   fb.innerHTML = `<div class="fb ${ok?"ok":"bad"}"><b>${ok?pick(["¡Muy bien!","Bwe fixe! 💪","¡Perfecto!","Djitu! ¡Eso es!","¡Genial!"],1)[0]:"Casi… la buena es:"}</b>
     ${showSol?`<div class="sol">${esc(c.kr)}</div><div class="es">${esc(c.es)}${c.n?" · "+esc(c.n):""}${c.star?" · * montada con piezas del libro":""}</div>`:(ok?"":"Has fallado alguna pareja, repásalas en Tarjetas.")}</div>`;
+  if(showSol){ const d=document.createElement("div"); d.style.margin="-2px 0 10px";
+    d.innerHTML=`<button class="chip" id="duda-b">❓ Tengo una duda</button><div id="duda-box" hidden style="margin-top:8px"><textarea id="duda-t" rows="2" placeholder="¿Qué no entiendes? Ej.: ¿por qué va «na» antes del verbo?"></textarea><button class="chip" id="duda-s" style="margin-top:6px">Guardar duda</button></div>`;
+    fb.appendChild(d);
+    $("duda-b").onclick=()=>{ $("duda-box").hidden=false; $("duda-t").focus(); };
+    $("duda-s").onclick=()=>{ const q=$("duda-t").value.trim(); S.dudas=S.dudas||[];
+      S.dudas.push({kr:c.kr, es:c.es, mine:e._mine||"", ok, q, t:Date.now(), sent:false}); save();
+      d.innerHTML=`<span class="small muted">✅ Duda guardada. Envíalas desde Mi progreso.</span>`; }; }
   if(!ok) $("l-body").classList.add("shake");
   btn.disabled=false; btn.textContent="Continuar"; btn.className="check "+(ok?"ok":"bad");
   save();
@@ -648,7 +702,7 @@ function next(){
 $("l-check").onclick=()=>{ if(answer==="intro") return checkAnswer(); if(!checked) checkAnswer(); else next(); };
 
 function finish(){
-  L.xp+=20; addXP(20); bumpStreak(); S.lessons++; if(L.gram){ S.gram=S.gram||{}; S.gram[L.gram]=1; } save();
+  L.xp+=20; addXP(20); bumpStreak(); S.lessons++; if(L.gram){ S.gram=S.gram||{}; S.gram[L.gram]=1; } if(L.tiempos){ S.gram=S.gram||{}; S.gram.tiempos=1; } save();
   const tot=L.ok+L.bad, acc=tot?Math.round(L.ok/tot*100):100;
   $("e-xp").textContent="+"+L.xp; $("e-acc").textContent=acc+"%"; $("e-streak").textContent=curStreak();
   $("e-emoji").textContent = acc>=90?"🏆":acc>=70?"🎉":"💪";
@@ -719,8 +773,17 @@ $("b-prog").onclick=()=>{
     return `<div class="tbar"><span style="width:110px">${esc(t)}</span><div class="goal"><i style="width:${k/cs.length*100}%"></i></div><span class="small muted">${k}/${cs.length}</span></div>`}).join("");
   const h=hardCards().slice(0,8);
   $("p-hard").innerHTML = h.length? h.map(c=>`<div class="li"><div class="kr">${esc(c.kr)}</div><div class="es">${esc(c.es)} · ❌ ${st(c).bad}</div></div>`).join("") : `<p class="muted small">Nada todavía. ¡Sigue así!</p>`;
-  show("prog");
+  drawDudas(); show("prog");
 };
+function drawDudas(){ const ds=(S.dudas||[]).filter(d=>!d.sent);
+  $("p-dudas").innerHTML = ds.length? ds.map(d=>`<div class="li"><div class="kr">${esc(d.kr)}</div>${d.mine&&!d.ok?`<div class="small" style="color:var(--bad)">Tú: ${esc(d.mine)}</div>`:""}<div class="es">❓ ${esc(d.q||"(sin texto)")}</div></div>`).join("") : `<p class="muted small">No tienes dudas pendientes. Después de comprobar un ejercicio, toca «❓ Tengo una duda».</p>`;
+  $("p-dudas-send").hidden=!ds.length; $("p-dudas-send").textContent=`Enviar ${ds.length} duda${ds.length>1?"s":""} a Claude`; }
+$("p-dudas-send").onclick=()=>{ const ds=(S.dudas||[]).filter(d=>!d.sent); if(!ds.length) return;
+  const body="Dudas desde la app Kriol:\n\n"+ds.map((d,i)=>`${i+1}. Frase: ${d.kr} (${d.es})${d.mine&&!d.ok?`\n   Yo puse: ${d.mine}`:""}\n   Duda: ${d.q||"(sin texto)"}`).join("\n\n");
+  const f=new Date(); const title=`Dudas ${f.getDate()}/${f.getMonth()+1} (${ds.length})`;
+  window.open(`https://github.com/${REPO}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`,"_blank");
+  $("p-dudas-note").hidden=false; $("p-dudas-done").hidden=false; };
+$("p-dudas-done").onclick=()=>{ (S.dudas||[]).forEach(d=>d.sent=true); save(); $("p-dudas-done").hidden=true; drawDudas(); toast("Listo ✅ Pregúntame en el chat"); };
 async function copy(t){ try{ await navigator.clipboard.writeText(t); toast("Copiado"); }catch(e){ prompt("Copia esto:",t); } }
 $("p-share").onclick=async()=>{ const t=summary();
   if(navigator.share){ try{ await navigator.share({text:t}); return; }catch(e){ if(e.name==="AbortError") return; } }
@@ -859,10 +922,18 @@ function gramItems(g){
   // una por frase
   const seen=new Set(); return shuffle(out).filter(x=>!seen.has(x.c.kr)&&seen.add(x.c.kr));
 }
+function startTiempos(){
+  const keys=Object.keys(TIEMPOS_FORMS); const ex=[{type:"explain",g:{t:"Cambiar el tiempo",html:`<p>En crioulo el verbo <b>no cambia</b>: cambia la palabrita de delante (o el final <b>-ba</b>).</p>
+   <p class="kr" style="font-size:17px">n' bai fera · n' na bai fera · n' ta bai fera · n' ka bai fera · n' baiba fera</p>
+   <p class="note">fui · voy (ahora o luego) · suelo ir · no fui · había ido</p><p>Orden: <b>sujeto + ka + na/ta + verbo(-ba) + resto</b>.</p>`}}];
+  shuffle(TIEMPOS).slice(0,8).forEach(it=>{ const from=pick(keys,1)[0]; const to=pick(keys.filter(k=>k!==from),1)[0]; ex.push({type:"tiempo",it,from,to}); });
+  L={ex,i:0,ok:0,bad:0,xp:0,pool:CARDS,retry:[],tiempos:true}; show("lesson"); render();
+}
 function gramList(){
-  $("g-list").innerHTML = GR.map(g=>{ const n=gramItems(g).length; const done=(S.gram||{})[g.id];
+  $("g-list").innerHTML = `<button class="tilebtn" style="width:100%;margin-bottom:10px;border-color:var(--brand)" id="g-tiempos"><b>⏱️ Cambiar el tiempo ${(S.gram||{}).tiempos?"✅":""}</b><span>Pasa frases a pasado, ahora, costumbre, negativo…</span></button>` + GR.map(g=>{ const n=gramItems(g).length; const done=(S.gram||{})[g.id];
     return `<button class="tilebtn" style="width:100%;margin-bottom:10px" data-g="${g.id}"><b>${esc(g.t)} ${done?"✅":""}</b><span>${n} frases para practicar</span></button>`}).join("");
   $("g-list").querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>startGram(GR.find(g=>g.id===b.dataset.g)));
+  $("g-tiempos").onclick=startTiempos;
   show("gram");
 }
 $("b-gram").onclick=gramList;
