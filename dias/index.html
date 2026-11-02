@@ -48,6 +48,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .leg{margin-top:16px;font-weight:500;font-size:14px;display:flex;justify-content:space-between;opacity:.75}
 .ed{position:fixed;left:14px;bottom:max(4px,calc(env(safe-area-inset-bottom) - 12px))}
 .ed button{padding:10px;display:block;line-height:0}
+.sh{position:fixed;right:14px;bottom:max(4px,calc(env(safe-area-inset-bottom) - 12px));padding:10px;line-height:0}
 /* Formulario */
 #form{background:#111;color:#fff;overflow-y:auto;padding:calc(14px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom))}
 #form .back{font-size:24px;font-weight:400;color:#fff}
@@ -76,6 +77,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
  <div id="grid"></div>
  <div class="leg"><span id="dleg"></span><span>○ hoy</span></div>
  <div class="ed"><button id="dedit" aria-label="Editar"><svg width="22" height="15" viewBox="0 0 22 15"><rect y="0" width="22" height="2.4" rx="1.2" fill="#111"/><rect y="6.3" width="22" height="2.4" rx="1.2" fill="#111"/><rect y="12.6" width="22" height="2.4" rx="1.2" fill="#111"/></svg></button></div>
+ <button class="sh" id="dshare" aria-label="Guardar imagen"><svg width="20" height="24" viewBox="0 0 20 24" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v13M5 7l5-5 5 5"/><path d="M6 11H3v11h14V11h-3"/></svg></button>
 </div>
 
 <div class="scr" id="form">
@@ -171,9 +173,56 @@ function openDet(id){
  $("det").style.background=cur.color;setTheme(cur.color);
  show("det");$("det").scrollTop=0;
  fit(dn,200,1);fitGrid();
+ makeStory();
 }
 
 // Encoge los circulitos para que quepan entre el título y las tres rayas (la pantalla no hace scroll).
+// Imagen 1080×1920 (9:16) para estados, sin la barra del móvil. Se prepara al abrir el contador
+// para que al tocar el botón se pueda compartir al momento (iOS exige que sea dentro del toque).
+let storyFile=null;
+function makeStory(){
+ storyFile=null;if(!cur)return;
+ const W=1080,H=1920,M=90,c=document.createElement("canvas");c.width=W;c.height=H;
+ const x=c.getContext("2d"),t=todayStr(),n=diff(t,cur.date),v=numFor(n);
+ x.fillStyle=cur.color;x.fillRect(0,0,W,H);x.fillStyle="#111";x.textBaseline="alphabetic";
+ let fs=v.w?260:640;x.font="400 "+fs+"px 'Archivo Black'";
+ const ls=v.w?0:-0.05;
+ const tw=s=>{let w=x.measureText(s).width;return w+ls*fs*(s.length-1);};
+ while(tw(v.txt)>W-2*M&&fs>120){fs-=10;x.font="400 "+fs+"px 'Archivo Black'";}
+ let y=200+fs*0.8;
+ if(ls){let xx=M-fs*0.03;for(const ch of v.txt){x.fillText(ch,xx,y);xx+=x.measureText(ch).width+ls*fs;}}else x.fillText(v.txt,M,y);
+ y+=110;x.font="700 76px 'Space Grotesk'";
+ const words=cur.name.split(/\s+/);let line="";const lines=[];
+ for(const w of words){const tl=line?line+" "+w:w;if(x.measureText(tl).width>W-2*M&&line){lines.push(line);line=w;}else line=tl;}
+ if(line)lines.push(line);
+ for(const l of lines.slice(0,3)){x.fillText(l,M,y);y+=88;}
+ x.globalAlpha=.7;x.font="400 50px 'Space Grotesk'";
+ x.fillText(fmt(cur.date)+(n>0?" · "+(n===1?"falta 1 día":"faltan "+n+" días"):n<0?" · hace "+(-n)+(n===-1?" día":" días"):""),M,y-10);x.globalAlpha=1;
+ y+=50;
+ if(n>0){
+  const start=cur.from||cur.added||t,from=start<=cur.date?start:t;
+  const total=Math.max(diff(from,cur.date),1),passed=Math.min(Math.max(diff(from,t),0),total),cnt=Math.min(total,26*30);
+  const legH=cur.from?90:0,free=H-M-legH-y,w=W-2*M;
+  let best=10,bc=0;
+  for(let k=10;k<=40;k++){const r=Math.ceil(cnt/k),g=0.28,cell=Math.min(w/(k+(k-1)*g),free/(r+(r-1)*g));if(cell>bc){bc=cell;best=k;}}
+  const cell=Math.min(bc,w/(10+9*.28)),gap=cell*.28;
+  for(let i=0;i<cnt;i++){const cx=M+(i%best)*(cell+gap)+cell/2,cy=y+Math.floor(i/best)*(cell+gap)+cell/2;
+   x.beginPath();x.arc(cx,cy,cell/2,0,Math.PI*2);
+   if(i<passed){x.fillStyle="rgba(0,0,0,.14)";x.fill();}
+   else if(i===passed){x.fillStyle="#fff";x.fill();x.lineWidth=cell*.14;x.strokeStyle="#111";x.beginPath();x.arc(cx,cy,cell/2-x.lineWidth/2,0,Math.PI*2);x.stroke();}
+   else{x.fillStyle="#111";x.fill();}}
+  if(cur.from){const ly=y+Math.ceil(cnt/best)*(cell+gap)+50;x.fillStyle="#111";x.globalAlpha=.75;x.font="500 40px 'Space Grotesk'";x.fillText(passed+(passed===1?" gastado":" gastados")+" · "+n+" por delante",M,ly);x.globalAlpha=1;}
+ }
+ const name=(cur.name.normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^\w]+/g,"-").replace(/^-|-$/g,"").toLowerCase()||"dias")+".png";
+ c.toBlob(b=>{if(b)storyFile=new File([b],name,{type:"image/png"});},"image/png");
+}
+$("dshare").onclick=()=>{
+ if(!storyFile)return;
+ const data={files:[storyFile]};
+ if(navigator.canShare&&navigator.canShare(data)){navigator.share(data).catch(()=>{});return;}
+ const a=document.createElement("a");a.href=URL.createObjectURL(storyFile);a.download=storyFile.name;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);
+};
 function fitGrid(){
  const g=$("grid"),d=$("det");if(!gridInfo)return;
  const {cols,n,gap}=gridInfo,w=g.clientWidth;
