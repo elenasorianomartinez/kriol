@@ -143,6 +143,9 @@ code{background:var(--line);padding:1px 6px;border-radius:6px}
     <div class="kind">🗓️ Frase del día · <span id="today-date"></span></div>
     <div class="kr" style="font-size:20px" id="today-kr"></div><div class="es" style="font-size:15px;margin:4px 0 0" id="today-es"></div>
   </div>
+  <div class="fb bad" id="bk-banner" hidden style="margin:12px 0 0"><b>💾 Guarda tu copia semanal</b>Si algún día borras la app, con este código recuperas tu progreso. Cópialo y guárdalo en Notas.
+    <button class="check" id="bk-btn" style="margin-top:10px;background:var(--brand-2);box-shadow:none">Copiar mi código</button>
+    <textarea id="bk-code" rows="3" hidden style="margin-top:8px"></textarea></div>
   <button class="big" id="b-lesson">Lección de hoy<small id="lesson-sub">10 ejercicios · unos 5 minutos</small></button>
   <div class="grid">
     <button class="tilebtn" id="b-order" style="grid-column:1/-1"><span class="ic">🧱</span><b>Ordenar frases</b><span>Monta frases palabra a palabra para pillar el orden</span></button>
@@ -442,6 +445,7 @@ function home(){
   $("lesson-sub").textContent = (due?due+" por repasar · ":"") + (fresh?fresh+" frases nuevas":"todo visto, ¡a repasar!");
   const hard = hardCards().length; $("rev-sub").textContent = hard? hard+" frases con fallos":"Aún sin fallos";
   $("list-sub").textContent = CARDS.length+" frases";
+  $("bk-banner").hidden = !((S.xp||0)>0 && Date.now()-(S.lastBackup||0) > 7*86400000);
   if(TODAY){ $("today-date").textContent=TODAY.d; $("today-kr").textContent=TODAY.kr; $("today-es").textContent=TODAY.es; } else $("today-card").hidden=true;
   const dn=SCENES.filter(s=>(S.scenes||{})[s.id]).length; $("conv-sub").textContent = dn? `${dn}/${SCENES.length} hechas` : `${SCENES.length} situaciones`;
 }
@@ -560,8 +564,8 @@ function render(){
     return;
   }
   if(e.type==="tiles"){
-    const target = words(c.kr);
-    const extra = pick(words(pick(CARDS.filter(o=>o!==c),3).map(o=>o.kr).join(" ")).filter(w=>!target.map(t=>t.toLowerCase()).includes(w.toLowerCase())),Math.min(3,Math.max(1,12-target.length)));
+    const target = words(c.kr).map(w=>w.toLowerCase());
+    const extra = pick(words(pick(CARDS.filter(o=>o!==c),3).map(o=>o.kr).join(" ")).map(w=>w.toLowerCase()).filter(w=>!target.includes(w)),Math.min(3,Math.max(1,12-target.length)));
     const bank = shuffle([...target,...extra].map((w,i)=>({w,i})));
     const chosen=[];
     b.innerHTML=`<div class="kind">Monta la frase en crioulo</div><div class="prompt">${esc(c.es)}</div>
@@ -721,7 +725,11 @@ async function copy(t){ try{ await navigator.clipboard.writeText(t); toast("Copi
 $("p-share").onclick=async()=>{ const t=summary();
   if(navigator.share){ try{ await navigator.share({text:t}); return; }catch(e){ if(e.name==="AbortError") return; } }
   copy(t); };
-$("p-export").onclick=async()=>{ const code="KRIOL1:"+btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+$("bk-btn").onclick=async()=>{ S.lastBackup=Date.now(); save(); const code="KRIOL1:"+btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+  $("bk-code").hidden=false; $("bk-code").value=code; $("bk-btn").textContent="Listo: pégalo en Notas y toca aquí para cerrar";
+  $("bk-btn").onclick=()=>{ $("bk-banner").hidden=true; };
+  try{ await navigator.clipboard.writeText(code); toast("Código copiado ✅ Pégalo en Notas"); }catch(e){ $("bk-code").focus(); $("bk-code").select(); toast("Mantén pulsado el código y dale a Copiar"); } };
+$("p-export").onclick=async()=>{ S.lastBackup=Date.now(); save(); const code="KRIOL1:"+btoa(unescape(encodeURIComponent(JSON.stringify(S))));
   $("p-code").hidden=false; $("p-code").value=code; $("p-load").hidden=true;
   try{ await navigator.clipboard.writeText(code); toast("Código copiado ✅"); }
   catch(e){ $("p-code").focus(); $("p-code").select(); toast("Mantén pulsado el código y dale a Copiar"); } };
