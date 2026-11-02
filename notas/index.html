@@ -65,7 +65,7 @@ h1{font-size:44px;font-weight:800;letter-spacing:-.035em;line-height:1;margin:16
 .empty-state b{display:block;color:#fff;font-size:24px;font-weight:800;margin-bottom:6px;letter-spacing:-.02em}
 /* record button */
 .dock{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:20px 0 calc(22px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 55%,transparent);pointer-events:none;z-index:5}
-.fab{pointer-events:auto;width:82px;height:82px;border-radius:50%;background:#fff;color:#0c0c0f;display:grid;place-items:center;box-shadow:0 0 0 8px rgba(255,255,255,.12);transition:transform .15s}
+.fab{pointer-events:auto;width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ff8a1f,#ff3d5a 55%,#c04bff);color:#fff;display:grid;place-items:center;box-shadow:0 10px 30px rgba(255,61,90,.45);transition:transform .15s}
 .fab:active{transform:scale(.93)}
 .fab svg{width:34px;height:34px}
 /* drawer */
@@ -89,12 +89,22 @@ h1{font-size:44px;font-weight:800;letter-spacing:-.035em;line-height:1;margin:16
 .grab{width:42px;height:5px;border-radius:3px;background:#33333d;margin:0 auto 16px}
 .sheet h3{font-size:26px;font-weight:800;letter-spacing:-.02em;margin:0 0 14px}
 .recstate{display:flex;justify-content:center;align-items:center;gap:8px;font-weight:700;color:#ff5a6e;font-size:15px}
+.recstate.paused{color:var(--muted)}
+.recstate.paused i{animation:none;background:var(--muted)}
+.timer.paused{opacity:.45;animation:blink 1.4s infinite}
 .recstate i{width:10px;height:10px;border-radius:50%;background:#ff5a6e;animation:blink 1s infinite}
 @keyframes blink{50%{opacity:.25}}
 .timer{text-align:center;font-size:64px;font-weight:400;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:4px 0 6px}
 canvas.live{width:100%;height:90px;display:block}
-.stop{width:84px;height:84px;border-radius:50%;background:#fff;display:grid;place-items:center;margin:18px auto 6px}
-.stop i{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#ff8a1f,#ff3d5a)}
+.ctrls{display:flex;justify-content:space-around;align-items:flex-start;margin:22px 0 4px}
+.ctl{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--muted);width:90px}
+.ctl .o{width:60px;height:60px;border-radius:50%;background:var(--soft);display:grid;place-items:center;color:#fff}
+.ctl .o svg{width:26px;height:26px}
+.ctl.big .o{width:84px;height:84px;background:linear-gradient(135deg,#ff8a1f,#ff3d5a 55%,#c04bff);box-shadow:0 10px 30px rgba(255,61,90,.4)}
+.ctl.big .o svg{width:34px;height:34px}
+.ctl.big{margin-top:-12px;color:#fff}
+.ctl.dis .o{color:var(--danger)}
+.ctl.ok .o{background:#fff;color:#0c0c0f}
 .row{display:flex;gap:10px;margin-top:18px}
 .btn{flex:1;padding:16px;border-radius:18px;font-weight:750;text-align:center;background:var(--soft);font-size:17px}
 .btn.primary{background:#fff;color:#0c0c0f}
@@ -148,11 +158,14 @@ canvas.live{width:100%;height:90px;display:block}
 
 <div class="sheet" id="recSheet">
   <div class="grab"></div>
-  <div class="recstate"><i></i>Grabando</div>
+  <div class="recstate" id="recState"><i></i><span id="recLabel">Grabando</span></div>
   <div class="timer" id="timer">0:00</div>
   <canvas class="live" id="live"></canvas>
-  <button class="stop" id="stopBtn" aria-label="Parar"><i></i></button>
-  <div class="row"><button class="btn danger" id="cancelRec">Descartar</button></div>
+  <div class="ctrls">
+    <button class="ctl dis" id="cancelRec"><span class="o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></span>Descartar</button>
+    <button class="ctl big" id="pauseBtn"><span class="o" id="pauseIcon"></span><span id="pauseLabel">Pausa</span></button>
+    <button class="ctl ok" id="stopBtn"><span class="o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Terminar</button>
+  </div>
 </div>
 
 <div class="sheet" id="saveSheet">
@@ -359,7 +372,7 @@ $("#list").addEventListener("click",e=>{
 });
 
 /* ---------- recording ---------- */
-let rec=null,stream=null,chunks=[],t0=0,tick=null,actx=null,analyser=null,raf=null,cancelled=false,levels=[],allLevels=[];
+let rec=null,stream=null,chunks=[],t0=0,acc=0,paused=false,tick=null,actx=null,analyser=null,raf=null,cancelled=false,levels=[],allLevels=[];
 function pickMime(){
   for(const m of ["audio/mp4;codecs=mp4a.40.2","audio/mp4","audio/aac","audio/webm;codecs=opus","audio/webm","audio/ogg;codecs=opus"])
     if(MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(m)) return m;
@@ -375,8 +388,9 @@ async function startRec(){
   chunks=[];cancelled=false;levels=[];allLevels=[];
   rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
   rec.onstop=onRecStop;rec.start(1000);
-  t0=Date.now();$("#timer").textContent="0:00";
-  tick=setInterval(()=>{$("#timer").textContent=fmt((Date.now()-t0)/1000);},200);
+  t0=Date.now();acc=0;paused=false;setPausedUI();$("#timer").textContent="0:00";
+  $("#pauseBtn").style.visibility=typeof rec.pause==="function"?"visible":"hidden";
+  tick=setInterval(()=>{$("#timer").textContent=fmt(elapsed());},200);
   show("#recSheet");
   try{
     actx=new (window.AudioContext||window.webkitAudioContext)();
@@ -384,13 +398,29 @@ async function startRec(){
     drawLive();
   }catch(e){}
 }
+function elapsed(){return (acc+(paused?0:Date.now()-t0))/1000;}
+const ICON_MIC_W='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+function setPausedUI(){
+  $("#recState").classList.toggle("paused",paused);$("#timer").classList.toggle("paused",paused);
+  $("#recLabel").textContent=paused?"En pausa":"Grabando";
+  $("#pauseIcon").innerHTML=paused?ICON_MIC_W:ICON_PAUSE;$("#pauseLabel").textContent=paused?"Seguir":"Pausa";
+}
+function togglePause(){
+  if(!rec)return;
+  try{
+    if(!paused){rec.pause();acc+=Date.now()-t0;paused=true;}
+    else{rec.resume();t0=Date.now();paused=false;}
+  }catch(e){toast("No se puede pausar en este dispositivo");return;}
+  setPausedUI();
+}
+$("#pauseBtn").onclick=togglePause;
 function drawLive(){
   const c=$("#live"),dpr=devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;
   if(c.width!==Math.round(w*dpr)){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);}
   const g=c.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,w,h);
   const buf=new Uint8Array(analyser.fftSize);analyser.getByteTimeDomainData(buf);
   let sum=0;for(const v of buf){const x=(v-128)/128;sum+=x*x;}
-  const lv=Math.min(1,Math.sqrt(sum/buf.length)*4.5);levels.push(lv);allLevels.push(lv);
+  const lv=Math.min(1,Math.sqrt(sum/buf.length)*4.5);if(!paused){levels.push(lv);allLevels.push(lv);}
   const bw=4,gap=3,n=Math.floor(w/(bw+gap));while(levels.length>n)levels.shift();
   const grad=g.createLinearGradient(0,0,w,0);grad.addColorStop(0,"#ff8a1f");grad.addColorStop(1,"#ff3d5a");g.fillStyle=grad;
   levels.forEach((l,i)=>{const bh=Math.max(4,Math.sqrt(l)*h);const x=w-(levels.length-i)*(bw+gap);g.beginPath();
@@ -398,7 +428,7 @@ function drawLive(){
   raf=requestAnimationFrame(drawLive);
 }
 function cleanupRec(){clearInterval(tick);cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;if(actx){actx.close().catch(()=>{});actx=null;}}
-function stopRec(cancel){if(!rec)return;cancelled=!!cancel;pending={duration:(Date.now()-t0)/1000,peaks:resample(allLevels,BARS)};if(rec.state!=="inactive")rec.stop();else onRecStop();}
+function stopRec(cancel){if(!rec)return;cancelled=!!cancel;pending={duration:elapsed(),peaks:resample(allLevels,BARS)};if(rec.state!=="inactive")rec.stop();else onRecStop();}
 async function onRecStop(){
   const r=rec;rec=null;cleanupRec();
   if(cancelled){pending=null;hide();return;}
