@@ -41,12 +41,17 @@ body{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:500;display:fl
 .k.s{background:var(--lime);color:#000}
 .k.s.on{background:#a8d900}
 .k svg{width:30px;height:30px}
+.flip{position:fixed;z-index:5;top:calc(env(safe-area-inset-top) + 8px);left:10px;width:46px;height:46px;border:0;background:none;color:#fff;opacity:.25;
+ display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .2s,transform .35s}
+.flip svg{width:22px;height:22px}.flip:active{opacity:.6}.flip.r{transform:rotate(180deg)}
+.k.comma{font-size:38px;font-weight:700}
 </style></head><body class="zero">
+<button class="flip" id="f" aria-label="Cambiar sentido"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 4L3 8M7 4l4 4M17 20V4M17 20l-4-4M17 20l4-4"/></svg></button>
 <div class="top">
- <div class="lbl">XOF</div>
+ <div class="lbl" id="la">XOF</div>
  <div class="row"><div class="xof" id="x">0</div>
   <button class="clr off" id="c" aria-label="Borrar todo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>BORRAR</button></div>
- <div class="lbl">EUROS</div>
+ <div class="lbl" id="lb">EUROS</div>
  <div class="eur" id="e">0,00<small> €</small></div>
  <div class="rate">1 € = 655,957 XOF</div>
 </div>
@@ -54,33 +59,61 @@ body{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:500;display:fl
  <button class="k" data-k="1">1</button><button class="k" data-k="2">2</button><button class="k" data-k="3">3</button>
  <button class="k" data-k="4">4</button><button class="k" data-k="5">5</button><button class="k" data-k="6">6</button>
  <button class="k" data-k="7">7</button><button class="k" data-k="8">8</button><button class="k" data-k="9">9</button>
- <button class="k" data-k="000">000</button><button class="k" data-k="0">0</button>
+ <button class="k" data-k="000" id="z">000</button><button class="k" data-k="0">0</button>
  <button class="k s" data-k="del" aria-label="Borrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M12 9l6 6M18 9l-6 6"/></svg></button>
 </div>
 <script>
-const RATE=655.957,MAX=12;
-let v="";
-const $x=document.getElementById("x"),$e=document.getElementById("e"),$c=document.getElementById("c"),top_=document.querySelector(".top");
-const grp=s=>s.replace(/\B(?=(\d{3})+(?!\d))/g," ");
+const RATE=655.957;
+let v="",inv=false; // inv=false: XOF → €   inv=true: € → XOF
+const $=id=>document.getElementById(id);
+const $x=$("x"),$e=$("e"),$c=$("c"),$z=$("z"),top_=document.querySelector(".top");
+const grp=s=>s.replace(/\B(?=(\d{3})+(?!\d))/g,"\u202F");
 function fit(el,max,w){el.style.fontSize=max+"px";let f=max;while(el.scrollWidth>w&&f>24){f-=2;el.style.fontSize=f+"px";}}
+function eurTxt(c){return grp(String(Math.floor(c/100)))+","+String(c%100).padStart(2,"0");}
 function draw(){
- const n=v?parseInt(v,10):0;
- const c=Math.round(n/RATE*100);
- const ent=String(Math.floor(c/100)),dec=String(c%100).padStart(2,"0");
- $x.textContent=grp(String(n));
- $e.innerHTML=grp(ent)+","+dec+"<small> €</small>";
+ let n,big,small;
+ if(!inv){
+  n=v?parseInt(v,10):0;
+  small=grp(String(n));
+  big=eurTxt(Math.round(n/RATE*100))+"<small>\u00A0€</small>";
+ }else{
+  const [a,b]=v.split(",");
+  n=parseFloat((a||"0")+"."+(b||"0"));
+  small=v?grp(a||"0")+(v.includes(",")?","+b:""):"0";
+  small+="\u00A0€";
+  big=grp(String(Math.round(n*RATE)))+"<small>\u00A0XOF</small>";
+ }
+ $x.textContent=small;$e.innerHTML=big;
  document.body.classList.toggle("zero",!n);
- $c.classList.toggle("off",!n);
- fit($e,92,top_.clientWidth-12);fit($x,40,top_.clientWidth-12-(n?$c.offsetWidth+12:0));
+ $c.classList.toggle("off",!v);
+ fit($e,92,top_.clientWidth-12);fit($x,40,top_.clientWidth-12-(v?$c.offsetWidth+12:0));
 }
 function press(k){
  if(k==="del")v=v.slice(0,-1);
  else if(k==="clr")v="";
- else{ if(!v&&k[0]==="0")return; v=(v+k).slice(0,MAX); }
+ else if(!inv){ if(!v&&k[0]==="0")return; v=(v+k).slice(0,12); }
+ else{
+  if(k===","){ if(v.includes(","))return; v=(v||"0")+","; }
+  else{
+   if(v==="0")v="";
+   const [a,b]=v.split(",");
+   if(b!==undefined){ if(b.length>=2)return; }
+   else if(a.length>=9)return;
+   v+=k;
+  }
+ }
  draw();
 }
+function flip(){
+ inv=!inv;v="";
+ $("f").classList.toggle("r",inv);
+ $("la").textContent=inv?"EUROS":"XOF";$("lb").textContent=inv?"XOF":"EUROS";
+ $z.dataset.k=inv?",":"000";$z.textContent=inv?",":"000";$z.classList.toggle("comma",inv);
+ draw();
+}
+$("f").addEventListener("click",flip);
 let hold;
-document.getElementById("p").addEventListener("pointerdown",ev=>{
+$("p").addEventListener("pointerdown",ev=>{
  const b=ev.target.closest(".k");if(!b)return;ev.preventDefault();
  b.classList.add("on");setTimeout(()=>b.classList.remove("on"),110);
  press(b.dataset.k);
@@ -90,6 +123,7 @@ document.getElementById("p").addEventListener("pointerdown",ev=>{
 $c.addEventListener("click",()=>press("clr"));
 document.addEventListener("keydown",ev=>{
  if(/^\d$/.test(ev.key))press(ev.key);
+ else if((ev.key===","||ev.key===".")&&inv)press(",");
  else if(ev.key==="Backspace")press("del");
  else if(ev.key==="Escape"||ev.key==="Delete")press("clr");
 });
