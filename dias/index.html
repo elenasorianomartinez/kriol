@@ -34,7 +34,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .empty{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 28px;color:#fff;font:400 44px/1 'Archivo Black'}
 .empty small{font:400 17px 'Space Grotesk';color:#888;margin-top:14px}
 /* Detalle */
-#det{overflow:hidden;padding:calc(14px + env(safe-area-inset-top)) 24px calc(80px + env(safe-area-inset-bottom))}
+#det{overflow:hidden;padding:calc(14px + env(safe-area-inset-top)) 24px calc(70px + env(safe-area-inset-bottom))}
 .back{font-weight:700;font-size:17px;align-self:flex-start;padding:10px 0}
 #dback{padding:10px 14px 10px 0;line-height:0}
 #dn{font:400 200px/0.8 'Archivo Black';letter-spacing:-.05em;margin:60px 0 0 -6px;white-space:nowrap;display:inline-block;align-self:flex-start}
@@ -46,7 +46,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #grid i.p{background:rgba(0,0,0,.14)}
 #grid i.h{background:#fff;box-shadow:inset 0 0 0 3px #111}
 .leg{margin-top:16px;font-weight:500;font-size:14px;display:flex;justify-content:space-between;opacity:.75}
-.ed{position:fixed;left:14px;bottom:calc(14px + env(safe-area-inset-bottom))}
+.ed{position:fixed;left:14px;bottom:max(4px,calc(env(safe-area-inset-bottom) - 12px))}
 .ed button{padding:10px;display:block;line-height:0}
 /* Formulario */
 #form{background:#111;color:#fff;overflow-y:auto;padding:calc(14px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom))}
@@ -94,7 +94,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 const COLORS=["#ff5a36","#ffd23f","#3ec7ff","#b88cff","#3ee08f","#ff8fc7"];
 const KEY="dias-v1";
 const $=id=>document.getElementById(id);
-let items=[],cur=null,editing=null,pick=COLORS[0],delArm=false;
+let gridInfo=null,items=[],cur=null,editing=null,pick=COLORS[0],delArm=false;
 
 // Fechas como "aaaa-mm-dd" en hora local; las cuentas se hacen en UTC para que los cambios de hora no muevan días.
 const pad=n=>String(n).padStart(2,"0");
@@ -165,14 +165,26 @@ function openDet(id){
  const frag=document.createDocumentFragment();
  for(let i=0;i<shown;i++){const e=document.createElement("i");if(i<passed)e.className="p";else if(i===passed&&n>0)e.className="h";frag.appendChild(e);}
  g.appendChild(frag);
- requestAnimationFrame(()=>{g.style.zoom="";const free=$("det").clientHeight-g.offsetTop-110;if(g.offsetHeight>free&&free>80)g.style.zoom=(free/g.offsetHeight).toFixed(3);});
+ gridInfo={cols,n:shown};
  g.style.display=n>0?"":"none";$("dleg").parentElement.style.display=n>0&&cur.from?"":"none";
  $("dleg").textContent=passed+(passed===1?" gastado":" gastados")+" · "+Math.max(n,0)+" por delante";
  $("det").style.background=cur.color;setTheme(cur.color);
  show("det");$("det").scrollTop=0;
- requestAnimationFrame(()=>fit(dn,200,1));
+ fit(dn,200,1);fitGrid();
 }
 
+// Encoge los circulitos para que quepan entre el título y las tres rayas (la pantalla no hace scroll).
+function fitGrid(){
+ const g=$("grid"),d=$("det");if(!gridInfo)return;
+ const {cols,n,gap}=gridInfo,w=g.clientWidth;
+ const legH=$("dleg").parentElement.style.display==="none"?0:40;
+ const free=d.clientHeight-parseFloat(getComputedStyle(d).paddingBottom)-g.offsetTop-legH;
+ // Prueba más columnas hasta que los circulitos quepan en alto y sean lo más grandes posible.
+ let best=cols,bestCell=0;
+ for(let c=cols;c<=40;c++){const gp=c<=10?9:c<=15?6:c<=24?4:3,r=Math.ceil(n/c);const cell=Math.min((w-(c-1)*gp)/c,(free-(r-1)*gp)/r);if(cell>bestCell){bestCell=cell;best=c;}if((free-(r-1)*gp)/r>=(w-(c-1)*gp)/c)break;}
+ const gp=best<=10?9:best<=15?6:best<=24?4:3,cw=(w-(best-1)*gp)/best,cell=Math.max(Math.min(bestCell,cw),3);
+ g.style.gridTemplateColumns="repeat("+best+","+cell+"px)";g.style.gap=gp+"px";
+}
 function openForm(x){
  editing=x;$("ferr").textContent="";
  delArm=false;const d=$("fdel");d.textContent="Borrar esta fecha";d.className="del";d.style.display=x?"":"none";
@@ -205,7 +217,7 @@ $("fdel").onclick=()=>{
  items=items.filter(x=>x!==editing);editing=null;save();show("home");renderHome();
 };
 document.addEventListener("visibilitychange",()=>{if(!document.hidden){if($("det").classList.contains("on")&&cur)openDet(cur.id);else if($("home").classList.contains("on"))renderHome();}});
-window.addEventListener("resize",()=>{if($("home").classList.contains("on"))renderHome();});
+window.addEventListener("resize",()=>{if($("home").classList.contains("on"))renderHome();else if($("det").classList.contains("on"))fitGrid();});
 
 load();
 renderHome();
