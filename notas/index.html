@@ -201,6 +201,7 @@ canvas.live{width:100%;height:90px;display:block}
   <div class="row"><button class="btn primary" id="exportBtn">Hacer copia</button><button class="btn" id="importBtn">Restaurar</button></div>
   <input type="file" id="importFile" accept=".json,application/json,text/plain" hidden>
   <div class="stat" id="stat"></div>
+  <div class="stat" id="diag" style="font-size:12px;opacity:.7"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -385,13 +386,13 @@ function pickMime(){
 }
 function ensureCtx(){
   const AC=window.AudioContext||window.webkitAudioContext;if(!AC) return null;
-  if(!actx||actx.state==="closed") actx=new AC();
-  if(actx.state!=="running") actx.resume().catch(()=>{});
+  if(actx){try{actx.close();}catch(e){}actx=null;}
+  try{actx=new AC();if(actx.state!=="running")actx.resume().catch(()=>{});}catch(e){actx=null;}
   return actx;
 }
-function streamAlive(){return stream&&stream.getAudioTracks().some(t=>t.readyState==="live");}
+let diag="";function setDiag(d){diag=d;try{localStorage.setItem("nv-diag",d);}catch(e){}}
 async function getMic(){
-  if(streamAlive()) return stream;
+  releaseMic();
   stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
   srcNode=null;return stream;
 }
@@ -411,7 +412,7 @@ function wireGraph(){
 }
 function unwireGraph(){try{if(srcNode)srcNode.disconnect();}catch(e){}try{if(proc){proc.onaudioprocess=null;proc.disconnect();}}catch(e){}proc=null;analyser=null;}
 async function startRec(){
-  if(recording) return;clearTimeout(idleT);
+  if(recording) return;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast("Este navegador no permite grabar. Actualiza iOS.");return;}
   ensureCtx(); // must happen inside the tap, before any await
   stopPlayer();render();
@@ -496,28 +497,31 @@ async function stopRec(cancel){
   if(rec&&rec.state==="paused"){try{rec.resume();}catch(e){}}
   await stopMR();
   unwireGraph();
-  scheduleRelease();
-  if(cancelled){rec=null;chunks=[];pcm=[];hide();return;}
+  if(cancelled){rec=null;chunks=[];pcm=[];releaseMic();if(actx){try{actx.close();}catch(e){}actx=null;}hide();return;}
   $("#recLabel").textContent="Guardando…";
-  let audio=null,mime="",dur=0;
+  let audio=null,mime="",dur=0,path="";
+  const sr=actx?actx.sampleRate:44100;let peak=0;for(const c of pcm){for(let i=0;i<c.length;i+=8){const a=Math.abs(c[i]);if(a>peak)peak=a;}}
   const mrMime=((rec&&rec.mimeType)||(chunks[0]&&chunks[0].type)||"audio/mp4").split(";")[0];
   const blob=new Blob(chunks,{type:mrMime});rec=null;chunks=[];
   if(blob.size>800){
     const ab=await blob.arrayBuffer();const d=await decodeDur(ab.slice(0));
-    if(d>=.3){audio=ab;mime=mrMime;dur=d;}
+    if(d>=.3){audio=ab;mime=mrMime;dur=d;path="mr";}
   }
-  if(!audio&&pcmLen&&actx&&pcmLen/actx.sampleRate>=.3){const w=encodeWav();audio=w.buf;mime="audio/wav";dur=w.dur;}
+  if(!audio&&pcmLen&&pcmLen/sr>=.3){const w=encodeWav();audio=w.buf;mime="audio/wav";dur=w.dur;path="wav";}
+  const track=stream&&stream.getAudioTracks()[0];
+  setDiag(`${fmtDate(Date.now())} ${new Date().toTimeString().slice(0,5)} · ${path||"nada"} · mr ${blob.size}B ${mrMime} · pcm ${(pcmLen/sr).toFixed(1)}s pico ${peak.toFixed(3)} · ctx ${actx?actx.state:"-"} · pista ${track?track.readyState+(track.muted?"/muda":""):"-"}`);
   pcm=[];pcmLen=0;
-  if(!audio){hide();toast(timerDur<.6?"Mantén la grabación un poco más":"No ha llegado sonido del micrófono. Cierra la app del todo y vuelve a abrirla.");return;}
+  releaseMic();if(actx){try{actx.close();}catch(e){}actx=null;}
+  if(!audio){hide();toast(timerDur<.6?"Mantén la grabación un poco más":"No ha llegado sonido del micrófono. Cierra la app del todo (desliza hacia arriba) y vuelve a abrirla.");return;}
+  if(peak>0&&peak<.002) toast("Ojo: casi no se ha oído nada");
   pending={duration:dur||timerDur,peaks,mime,audio};
   openSave(null);
 }
-let idleT=null;
-function scheduleRelease(){clearTimeout(idleT);idleT=setTimeout(releaseMic,90000);}
+
 $("#recBtn").onclick=startRec;
 $("#stopBtn").onclick=()=>stopRec(false);
 $("#cancelRec").onclick=()=>stopRec(true);
-document.addEventListener("visibilitychange",()=>{if(document.hidden){if(recording)stopRec(false).then(releaseMic);else releaseMic();}});
+document.addEventListener("visibilitychange",()=>{if(document.hidden&&recording)stopRec(false);});
 
 /* ---------- save / edit ---------- */
 let pickTag=null;
@@ -607,7 +611,7 @@ async function updateStat(){
   const lb=await kvGet("lastBackup");s+=lb?` Última copia: ${fmtDate(lb)}.`:" Aún no has hecho ninguna copia.";
   $("#stat").textContent=s;
 }
-$("#dBackup").onclick=()=>{updateStat();show("#bkSheet");};
+$("#dBackup").onclick=()=>{updateStat();let d="";try{d=localStorage.getItem("nv-diag")||"";}catch(e){}$("#diag").textContent=d?"Última grabación: "+d:"";show("#bkSheet");};
 function abToB64(ab){const u=new Uint8Array(ab);let s="";for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s);}
 function b64ToAb(b){const s=atob(b),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u.buffer;}
 $("#exportBtn").onclick=async()=>{
