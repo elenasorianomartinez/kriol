@@ -60,6 +60,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .col button{width:46px;height:46px;border-radius:12px}
 .col button.on{box-shadow:0 0 0 3px #111,0 0 0 6px #fff}
 .err{color:#ff8f7a;font-size:15px;min-height:20px;margin-bottom:8px}
+.del{margin-top:18px;color:#777;font-weight:500;font-size:15px;padding:8px;align-self:center}
+.del.arm{color:#ff8f7a;font-weight:700}
 .ok{margin-top:auto;width:100%;color:#111;text-align:center;padding:18px;border-radius:16px;font:400 20px 'Archivo Black'}
 </style>
 </head><body>
@@ -67,12 +69,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <div class="scr on" id="home"></div>
 
 <div class="scr" id="det">
- <button class="back" id="dback">← Todos</button>
+ <button class="back" id="dback">Todos</button>
  <div id="dn"></div>
  <div id="dt"></div>
  <div id="grid"></div>
  <div class="leg"><span id="dleg"></span><span>○ hoy</span></div>
- <div class="ed"><button id="dedit">Editar</button><button id="ddel">Borrar</button></div>
+ <div class="ed"><button id="dedit">Editar</button></div>
 </div>
 
 <div class="scr" id="form">
@@ -84,6 +86,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
  <div class="f"><label>Color</label><div class="col" id="fcol"></div></div>
  <div class="err" id="ferr"></div>
  <button class="ok" id="fok">Guardar</button>
+ <button class="del" id="fdel">Borrar esta fecha</button>
 </div>
 
 <script>
@@ -118,7 +121,7 @@ function numFor(n){
  if(n<0)return{txt:"+"+(-n),w:false};
  return{txt:String(n),w:false};
 }
-function fit(el,max,r){el.style.fontSize="";if(el.classList.contains("w"))return;let f=max;el.style.fontSize=f+"px";const w=(el.parentElement.clientWidth-48)*r;while(el.getBoundingClientRect().width>w&&f>50){f-=6;el.style.fontSize=f+"px";}}
+function fit(el,max,r){el.style.fontSize="";if(el.classList.contains("w"))return;if(!el.parentElement.clientWidth)return;let f=max;el.style.fontSize=f+"px";const w=(el.parentElement.clientWidth-48)*r;while(el.getBoundingClientRect().width>w&&f>50){f-=6;el.style.fontSize=f+"px";}}
 
 function renderHome(){
  const t=todayStr(),h=$("home");
@@ -146,7 +149,6 @@ function renderHome(){
 
 function openDet(id){
  cur=items.find(x=>x.id===id);if(!cur)return;
- delArm=false;$("ddel").textContent="Borrar";
  const t=todayStr(),n=diff(t,cur.date),v=numFor(n);
  const dn=$("dn");dn.textContent=v.txt;dn.className=v.w?"w":"";
  $("dt").innerHTML=esc(cur.name)+"<small>"+fmt(cur.date)+(n>0?" · "+(n===1?"falta 1 día":"faltan "+n+" días"):n<0?" · hace "+(-n)+(n===-1?" día":" días"):"")+"</small>";
@@ -169,6 +171,7 @@ function openDet(id){
 
 function openForm(x){
  editing=x;$("ferr").textContent="";
+ delArm=false;const d=$("fdel");d.textContent="Borrar esta fecha";d.className="del";d.style.display=x?"":"none";
  $("fh").textContent=x?"Editar":"Nueva fecha";
  $("fq").value=x?x.name:"";$("fc").value=x?x.date:"";$("fd").value=x?(x.from||""):"";
  pick=x?x.color:COLORS[items.length%COLORS.length];
@@ -187,14 +190,15 @@ $("fok").onclick=()=>{
  if(editing){Object.assign(editing,{name,date,from:from||editing.from||todayStr(),color:pick});}
  else{items.push({id:Date.now(),name,date,from:from||todayStr(),color:pick});}
  save();
- if(editing)openDet(editing.id);else{renderHome();show("home");}
+ if(editing)openDet(editing.id);else{show("home");renderHome();}
 };
-$("fback").onclick=()=>{if(editing)openDet(editing.id);else{renderHome();show("home");}};
-$("dback").onclick=()=>{renderHome();show("home");};
+$("fback").onclick=()=>{if(editing)openDet(editing.id);else{show("home");renderHome();}};
+$("dback").onclick=()=>{show("home");renderHome();};
 $("dedit").onclick=()=>openForm(cur);
-$("ddel").onclick=()=>{
- if(!delArm){delArm=true;$("ddel").textContent="¿Seguro? Toca otra vez";return;}
- items=items.filter(x=>x!==cur);save();renderHome();show("home");
+$("fdel").onclick=()=>{
+ if(!editing)return;
+ if(!delArm){delArm=true;$("fdel").textContent="¿Seguro? Toca otra vez para borrarla";$("fdel").className="del arm";return;}
+ items=items.filter(x=>x!==editing);editing=null;save();show("home");renderHome();
 };
 document.addEventListener("visibilitychange",()=>{if(!document.hidden){if($("det").classList.contains("on")&&cur)openDet(cur.id);else if($("home").classList.contains("on"))renderHome();}});
 window.addEventListener("resize",()=>{if($("home").classList.contains("on"))renderHome();});
