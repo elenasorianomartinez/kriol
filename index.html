@@ -181,10 +181,11 @@ code{background:var(--line);padding:1px 6px;border-radius:6px}
 <div class="screen" id="s-tr" hidden>
   <button class="back" data-home>‹ Inicio</button>
   <h2>Traductor</h2>
-  <p class="muted small">Escribe en español o portugués y pregúntale a Claude. La respuesta aparece aquí (de 8 a 22 h, en menos de una hora).</p>
+  <p class="muted small">Escribe en español o portugués y dale a Preguntar: se copia la pregunta, la pegas en el chat de Claude y la respuesta te aparece también aquí y en tus lecciones.</p>
   <textarea id="tr-in" rows="3" placeholder="Ej.: ¿Mañana vienes a entrenar?"></textarea>
   <button class="big" id="tr-ask">Preguntar a Claude</button>
-  <p class="muted small" id="tr-note" hidden>Se ha abierto GitHub con tu pregunta: dale a <b>Create</b> (o «Submit new issue») para enviarla.</p>
+  <textarea id="tr-copy" rows="2" hidden></textarea>
+  <p class="muted small" id="tr-note" hidden>Copiada ✅ Pégala en el chat de Claude (hilo «Aprender crioulo»).</p>
   <h3>Mis preguntas</h3>
   <div class="list" id="tr-ans"><p class="muted small">Todavía no has preguntado nada.</p></div>
   <h3 id="tr-h2" hidden>Diccionario (palabra por palabra, sin internet)</h3><table id="tr-w"></table>
@@ -876,10 +877,11 @@ function translate(){
     :`<tr><td>${esc(x.w)}</td><td><b style="color:var(--brand)">${esc(x.rev?x.pt:x.cr)}</b></td><td class="muted small">${x.rev?"(crioulo → pt)":"pt: "+esc(x.pt)}</td></tr>`).join("");
 }
 $("tr-in").oninput=translate;
-$("tr-ask").onclick=()=>{ const q=$("tr-in").value.trim(); if(!q){ toast("Escribe primero qué quieres decir"); return; }
-  const url=`https://github.com/${REPO}/issues/new?title=${encodeURIComponent(q.slice(0,200))}&body=${encodeURIComponent("Pregunta desde la app Kriol:\n\n"+q)}`;
-  S.asks=S.asks||[]; if(!S.asks.some(a=>a.q===q)) S.asks.unshift({q,t:Date.now()}); save();
-  window.open(url,"_blank"); $("tr-note").hidden=false; drawAnswers(); };
+$("tr-ask").onclick=async()=>{ const q=$("tr-in").value.trim(); if(!q){ toast("Escribe primero qué quieres decir"); return; }
+  S.asks=S.asks||[]; if(!S.asks.some(a=>a.q===q)) S.asks.unshift({q,t:Date.now()}); save(); drawAnswers();
+  const t=`¿Cómo se dice en crioulo? «${q}»`; $("tr-copy").value=t;
+  try{ await navigator.clipboard.writeText(t); $("tr-copy").hidden=true; $("tr-note").hidden=false; toast("Copiada ✅ Pégala en el chat"); }
+  catch(e){ $("tr-copy").hidden=false; $("tr-copy").focus(); $("tr-copy").select(); toast("Mantén pulsado el texto y dale a Copiar"); } };
 function findAns(q){ return ANSWERS.find(a=>norm(a.q)===norm(q)); }
 function drawAnswers(){
   const asks=(S.asks||[]).map(a=>({q:a.q,t:a.t,ans:findAns(a.q)}));
@@ -887,7 +889,7 @@ function drawAnswers(){
   const all=[...asks,...extra];
   $("tr-ans").innerHTML = all.length? all.map(x=>`<div class="li"><div class="es">«${esc(x.q)}»</div>${x.ans
      ?`<div class="kr" style="font-size:18px;margin-top:4px">${esc(x.ans.kr)}</div>${x.ans.note?`<div class="small muted">${esc(x.ans.note)}</div>`:""}`
-     :`<div class="small muted" style="margin-top:4px">⏳ Pendiente de respuesta</div>`}</div>`).join("") : `<p class="muted small">Todavía no has preguntado nada.</p>`;
+     :`<div class="small muted" style="margin-top:4px">⏳ Pendiente: pégala en el chat de Claude</div>`}</div>`).join("") : `<p class="muted small">Todavía no has preguntado nada.</p>`;
 }
 async function loadAnswers(){ try{ const r=await fetch("answers.json",{cache:"no-cache"}); if(r.ok){ ANSWERS=await r.json(); drawAnswers(); } }catch(e){} }
 $("b-tr").onclick=()=>{ show("tr"); drawAnswers(); loadAnswers(); };
