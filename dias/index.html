@@ -105,11 +105,13 @@ function fmt(s){const [y,m,d]=s.split("-");return (+d)+"/"+(+m)+"/"+y.slice(2);}
 function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);}
 
 function load(){
- try{const r=localStorage.getItem(KEY);if(r){items=JSON.parse(r);return;}}catch(e){}
+ try{const r=localStorage.getItem(KEY);if(r){items=JSON.parse(r);
+  // Antes "from" se rellenaba solo con el día de creación; ahora "from" solo existe si lo eliges y "added" guarda el día de creación.
+  items.forEach(x=>{if(!x.added){x.added=x.from||todayStr();if(x.from&&x.from>="2026-11-02")x.from="";}});save();return;}}catch(e){}
  const t=todayStr();
  items=[
-  {id:1,name:"Volver a España",date:"2026-12-22",from:t,color:COLORS[0]},
-  {id:2,name:"Vuelvo al gimnasio",date:"2026-11-20",from:t,color:COLORS[1]}
+  {id:1,name:"Volver a España",date:"2026-12-22",from:"",added:t,color:COLORS[0]},
+  {id:2,name:"Vuelvo al gimnasio",date:"2026-11-20",from:"",added:t,color:COLORS[1]}
  ].filter(x=>x.date>=t);
  save();
 }
@@ -154,7 +156,7 @@ function openDet(id){
  const dn=$("dn");dn.textContent=v.txt;dn.className=v.w?"w":"";
  $("dt").innerHTML=esc(cur.name)+"<small>"+fmt(cur.date)+(n>0?" · "+(n===1?"falta 1 día":"faltan "+n+" días"):n<0?" · hace "+(-n)+(n===-1?" día":" días"):"")+"</small>";
  // Circulitos: uno por día desde "desde" hasta la fecha (sin contar el día final)
- const from=cur.from&&cur.from<=cur.date?cur.from:t;
+ const start=cur.from||cur.added||t,from=start<=cur.date?start:t;
  let total=Math.max(diff(from,cur.date),1),passed=Math.min(Math.max(diff(from,t),0),total);
  const g=$("grid");g.innerHTML="";
  const cols=total<=100?10:total<=225?15:total<=400?20:26;
@@ -164,7 +166,7 @@ function openDet(id){
  for(let i=0;i<shown;i++){const e=document.createElement("i");if(i<passed)e.className="p";else if(i===passed&&n>0)e.className="h";frag.appendChild(e);}
  g.appendChild(frag);
  requestAnimationFrame(()=>{g.style.zoom="";const free=$("det").clientHeight-g.offsetTop-110;if(g.offsetHeight>free&&free>80)g.style.zoom=(free/g.offsetHeight).toFixed(3);});
- g.style.display=$("dleg").parentElement.style.display=n>0?"":"none";
+ g.style.display=n>0?"":"none";$("dleg").parentElement.style.display=n>0&&cur.from?"":"none";
  $("dleg").textContent=passed+(passed===1?" gastado":" gastados")+" · "+Math.max(n,0)+" por delante";
  $("det").style.background=cur.color;setTheme(cur.color);
  show("det");$("det").scrollTop=0;
@@ -189,8 +191,8 @@ $("fok").onclick=()=>{
  if(!name){$("ferr").textContent="Ponle un nombre.";return;}
  if(!date){$("ferr").textContent="Elige el día.";return;}
  if(from&&from>date){$("ferr").textContent="«Desde» tiene que ser antes de la fecha.";return;}
- if(editing){Object.assign(editing,{name,date,from:from||editing.from||todayStr(),color:pick});}
- else{items.push({id:Date.now(),name,date,from:from||todayStr(),color:pick});}
+ if(editing){Object.assign(editing,{name,date,from,color:pick});}
+ else{items.push({id:Date.now(),name,date,from,added:todayStr(),color:pick});}
  save();
  if(editing)openDet(editing.id);else{show("home");renderHome();}
 };
