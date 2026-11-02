@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gastos</title>
+<meta name="theme-color" content="#f5efe4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#181412" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Gastos">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#f5efe4; --card:#fffaf2; --ink:#221c17; --muted:#8a7f72; --line:#e7dccb;
+  --acc:#d4552a; --acc-ink:#fff; --eur:#1f6f50; --chip:#efe5d5; --danger:#b3261e;
+  --shadow:0 1px 2px rgba(60,40,20,.06),0 8px 24px rgba(60,40,20,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#181412; --card:#221d1a; --ink:#f3ece3; --muted:#a39686; --line:#352d28;
+    --acc:#ea6a3d; --eur:#5fc597; --chip:#2e2723; --danger:#ff6b5e;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 28px);
+  max-width:520px;margin:0 auto;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums}
+header{display:flex;align-items:baseline;justify-content:space-between;margin:4px 2px 14px}
+header h1{font-size:15px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+header .rate{font-size:12px;color:var(--muted)}
+
+.summary{padding:4px 2px 18px}
+.summary .lbl{font-size:13px;color:var(--muted)}
+.summary .big{font-size:40px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:2px 0}
+.summary .big small{font-size:18px;font-weight:600;color:var(--muted);margin-left:4px}
+.summary .eur{font-size:17px;color:var(--eur);font-weight:600}
+.summary .all{font-size:13px;color:var(--muted);margin-top:6px}
+
+.card{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:16px}
+.amount{display:flex;align-items:baseline;gap:8px;border-bottom:1.5px solid var(--line);padding-bottom:6px}
+.amount input{flex:1;min-width:0;border:0;background:none;color:var(--ink);font:inherit;font-size:38px;font-weight:700;
+  letter-spacing:-.02em;padding:0;outline:none;font-variant-numeric:tabular-nums}
+.amount input::placeholder{color:var(--line)}
+.amount span{font-size:17px;font-weight:700;color:var(--muted)}
+.conv{min-height:22px;font-size:15px;color:var(--eur);font-weight:600;margin:6px 0 12px}
+.concept{width:100%;border:0;border-radius:14px;background:var(--chip);color:var(--ink);font:inherit;font-size:17px;padding:13px 14px;outline:none}
+.concept:focus{box-shadow:0 0 0 2px var(--acc) inset}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0;border-radius:999px;background:var(--chip);color:var(--ink);font:inherit;font-size:14px;padding:7px 13px}
+.chip:active{transform:scale(.96)}
+.row2{display:flex;gap:10px;align-items:center;margin-top:14px}
+.date{flex:none;border:0;border-radius:14px;background:var(--chip);color:var(--muted);font:inherit;font-size:16px;padding:0 10px;height:54px;max-width:150px}
+.ok{flex:1;height:54px;border:0;border-radius:16px;background:var(--acc);color:var(--acc-ink);font:inherit;font-size:19px;font-weight:700;letter-spacing:.02em}
+.ok:disabled{opacity:.35}
+.ok:active{transform:scale(.98)}
+
+h2{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:26px 4px 8px;display:flex;justify-content:space-between}
+h2 span{letter-spacing:0;text-transform:none;font-weight:500}
+.list{background:var(--card);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-bottom:0;color:inherit;font:inherit;text-align:left}
+.item:first-child{border-top:0}
+.item:active{background:var(--chip)}
+.item .c{flex:1;min-width:0}
+.item .t{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .h{font-size:12px;color:var(--muted)}
+.item .v{text-align:right}
+.item .x{font-weight:650;font-size:16px}
+.item .e{font-size:12px;color:var(--eur)}
+.empty{text-align:center;color:var(--muted);padding:26px 18px;font-size:15px}
+.ghost{border:1.5px solid var(--line);background:none;color:var(--ink);border-radius:14px;font:inherit;font-size:15px;padding:11px 14px}
+.empty .ghost{margin-top:12px}
+
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.tools .ghost{width:100%}
+.tools .wide{grid-column:1/-1}
+.backup-note{font-size:12.5px;color:var(--muted);margin:10px 4px 0;text-align:center}
+.backup-note.warn{color:var(--acc)}
+
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 20px);transform:translate(-50%,120px);
+  background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:14px;font-size:15px;display:flex;gap:14px;align-items:center;
+  visibility:hidden;transition:transform .25s ease,visibility 0s .25s;z-index:20;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+.toast.on{transform:translate(-50%,0);visibility:visible;transition:transform .25s ease}
+.toast button{border:0;background:none;color:var(--acc);font:inherit;font-weight:700;padding:0}
+
+.sheet-bg{position:fixed;inset:0;background:rgba(20,12,6,.38);opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.sheet{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-radius:24px 24px 0 0;padding:18px 16px calc(env(safe-area-inset-bottom) + 18px);
+  transform:translateY(105%);visibility:hidden;transition:transform .25s ease,visibility 0s .25s;z-index:31;max-width:520px;margin:0 auto}
+.open .sheet-bg{opacity:1;pointer-events:auto}
+.open .sheet{transform:none;visibility:visible;transition:transform .25s ease}
+.sheet h3{margin:0 0 12px;font-size:17px}
+.sheet label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+.sheet input{width:100%;border:0;border-radius:12px;background:var(--chip);color:var(--ink);font:inherit;font-size:17px;padding:12px}
+.sheet .btns{display:flex;gap:10px;margin-top:16px}
+.sheet .btns button{flex:1;height:50px;border-radius:14px;font:inherit;font-size:16px;font-weight:600}
+.del{border:1.5px solid var(--danger);background:none;color:var(--danger)}
+.save{border:0;background:var(--acc);color:var(--acc-ink)}
+.sheet .e-conv{font-size:13px;color:var(--eur);margin-top:4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Gastos</h1>
+  <div class="rate num">1 € = 655,957 XOF</div>
+</header>
+
+<section class="summary">
+  <div class="lbl" id="m-lbl">Este mes</div>
+  <div class="big num"><span id="m-xof">0</span><small>XOF</small></div>
+  <div class="eur num" id="m-eur">0,00 €</div>
+  <div class="all num" id="all"></div>
+</section>
+
+<form class="card" id="f" autocomplete="off">
+  <div class="amount">
+    <input id="amt" inputmode="numeric" pattern="[0-9 .]*" placeholder="0" aria-label="Cantidad en XOF" enterkeyhint="next">
+    <span>XOF</span>
+  </div>
+  <div class="conv num" id="conv"></div>
+  <input class="concept" id="con" placeholder="Concepto (súper, taxi, comida…)" aria-label="Concepto" enterkeyhint="done" maxlength="60">
+  <div class="chips" id="chips"></div>
+  <div class="row2">
+    <input class="date" type="date" id="dt" aria-label="Fecha">
+    <button class="ok" id="ok" type="submit" disabled>OK</button>
+  </div>
+</form>
+
+<div id="days"></div>
+
+<h2>Copia de seguridad</h2>
+<div class="tools">
+  <button class="ghost" id="b-csv" type="button">Exportar a Excel</button>
+  <button class="ghost" id="b-json" type="button">Guardar copia</button>
+  <button class="ghost wide" id="b-imp" type="button">Restaurar una copia</button>
+  <input type="file" id="imp" accept=".json,application/json,text/plain" hidden>
+</div>
+<p class="backup-note" id="bk"></p>
+
+<div class="toast" id="toast"><span id="t-msg"></span><button id="t-undo" type="button" hidden>Deshacer</button></div>
+
+<div id="sheetwrap">
+  <div class="sheet-bg" id="sbg"></div>
+  <div class="sheet" role="dialog" aria-label="Editar gasto">
+    <h3>Editar gasto</h3>
+    <label for="e-amt">Cantidad (XOF)</label>
+    <input id="e-amt" inputmode="numeric">
+    <div class="e-conv num" id="e-conv"></div>
+    <label for="e-con">Concepto</label>
+    <input id="e-con" maxlength="60">
+    <label for="e-dt">Fecha</label>
+    <input id="e-dt" type="date">
+    <div class="btns">
+      <button class="del" id="e-del" type="button">Borrar</button>
+      <button class="save" id="e-save" type="button">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const RATE = 655.957;              // 1 € = 655,957 XOF (fijo)
+const KEY = "gastos-xof-v1";
+const BKEY = "gastos-xof-lastbackup";
+const DEFAULT_CHIPS = ["Súper","Comida","Taxi","Agua","Saldo móvil","Casa","Ocio","Farmacia"];
+const OLD = [ // gastos de octubre que Elena ya había apuntado en el chat
+  {xof:25000, c:"Súper grande (Shanti Comercial)", d:"2026-10-24"},
+  {xof:18000, c:"Súper básicos", d:"2026-10-24"},
+  {xof:20000, c:"Pollo y verduras", d:"2026-10-24"},
+  {xof:32000, c:"Shanti", d:"2026-10-24"},
+];
+
+const $ = id => document.getElementById(id);
+const fmtX = n => Math.round(n).toLocaleString("es-ES",{useGrouping:"always"}).replace(/ | /g," ").replace(/\./g," ");
+const fmtE = n => n.toLocaleString("es-ES",{minimumFractionDigits:2,maximumFractionDigits:2,useGrouping:"always"}) + " €";
+const toEur = x => Math.round(x / RATE * 100) / 100;
+const parseX = s => parseInt(String(s).replace(/\D/g,""),10) || 0;
+const pad = n => String(n).padStart(2,"0");
+const ymd = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+
+let G = [];
+function load(){ try{ G = JSON.parse(localStorage.getItem(KEY)) || [] }catch(e){ G = [] } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(G)) }catch(e){ toast("No se pudo guardar en el móvil") } }
+
+// ---------- formulario ----------
+const amt = $("amt"), con = $("con"), ok = $("ok"), dt = $("dt");
+dt.value = ymd(new Date());
+
+function fmtInput(el, convEl){
+  const n = parseX(el.value);
+  el.value = n ? fmtX(n) : "";
+  if (convEl) convEl.textContent = n ? "≈ " + fmtE(toEur(n)) : "";
+  return n;
+}
+amt.addEventListener("input", () => { const n = fmtInput(amt, $("conv")); ok.disabled = !n; });
+amt.addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); con.focus(); } });
+
+$("f").addEventListener("submit", e => {
+  e.preventDefault();
+  const x = parseX(amt.value);
+  if (!x) { amt.focus(); return; }
+  const now = new Date();
+  const day = dt.value || ymd(now);
+  const g = { id: uid(), fecha: day, hora: pad(now.getHours())+":"+pad(now.getMinutes()),
+              xof: x, eur: toEur(x), concepto: con.value.trim() || "Sin concepto",
+              creado: now.toISOString() };
+  G.push(g); save();
+  amt.value = ""; con.value = ""; $("conv").textContent = ""; ok.disabled = true;
+  dt.value = ymd(now);
+  document.activeElement && document.activeElement.blur();
+  render();
+  toast("Guardado · " + fmtX(x) + " XOF = " + fmtE(g.eur), () => { G = G.filter(y => y.id !== g.id); save(); render(); });
+});
+
+function renderChips(){
+  const count = {};
+  G.forEach(g => { const k = g.concepto; if (k && k !== "Sin concepto") count[k] = (count[k]||0) + 1; });
+  const used = Object.keys(count).sort((a,b) => count[b]-count[a]).slice(0,6);
+  const list = [...used, ...DEFAULT_CHIPS.filter(c => !used.some(u => u.toLowerCase() === c.toLowerCase()))].slice(0,10);
+  $("chips").innerHTML = "";
+  list.forEach(c => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = c;
+    b.onclick = () => { con.value = c; if (parseX(amt.value)) ok.focus(); else amt.focus(); };
+    $("chips").appendChild(b);
+  });
+}
+
+// ---------- lista ----------
+const MES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const DIA = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+function dayLabel(s){
+  const [y,m,d] = s.split("-").map(Number);
+  const date = new Date(y, m-1, d);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.round((today - date) / 864e5);
+  if (diff === 0) return "Hoy";
+  if (diff === 1) return "Ayer";
+  return DIA[date.getDay()] + " " + d + " " + MES[m-1] + (y !== today.getFullYear() ? " " + y : "");
+}
+
+function render(){
+  const now = new Date();
+  const mk = now.getFullYear() + "-" + pad(now.getMonth()+1);
+  const month = G.filter(g => g.fecha.startsWith(mk));
+  const mx = month.reduce((s,g) => s + g.xof, 0);
+  const tx = G.reduce((s,g) => s + g.xof, 0);
+  $("m-lbl").textContent = "Gastado en " + MES[now.getMonth()];
+  $("m-xof").textContent = fmtX(mx);
+  $("m-eur").textContent = fmtE(toEur(mx));
+  $("all").textContent = G.length ? "Total desde el principio: " + fmtX(tx) + " XOF · " + fmtE(toEur(tx)) + " · " + G.length + " gasto" + (G.length>1?"s":"") : "";
+
+  const wrap = $("days"); wrap.innerHTML = "";
+  if (!G.length){
+    wrap.innerHTML = '<h2>Gastos</h2><div class="list"><div class="empty">Aún no hay gastos.<br>Escribe una cantidad, un concepto y pulsa OK.<br><button class="ghost" id="b-old" type="button">Añadir los 4 gastos de octubre (95 000 XOF)</button></div></div>';
+    $("b-old").onclick = () => {
+      OLD.forEach((o,i) => G.push({ id: uid()+i, fecha:o.d, hora:"", xof:o.xof, eur:toEur(o.xof), concepto:o.c, creado:new Date().toISOString() }));
+      save(); render(); toast("Añadidos los gastos de octubre");
+    };
+  } else {
+    const by = {};
+    [...G].sort((a,b) => (b.fecha+b.hora+b.creado).localeCompare(a.fecha+a.hora+a.creado))
+      .forEach(g => (by[g.fecha] = by[g.fecha] || []).push(g));
+    Object.keys(by).sort().reverse().forEach(day => {
+      const items = by[day];
+      const sx = items.reduce((s,g) => s + g.xof, 0);
+      const h = document.createElement("h2");
+      h.innerHTML = "<b></b><span class='num'></span>";
+      h.firstChild.textContent = dayLabel(day);
+      h.lastChild.textContent = fmtX(sx) + " XOF";
+      const list = document.createElement("div"); list.className = "list";
+      items.forEach(g => {
+        const b = document.createElement("button"); b.type = "button"; b.className = "item";
+        b.innerHTML = '<div class="c"><div class="t"></div><div class="h"></div></div><div class="v num"><div class="x"></div><div class="e"></div></div>';
+        b.querySelector(".t").textContent = g.concepto;
+        b.querySelector(".h").textContent = g.hora || " ";
+        b.querySelector(".x").textContent = fmtX(g.xof) + " XOF";
+        b.querySelector(".e").textContent = fmtE(g.eur);
+        b.onclick = () => openSheet(g.id);
+        list.appendChild(b);
+      });
+      wrap.append(h, list);
+    });
+  }
+  renderChips();
+  renderBackupNote();
+}
+
+// ---------- editar ----------
+let editing = null;
+const eAmt = $("e-amt");
+eAmt.addEventListener("input", () => fmtInput(eAmt, $("e-conv")));
+function openSheet(id){
+  const g = G.find(x => x.id === id); if (!g) return;
+  editing = id;
+  eAmt.value = fmtX(g.xof); $("e-conv").textContent = "= " + fmtE(g.eur);
+  $("e-con").value = g.concepto; $("e-dt").value = g.fecha;
+  $("sheetwrap").classList.add("open");
+}
+function closeSheet(){ $("sheetwrap").classList.remove("open"); editing = null; document.activeElement && document.activeElement.blur(); }
+$("sbg").onclick = closeSheet;
+$("e-save").onclick = () => {
+  const g = G.find(x => x.id === editing); if (!g) return closeSheet();
+  const x = parseX(eAmt.value); if (!x) { eAmt.focus(); return; }
+  g.xof = x; g.eur = toEur(x);
+  g.concepto = $("e-con").value.trim() || "Sin concepto";
+  g.fecha = $("e-dt").value || g.fecha;
+  save(); closeSheet(); render(); toast("Cambios guardados");
+};
+$("e-del").onclick = () => {
+  const i = G.findIndex(x => x.id === editing); if (i < 0) return closeSheet();
+  const [g] = G.splice(i,1); save(); closeSheet(); render();
+  toast("Gasto borrado", () => { G.push(g); save(); render(); });
+};
+
+// ---------- toast ----------
+let tt;
+function toast(msg, undo){
+  $("t-msg").textContent = msg;
+  const u = $("t-undo"); u.hidden = !undo;
+  u.onclick = () => { undo && undo(); $("toast").classList.remove("on"); };
+  $("toast").classList.add("on");
+  clearTimeout(tt); tt = setTimeout(() => $("toast").classList.remove("on"), undo ? 5000 : 2400);
+}
+
+// ---------- copia de seguridad ----------
+function stamp(){ const d = new Date(); return ymd(d) + "_" + pad(d.getHours()) + pad(d.getMinutes()); }
+async function deliver(name, text, type){
+  const blob = new Blob([text], {type});
+  try {
+    const file = new File([blob], name, {type});
+    if (navigator.canShare && navigator.canShare({files:[file]})) {
+      await navigator.share({files:[file], title:name});
+      return true;
+    }
+  } catch(e){ if (e && e.name === "AbortError") return false; }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  return true;
+}
+function markBackup(){ try{ localStorage.setItem(BKEY, new Date().toISOString()) }catch(e){} renderBackupNote(); }
+function renderBackupNote(){
+  let last = null; try{ last = localStorage.getItem(BKEY) }catch(e){}
+  const el = $("bk");
+  if (!G.length){ el.textContent = "Los gastos se guardan en este móvil y funcionan sin internet."; el.className = "backup-note"; return; }
+  if (!last){ el.textContent = "Aún no has guardado ninguna copia. Guárdala en Archivos o mándatela por WhatsApp."; el.className = "backup-note warn"; return; }
+  const days = Math.floor((Date.now() - new Date(last)) / 864e5);
+  el.textContent = "Última copia: " + (days === 0 ? "hoy" : days === 1 ? "ayer" : "hace " + days + " días");
+  el.className = "backup-note" + (days >= 7 ? " warn" : "");
+}
+
+$("b-csv").onclick = async () => {
+  if (!G.length) return toast("No hay gastos que exportar");
+  const rows = [["Fecha","Hora","Concepto","XOF","EUR"]];
+  [...G].sort((a,b) => (a.fecha+a.hora).localeCompare(b.fecha+b.hora)).forEach(g => {
+    const [y,m,d] = g.fecha.split("-");
+    rows.push([d+"/"+m+"/"+y, g.hora || "", g.concepto, String(g.xof), g.eur.toFixed(2).replace(".",",")]);
+  });
+  const csv = "﻿" + rows.map(r => r.map(v => /[;"\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v).join(";")).join("\r\n");
+  if (await deliver("gastos_" + stamp() + ".csv", csv, "text/csv")) markBackup();
+};
+$("b-json").onclick = async () => {
+  if (!G.length) return toast("No hay gastos que guardar");
+  const data = JSON.stringify({app:"gastos-xof", version:1, tasa:RATE, exportado:new Date().toISOString(), gastos:G}, null, 1);
+  if (await deliver("gastos-copia_" + stamp() + ".json", data, "application/json")) markBackup();
+};
+$("b-imp").onclick = () => $("imp").click();
+$("imp").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  try {
+    const d = JSON.parse(await f.text());
+    const list = Array.isArray(d) ? d : d.gastos;
+    if (!Array.isArray(list)) throw 0;
+    const have = new Set(G.map(g => g.id)); let n = 0;
+    list.forEach(g => {
+      if (!g || !g.id || have.has(g.id) || !g.xof || !g.fecha) return;
+      G.push({ id:g.id, fecha:g.fecha, hora:g.hora||"", xof:+g.xof, eur: g.eur != null ? +g.eur : toEur(+g.xof), concepto:g.concepto||"Sin concepto", creado:g.creado||new Date().toISOString() });
+      n++;
+    });
+    save(); render();
+    toast(n ? "Recuperados " + n + " gastos" : "Esa copia no tenía gastos nuevos");
+  } catch(err){ toast("Ese archivo no es una copia de Gastos (.json)"); }
+};
+
+// ---------- arranque ----------
+load(); render();
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
+</script>
+</body>
+</html>
