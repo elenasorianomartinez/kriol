@@ -182,27 +182,31 @@ function openDet(id){
 let storyFile=null;
 function makeStory(){
  storyFile=null;if(!cur)return;
- const W=1080,H=1920,M=90,c=document.createElement("canvas");c.width=W;c.height=H;
- const x=c.getContext("2d"),t=todayStr(),n=diff(t,cur.date),v=numFor(n);
+ const want=cur.id;
+ Promise.all(["400 100px 'Archivo Black'","700 60px 'Space Grotesk'","500 34px 'Space Grotesk'","400 40px 'Space Grotesk'"].map(f=>document.fonts.load(f))).catch(()=>{}).then(()=>{if(cur&&cur.id===want)drawStory();});
+}
+function drawStory(){
+ const W=1080,H=1920,M=170,S=2,c=document.createElement("canvas");c.width=W*S;c.height=H*S;
+ const x=c.getContext("2d");x.scale(S,S);x.imageSmoothingQuality="high";const t=todayStr(),n=diff(t,cur.date),v=numFor(n);
  x.fillStyle=cur.color;x.fillRect(0,0,W,H);x.fillStyle="#111";x.textBaseline="alphabetic";
- let fs=v.w?260:640;x.font="400 "+fs+"px 'Archivo Black'";
+ let fs=v.w?200:470;x.font="400 "+fs+"px 'Archivo Black'";
  const ls=v.w?0:-0.05;
  const tw=s=>{let w=x.measureText(s).width;return w+ls*fs*(s.length-1);};
  while(tw(v.txt)>W-2*M&&fs>120){fs-=10;x.font="400 "+fs+"px 'Archivo Black'";}
- let y=200+fs*0.8;
+ let y=300+fs*0.8;
  if(ls){let xx=M-fs*0.03;for(const ch of v.txt){x.fillText(ch,xx,y);xx+=x.measureText(ch).width+ls*fs;}}else x.fillText(v.txt,M,y);
- y+=110;x.font="700 76px 'Space Grotesk'";
+ y+=100;x.font="700 60px 'Space Grotesk'";
  const words=cur.name.split(/\s+/);let line="";const lines=[];
  for(const w of words){const tl=line?line+" "+w:w;if(x.measureText(tl).width>W-2*M&&line){lines.push(line);line=w;}else line=tl;}
  if(line)lines.push(line);
- for(const l of lines.slice(0,3)){x.fillText(l,M,y);y+=88;}
- x.globalAlpha=.7;x.font="400 50px 'Space Grotesk'";
+ for(const l of lines.slice(0,3)){x.fillText(l,M,y);y+=72;}
+ x.globalAlpha=.7;x.font="400 40px 'Space Grotesk'";
  x.fillText(fmt(cur.date)+(n>0?" · "+(n===1?"falta 1 día":"faltan "+n+" días"):n<0?" · hace "+(-n)+(n===-1?" día":" días"):""),M,y-10);x.globalAlpha=1;
- y+=50;
+ y+=60;
  if(n>0){
   const start=cur.from||cur.added||t,from=start<=cur.date?start:t;
   const total=Math.max(diff(from,cur.date),1),passed=Math.min(Math.max(diff(from,t),0),total),cnt=Math.min(total,26*30);
-  const legH=cur.from?90:0,free=H-M-legH-y,w=W-2*M;
+  const legH=cur.from?80:0,free=H-260-legH-y,w=W-2*M;
   let best=10,bc=0;
   for(let k=10;k<=40;k++){const r=Math.ceil(cnt/k),g=0.28,cell=Math.min(w/(k+(k-1)*g),free/(r+(r-1)*g));if(cell>bc){bc=cell;best=k;}}
   const cell=Math.min(bc,w/(10+9*.28)),gap=cell*.28;
@@ -211,7 +215,7 @@ function makeStory(){
    if(i<passed){x.fillStyle="rgba(0,0,0,.14)";x.fill();}
    else if(i===passed){x.fillStyle="#fff";x.fill();x.lineWidth=cell*.14;x.strokeStyle="#111";x.beginPath();x.arc(cx,cy,cell/2-x.lineWidth/2,0,Math.PI*2);x.stroke();}
    else{x.fillStyle="#111";x.fill();}}
-  if(cur.from){const ly=y+Math.ceil(cnt/best)*(cell+gap)+50;x.fillStyle="#111";x.globalAlpha=.75;x.font="500 40px 'Space Grotesk'";x.fillText(passed+(passed===1?" gastado":" gastados")+" · "+n+" por delante",M,ly);x.globalAlpha=1;}
+  if(cur.from){const ly=y+Math.ceil(cnt/best)*(cell+gap)+46;x.fillStyle="#111";x.globalAlpha=.75;x.font="500 34px 'Space Grotesk'";x.fillText(passed+(passed===1?" gastado":" gastados")+" · "+n+" por delante",M,ly);x.globalAlpha=1;}
  }
  const name=(cur.name.normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^\w]+/g,"-").replace(/^-|-$/g,"").toLowerCase()||"dias")+".png";
  c.toBlob(b=>{if(b)storyFile=new File([b],name,{type:"image/png"});},"image/png");
