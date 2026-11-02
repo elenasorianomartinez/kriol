@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Kriol di Elena</title>
+<meta name="description" content="Practica crioulo guineense, también sin conexión.">
+<meta name="theme-color" content="#1f7a5c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Kriol">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --bg:#fbf7f0; --card:#ffffff; --ink:#1d2321; --muted:#6b726f; --line:#e6e0d5;
+  --brand:#1f7a5c; --brand-2:#e9a23b; --ok:#2e9d5b; --ok-bg:#e3f5ea; --bad:#d1495b; --bad-bg:#fbe6e8;
+  --tile:#fff; --tile-line:#d9d2c5; --shadow:0 2px 0 var(--tile-line);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141816; --card:#1d2321; --ink:#eef1ef; --muted:#9aa39f; --line:#2c3431;
+    --brand:#3cb48a; --brand-2:#f0b552; --ok:#4cc27c; --ok-bg:#183a27; --bad:#ef6b7c; --bad-bg:#3d1d22;
+    --tile:#232a27; --tile-line:#38423e;
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:17px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,textarea{font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;width:100%;user-select:text;-webkit-user-select:text}
+.screen{max-width:560px;margin:0 auto;padding:16px;min-height:100%;display:flex;flex-direction:column}
+[hidden]{display:none!important}
+h1{font-size:26px;margin:4px 0 2px} h2{font-size:21px;margin:8px 0 12px} h3{font-size:16px;margin:16px 0 8px;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:14px}
+.row{display:flex;gap:10px;align-items:center}
+.stats{display:flex;gap:10px;margin:14px 0}
+.stat{flex:1;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px;text-align:center}
+.stat b{display:block;font-size:24px}
+.stat span{font-size:13px;color:var(--muted)}
+.big{display:block;width:100%;padding:18px;border-radius:18px;background:var(--brand);color:#fff;font-weight:700;font-size:20px;
+  box-shadow:0 5px 0 color-mix(in srgb,var(--brand) 65%,#000);margin:8px 0 14px;transition:transform .08s}
+.big:active{transform:translateY(4px);box-shadow:0 1px 0 color-mix(in srgb,var(--brand) 65%,#000)}
+.big small{display:block;font-weight:500;font-size:14px;opacity:.9}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tilebtn{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px 12px;text-align:left;box-shadow:0 3px 0 var(--line)}
+.tilebtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.tilebtn .ic{font-size:24px;display:block;margin-bottom:4px}
+.tilebtn b{display:block}
+.tilebtn span{font-size:13px;color:var(--muted)}
+.goal{height:12px;border-radius:9px;background:var(--line);overflow:hidden}
+.goal i{display:block;height:100%;background:var(--brand-2);border-radius:9px;transition:width .4s}
+/* lesson */
+.top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.x{font-size:26px;color:var(--muted);width:36px;height:36px}
+.bar{flex:1;height:14px;background:var(--line);border-radius:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:10px;transition:width .3s}
+.kind{font-size:14px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.prompt{font-size:22px;font-weight:650;margin:2px 0 18px}
+.prompt.kr{color:var(--brand)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:var(--tile);border:2px solid var(--tile-line);border-radius:16px;padding:14px;text-align:left;box-shadow:var(--shadow);font-size:18px}
+.opt.sel{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 12%,var(--tile))}
+.opt.right{border-color:var(--ok);background:var(--ok-bg)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.answer{min-height:64px;border-bottom:2px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;padding:6px 0 10px;margin-bottom:18px;align-content:flex-start}
+.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.w{background:var(--tile);border:2px solid var(--tile-line);border-radius:12px;padding:8px 12px;box-shadow:var(--shadow);font-size:18px}
+.w.used{visibility:hidden}
+.pairs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pairs .opt{font-size:15px;padding:12px;min-height:58px}
+.pairs .opt.done{opacity:.35;pointer-events:none;border-color:var(--ok)}
+.fc{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:22px;text-align:center;margin-bottom:16px}
+.fc .es{font-size:18px;color:var(--muted);margin-bottom:10px}
+.fc .kr{font-size:24px;font-weight:700;color:var(--brand)}
+.note{font-size:14px;color:var(--muted);margin-top:8px}
+.spacer{flex:1}
+.foot{position:sticky;bottom:0;padding:12px 0 calc(8px + env(safe-area-inset-bottom));background:var(--bg)}
+.check{width:100%;padding:16px;border-radius:16px;font-weight:700;font-size:19px;background:var(--brand);color:#fff;box-shadow:0 4px 0 color-mix(in srgb,var(--brand) 65%,#000)}
+.check:disabled{background:var(--line);color:var(--muted);box-shadow:none}
+.fb{border-radius:16px;padding:14px;margin-bottom:10px;font-size:16px}
+.fb.ok{background:var(--ok-bg);color:var(--ok)} .fb.bad{background:var(--bad-bg);color:var(--bad)}
+.fb b{display:block;font-size:19px;margin-bottom:2px}
+.fb .sol{color:var(--ink);font-weight:600}
+.fb .es{color:var(--muted);font-size:14px}
+.check.ok{background:var(--ok);box-shadow:0 4px 0 color-mix(in srgb,var(--ok) 60%,#000)}
+.check.bad{background:var(--bad);box-shadow:0 4px 0 color-mix(in srgb,var(--bad) 60%,#000)}
+.shake{animation:sh .35s}
+@keyframes sh{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.pop{animation:pp .25s}
+@keyframes pp{50%{transform:scale(1.06)}}
+.end{text-align:center;padding-top:30px}
+.end .emoji{font-size:72px}
+.list .li{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.list .li .kr{font-weight:650;color:var(--brand)} .list .li .es{font-size:14px;color:var(--muted)}
+.lvl{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:3px;background:var(--line)}
+.lvl.on{background:var(--brand-2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-size:15px}
+.tbar{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:15px}
+.tbar .goal{flex:1}
+table{width:100%;border-collapse:collapse;font-size:15px} td{padding:6px 4px;border-bottom:1px solid var(--line)}
+code{background:var(--line);padding:1px 6px;border-radius:6px}
+.out{background:var(--card);border:2px dashed var(--brand);border-radius:14px;padding:12px;min-height:50px;font-size:18px;margin:10px 0;user-select:text;-webkit-user-select:text}
+.toast{position:fixed;left:50%;bottom:calc(30px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:15px;z-index:9}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:8}
+.confetti i{position:absolute;top:-10px;width:9px;height:14px;border-radius:2px;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(540deg)}}
+.back{color:var(--brand);font-weight:600;padding:6px 0;margin-bottom:6px;align-self:flex-start}
+.flip{min-height:200px;display:flex;flex-direction:column;justify-content:center}
+</style>
+</head>
+<body>
+
+<!-- INICIO -->
+<div class="screen" id="s-home">
+  <div class="row" style="justify-content:space-between">
+    <div><h1>Kriol di Elena</h1><div class="muted small" id="hello">Bon dia!</div></div>
+    <div style="font-size:30px" aria-hidden="true">🇬🇼</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><b id="st-streak">0</b><span>🔥 días seguidos</span></div>
+    <div class="stat"><b id="st-xp">0</b><span>⭐ puntos</span></div>
+    <div class="stat"><b id="st-known">0</b><span>✅ frases sabidas</span></div>
+  </div>
+  <div class="row small muted" style="justify-content:space-between"><span>Objetivo de hoy</span><span id="goal-txt">0/50</span></div>
+  <div class="goal"><i id="goal-bar" style="width:0"></i></div>
+  <button class="big" id="b-lesson">Lección de hoy<small id="lesson-sub">10 ejercicios · unos 5 minutos</small></button>
+  <div class="grid">
+    <button class="tilebtn" id="b-review"><span class="ic">🔁</span><b>Repasar fallos</b><span id="rev-sub">Lo que más te cuesta</span></button>
+    <button class="tilebtn" id="b-topics"><span class="ic">🗂️</span><b>Por temas</b><span>Gimnasio, mercado…</span></button>
+    <button class="tilebtn" id="b-cards"><span class="ic">🃏</span><b>Tarjetas</b><span>Gira y repasa</span></button>
+    <button class="tilebtn" id="b-chat"><span class="ic">💬</span><b>Descifrar chat</b><span>Mensajes de WhatsApp</span></button>
+    <button class="tilebtn" id="b-prog"><span class="ic">📊</span><b>Mi progreso</b><span>Enviar a Claude</span></button>
+    <button class="tilebtn" id="b-list"><span class="ic">📖</span><b>Todas las frases</b><span id="list-sub"></span></button>
+  </div>
+  <p class="muted small" style="margin-top:18px">Funciona sin conexión. El progreso se guarda en este móvil. <span id="offline-ok"></span></p>
+</div>
+
+<!-- LECCIÓN -->
+<div class="screen" id="s-lesson" hidden>
+  <div class="top"><button class="x" id="l-close" aria-label="Salir">✕</button><div class="bar"><i id="l-bar"></i></div></div>
+  <div id="l-body"></div>
+  <div class="spacer"></div>
+  <div class="foot">
+    <div id="l-fb"></div>
+    <button class="check" id="l-check" disabled>Comprobar</button>
+  </div>
+</div>
+
+<!-- FIN -->
+<div class="screen" id="s-end" hidden>
+  <div class="end">
+    <div class="emoji" id="e-emoji">🎉</div>
+    <h2 id="e-title">¡Lección completada!</h2>
+    <p class="muted" id="e-text"></p>
+    <div class="stats"><div class="stat"><b id="e-xp">0</b><span>⭐ puntos</span></div><div class="stat"><b id="e-acc">0%</b><span>🎯 aciertos</span></div><div class="stat"><b id="e-streak">0</b><span>🔥 racha</span></div></div>
+  </div>
+  <div class="spacer"></div>
+  <button class="big" id="e-more">Otra lección</button>
+  <button class="tilebtn" id="e-home" style="text-align:center">Volver al inicio</button>
+</div>
+
+<!-- TEMAS -->
+<div class="screen" id="s-topics" hidden>
+  <button class="back" data-home>‹ Inicio</button>
+  <h2>Practicar un tema</h2>
+  <div id="t-list"></div>
+</div>
+
+<!-- TARJETAS -->
+<div class="screen" id="s-cards" hidden>
+  <button class="back" data-home>‹ Inicio</button>
+  <h2>Tarjetas</h2>
+  <div class="chips" style="margin-bottom:12px"><button class="chip" id="c-dir">Español → crioulo</button><button class="chip" id="c-topic">Todas</button></div>
+  <div class="fc flip" id="c-card"></div>
+  <div class="spacer"></div>
+  <div class="grid"><button class="tilebtn" id="c-no" style="text-align:center">😕 Me ha costado</button><button class="tilebtn" id="c-yes" style="text-align:center">😎 La sé</button></div>
+</div>
+
+<!-- CHAT -->
+<div class="screen" id="s-chat" hidden>
+  <button class="back" data-home>‹ Inicio</button>
+  <h2>Descifrar WhatsApp</h2>
+  <p class="muted small">Pega un mensaje escrito "a lo chat" y lo paso a la ortografía del libro.</p>
+  <textarea id="ch-in" rows="3" placeholder="buna bim treina aos?"></textarea>
+  <div class="out" id="ch-out"></div>
+  <h3>Chuleta</h3>
+  <table id="ch-tab"></table>
+</div>
+
+<!-- PROGRESO -->
+<div class="screen" id="s-prog" hidden>
+  <button class="back" data-home>‹ Inicio</button>
+  <h2>Mi progreso</h2>
+  <div id="p-topics"></div>
+  <h3>Lo que más te cuesta</h3>
+  <div class="list" id="p-hard"></div>
+  <h3>Enviar a Claude</h3>
+  <p class="muted small">Cuando tengas conexión, mándame el resumen en el chat y adapto la frase del día a lo que más te cuesta.</p>
+  <button class="big" id="p-share">Compartir mi progreso</button>
+  <h3>Copia de seguridad</h3>
+  <p class="muted small">Para pasar el progreso a otro móvil: copia el código y pégalo allí.</p>
+  <div class="grid"><button class="tilebtn" id="p-export" style="text-align:center">Copiar código</button><button class="tilebtn" id="p-import" style="text-align:center">Pegar código</button></div>
+  <textarea id="p-code" rows="3" hidden placeholder="Pega aquí el código"></textarea>
+  <button class="tilebtn" id="p-load" hidden style="text-align:center;margin-top:8px">Cargar progreso</button>
+</div>
+
+<!-- LISTA -->
+<div class="screen" id="s-list" hidden>
+  <button class="back" data-home>‹ Inicio</button>
+  <h2>Todas las frases</h2>
+  <input id="l-search" placeholder="Buscar en español o crioulo…" style="margin-bottom:12px">
+  <p class="muted small">* = frase montada por Claude con piezas del libro de Gelso.</p>
+  <div class="list" id="l-all"></div>
+</div>
+
+<script>
+const CARDS = [{"t": "Social", "es": "¡Buenos días! ¿Estás bien?", "kr": "Bon dia! Bu sta bon?", "n": "", "star": false}, {"t": "Social", "es": "Estoy bien, gracias.", "kr": "N' sta bon, obrigadu.", "n": "", "star": false}, {"t": "Social", "es": "¿Cómo amaneciste? — Amanecí bien.", "kr": "Kuma ke bu mansi? — N' mansi ben.", "n": "", "star": false}, {"t": "Social", "es": "¿Qué tal la familia? — Están bien.", "kr": "Kuma di familia? — E sta ben.", "n": "", "star": false}, {"t": "Social", "es": "Señora, ¿está usted bien?", "kr": "Nha, nha sta bon?", "n": "", "star": false}, {"t": "Social", "es": "¿Cómo te llamas? — Me llamo Elena.", "kr": "Kuma ki bu nomi? — Nha nomi i Elena.", "n": "", "star": false}, {"t": "Social", "es": "¿Dónde vives? — Vivo en Bissau.", "kr": "Nunde ke bu mora nel? — N' mora na Bissau.", "n": "", "star": false}, {"t": "Social", "es": "¿En qué trabajas? — Trabajo en el hospital.", "kr": "Kal ki bu tarbadju? — N' ta tarbadja na ospital.", "n": "", "star": true}, {"t": "Social", "es": "Soy yo. · No soy yo.", "kr": "I ami. · I ka ami.", "n": "", "star": false}, {"t": "Social", "es": "Sí, era yo.", "kr": "In, i ami!", "n": "", "star": false}, {"t": "Social", "es": "No lo sé.", "kr": "N' ka sibi.", "n": "", "star": false}, {"t": "Social", "es": "No lo conozco.", "kr": "N' ka kunsil.", "n": "", "star": false}, {"t": "Social", "es": "Estoy aprendiendo crioulo.", "kr": "N' na sina kriol.", "n": "", "star": true}, {"t": "Social", "es": "Hablo muy poquito, pero estoy aprendiendo.", "kr": "N' ta papia kriol mbokadu son, ma n' na sina.", "n": "", "star": true}, {"t": "Social", "es": "Por favor, ¡ayúdame!", "kr": "Di fabur, djudan!", "n": "", "star": false}, {"t": "Social", "es": "Espérame, por favor.", "kr": "Peran, di fabur!", "n": "", "star": false}, {"t": "Social", "es": "Perdona, ven mañana.", "kr": "Ten pasensa, bin amanha!", "n": "", "star": false}, {"t": "Social", "es": "¡Vale! Lo haré.", "kr": "Io! N' na fasil.", "n": "", "star": false}, {"t": "Social", "es": "Está bien, me sirve.", "kr": "I sta ben.", "n": "", "star": false}, {"t": "Ahora", "es": "¿Adónde vas? — Voy al mercado.", "kr": "Pa nunde ku na bai? — N' na bai fera.", "n": "na = en curso / va a pasar", "star": true}, {"t": "Ahora", "es": "¿Qué hace él ahí?", "kr": "Ke ki na fasi la?", "n": "", "star": false}, {"t": "Ahora", "es": "Pedro está comiendo.", "kr": "Pedru sta na kume.", "n": "sta na = estar haciendo", "star": false}, {"t": "Ahora", "es": "Hoy vamos a Bafatá, cogemos la candonga en Bandim.", "kr": "Gosi no na bai Bafata, no na toma kandonga na fera di Bande.", "n": "", "star": false}, {"t": "Ahora", "es": "Te espero allí.", "kr": "N' na perau la.", "n": "chat: na perrau la", "star": true}, {"t": "Ahora", "es": "Los profesores nos esperan allí.", "kr": "Pursoris na peranu la!", "n": "", "star": false}, {"t": "Ahora", "es": "Hoy tengo prisa.", "kr": "Aos n' ten presa.", "n": "", "star": false}, {"t": "Ahora", "es": "Hoy no me encuentro bien. Tengo que ir al hospital.", "kr": "Aos n' ka sta diritu. N' dibi di bai ospital.", "n": "", "star": false}, {"t": "Ahora", "es": "Me duele la cabeza.", "kr": "Kabesa na den.", "n": "", "star": false}, {"t": "Ahora", "es": "¿Qué tiene? — Tiene fiebre, está enfermo.", "kr": "Ke ki tenel? — Febri panhal, i ka pudi.", "n": "febri = fiebre y paludismo", "star": false}, {"t": "Ahora", "es": "Estoy muy cansada.", "kr": "N' kansa mal.", "n": "", "star": false}, {"t": "Ahora", "es": "Tengo el pie hinchado.", "kr": "N' tene pe pisadu.", "n": "", "star": false}, {"t": "Ahora", "es": "¿Dónde está el mercado de Bandim?", "kr": "Nunde ki fera di Bande sta?", "n": "", "star": false}, {"t": "Ahora", "es": "Sigue recto y allí giras a la izquierda.", "kr": "Bai di kumpridu: la, bu ta bai pa skerda.", "n": "", "star": false}, {"t": "Ahora", "es": "¿Está lejos de aquí? — Un poco.", "kr": "I lundju di li? — I lundju mbokadu.", "n": "", "star": false}, {"t": "Ahora", "es": "¿Dónde estamos? No me acuerdo del camino.", "kr": "Nde ki no sta nel? N' ka lembra kaminhu.", "n": "", "star": false}, {"t": "Ahora", "es": "Estoy a tu lado.", "kr": "N' sta lungu di bo.", "n": "", "star": false}, {"t": "Mercado", "es": "¿Cuánto vale este tomate?", "kr": "E kamati i kantu?", "n": "", "star": false}, {"t": "Mercado", "es": "¿A cuánto lo vendes?", "kr": "Kantu ku na bindil?", "n": "", "star": false}, {"t": "Mercado", "es": "Es caro. ¿Y este otro?", "kr": "I karu, e utru li gora?", "n": "", "star": false}, {"t": "Mercado", "es": "Amigo, ¡rebájalo un poco!", "kr": "Amigu, rapatil un bokadu!", "n": "", "star": false}, {"t": "Mercado", "es": "Dame dos.", "kr": "Dan dus.", "n": "", "star": false}, {"t": "Mercado", "es": "Quiero una botella de agua.", "kr": "N' misti un garafa di iagu.", "n": "", "star": true}, {"t": "Mercado", "es": "No hay leche y ya no quedan cerillas.", "kr": "Liti ka ten, fos ka ten mas.", "n": "", "star": false}, {"t": "Mercado", "es": "El pano azul es más barato que el rojo.", "kr": "Panu azul mas burmedju baratu.", "n": "", "star": false}, {"t": "Mercado", "es": "¿Tienes pescado para vender?", "kr": "Bu tene pis di bindi?", "n": "", "star": false}, {"t": "Mercado", "es": "Este pescado está más rico.", "kr": "E pis mas sabi.", "n": "", "star": false}, {"t": "Mercado", "es": "Aquí tienes el dinero. Gracias.", "kr": "Ali dinheru. Obrigadu.", "n": "", "star": false}, {"t": "Costumbre", "es": "Cada día voy al hospital.", "kr": "Kada dia n' ta bai ospital.", "n": "ta = costumbre", "star": true}, {"t": "Costumbre", "es": "Suelo levantarme temprano por la mañana.", "kr": "N' ta lanta sedu parmanha.", "n": "", "star": false}, {"t": "Costumbre", "es": "Los domingos descansamos.", "kr": "Dia dumingu, no ta diskansa.", "n": "", "star": false}, {"t": "Costumbre", "es": "Lo conozco, pero no lo suelo comer.", "kr": "N' kunsil, ma n' ka ta kumel.", "n": "", "star": false}, {"t": "Costumbre", "es": "Si quieres entender crioulo, ve a hablar con la gente.", "kr": "Si bu misti obi kriol, ba ta papia ku djintis.", "n": "", "star": false}, {"t": "Costumbre", "es": "Mi madre barre la casa todos los días.", "kr": "Nha mame ta bari kau tudu dia.", "n": "", "star": false}, {"t": "Costumbre", "es": "¡Aquella mujer habla demasiado!", "kr": "Kil mindjer ta papia tciu dimas!", "n": "", "star": false}, {"t": "Costumbre", "es": "En mi aldea la gente no trabaja mucho.", "kr": "Na nha tabanka, djintis ka ta tarbadja tciu.", "n": "", "star": false}, {"t": "Pasado", "es": "Ayer fuimos a Farim y pagamos 2000 francos.", "kr": "Aonti, no bai Farim, no paga dus mil franku.", "n": "verbo solo = ya pasó", "star": false}, {"t": "Pasado", "es": "En Mansaba se pinchó la rueda.", "kr": "Na Mansaba roda fura.", "n": "", "star": false}, {"t": "Pasado", "es": "Ayer llovió mucho: nadie salió.", "kr": "Aonti tcuba tcubi tciu: ninguin ka sai fora.", "n": "", "star": false}, {"t": "Pasado", "es": "Ya comí, estoy llena.", "kr": "N' kume dja, n' farta.", "n": "", "star": false}, {"t": "Pasado", "es": "Todavía no he comido platos típicos de Guinea.", "kr": "N' ka kume inda kumida tipiku di Guiné.", "n": "dja = ya · ka … inda = todavía no", "star": false}, {"t": "Pasado", "es": "Ayer fui al mercado con ella.", "kr": "Aonti n' bai fera ku el.", "n": "", "star": false}, {"t": "Pasado", "es": "Te vi.", "kr": "N' odjau.", "n": "chat: m'odjau", "star": false}, {"t": "Pasado", "es": "Un mosquito me picó en el ojo.", "kr": "Miskitu murdin na udju.", "n": "", "star": false}, {"t": "Pasado", "es": "Me corté en la mano.", "kr": "N' lanha mon.", "n": "", "star": false}, {"t": "Pasado", "es": "¿Qué tal el viaje? — Fue bien.", "kr": "Kuma di bias? — Bias kuri dritu.", "n": "", "star": false}, {"t": "Pasado", "es": "Creo que fui allí el otro día a preguntar.", "kr": "N' kuda n' bai la utru dia pa punta.", "n": "", "star": true}, {"t": "Pasado", "es": "Hoy Fátima se levantó temprano y cocinó muy rico.", "kr": "Aos, Fatima lanta sedu, i kusnha sabi.", "n": "", "star": false}, {"t": "Pasado", "es": "Nací el 5 de mayo.", "kr": "N' padidu dia sinku di Maiu.", "n": "", "star": false}, {"t": "Antes", "es": "Estaba comiendo pescado cuando llegaste.", "kr": "N' na kumeba pis otca ki bu tciga.", "n": "na + -ba = estaba haciendo", "star": false}, {"t": "Antes", "es": "Ya había comido antes de que llegaras.", "kr": "N' kumeba dja anti di bu tciga.", "n": "-ba = antes de otra cosa", "star": false}, {"t": "Antes", "es": "No compré nada: me había olvidado el dinero en casa.", "kr": "N' ka kumpra nada na fera, n' diskisiba dinheru na kasa.", "n": "", "star": false}, {"t": "Antes", "es": "Cuando era pequeña, lloraba todos los días.", "kr": "Otca n' pikininu, n' ta tcoraba tudu dia.", "n": "ta + -ba = solía", "star": false}, {"t": "Antes", "es": "Mi padre era policía.", "kr": "Nha pape seduba pulisia.", "n": "", "star": false}, {"t": "Antes", "es": "El año pasado Teresa estaba enferma.", "kr": "Utranu Teresa duensiba.", "n": "", "star": false}, {"t": "Antes", "es": "Si lo hubiera sabido, habría ido.", "kr": "Si n' sibiba, n' na baiba.", "n": "", "star": false}, {"t": "Futuro", "es": "Mañana voy a ver a mis familiares.", "kr": "Amanha n' na bai djubi nha parentis.", "n": "na = futuro", "star": false}, {"t": "Futuro", "es": "Iremos mañana por la mañana temprano.", "kr": "No na bai amanha parmanha sedu.", "n": "", "star": false}, {"t": "Futuro", "es": "Comeré enseguida.", "kr": "Ami n' na bin kume gosi.", "n": "na bin = futuro", "star": false}, {"t": "Futuro", "es": "Lo llevaré mañana si no se siente mejor.", "kr": "N' na lebal amanha si i ka sinti mindjoria.", "n": "", "star": false}, {"t": "Futuro", "es": "Si Seco viene, yo iré también.", "kr": "Si Seco na bin, n' na bai tambi.", "n": "", "star": false}, {"t": "Futuro", "es": "Quizás esta semana vaya un día.", "kr": "Talves e sumana n' na bai un dia.", "n": "", "star": true}, {"t": "Futuro", "es": "Salgo del hospital a las cinco de la tarde.", "kr": "N' na sai di ospital sinku ora di tardi.", "n": "", "star": true}, {"t": "Futuro", "es": "¿Voy a las seis? ¿O antes?", "kr": "N' na bai seis ora? O antis?", "n": "", "star": true}, {"t": "Futuro", "es": "Vale, gracias, vengo mañana a las seis.", "kr": "Io, obrigadu, n' na bin amanha seis ora.", "n": "", "star": true}, {"t": "Futuro", "es": "Allí estaré.", "kr": "N' na sta la.", "n": "chat: na xta lá", "star": true}, {"t": "Futuro", "es": "Nunca seré rica.", "kr": "Nunka n' ka na sedu riku.", "n": "", "star": false}, {"t": "Preguntas", "es": "¿Qué es esto?", "kr": "Es i ke?", "n": "", "star": false}, {"t": "Preguntas", "es": "¿Quién es aquel hombre?", "kr": "Kil omi i kin?", "n": "", "star": false}, {"t": "Preguntas", "es": "¿Cuándo vas a acabar?", "kr": "Kuandu ki bu na kaba?", "n": "", "star": false}, {"t": "Preguntas", "es": "¿Qué día iremos a Bissau?", "kr": "Kal dia ki no na bai Bissau?", "n": "", "star": false}, {"t": "Preguntas", "es": "¿A qué hora vas al mercado?", "kr": "Kal ora ku na bai fera?", "n": "", "star": false}, {"t": "Preguntas", "es": "¿Por qué vienen?", "kr": "Ke ku manda e na bin?", "n": "", "star": false}, {"t": "Preguntas", "es": "Pregúntale si le gusta Guinea.", "kr": "Puntal si gosta di Guine.", "n": "", "star": false}, {"t": "Preguntas", "es": "¿Son clases? ¿A qué hora hay?", "kr": "I aula? Kal ora ki i ta ten?", "n": "", "star": true}, {"t": "Preguntas", "es": "Tienes que decirme dónde está y cuánto cuesta.", "kr": "Bu ten di falan nunde ki i sta nel ku kantu ki i ta kusta.", "n": "", "star": true}, {"t": "Preguntas", "es": "¿Qué tengo que traer?", "kr": "N' dibi di tisi ke?", "n": "", "star": true}, {"t": "Órdenes", "es": "¡Ven, vamos a comer!", "kr": "Bin, no kume!", "n": "", "star": false}, {"t": "Órdenes", "es": "Siéntate y espera.", "kr": "Sinta, bu pera!", "n": "", "star": false}, {"t": "Órdenes", "es": "¡No toques las cerillas!", "kr": "Ka bu pui mon na fos!", "n": "", "star": false}, {"t": "Órdenes", "es": "Dile que abra la puerta.", "kr": "Falal pa i iabri porta!", "n": "", "star": false}, {"t": "Órdenes", "es": "Ve a comprar carbón.", "kr": "Bai kumpra karbon!", "n": "", "star": false}, {"t": "Órdenes", "es": "¡No hagas tonterías!", "kr": "Ka bu fasi parbisa!", "n": "", "star": false}, {"t": "Órdenes", "es": "Déjalos hablar.", "kr": "Disa elis e papia!", "n": "", "star": false}, {"t": "Órdenes", "es": "Tienes que hablar.", "kr": "Bu ten ku papia.", "n": "chat: bu tem k papya", "star": true}, {"t": "Expresiones", "es": "No hay remedio. · ¡Alguna solución habrá!", "kr": "Djitu ka ten. · Djitu ten ku ten!", "n": "", "star": false}, {"t": "Expresiones", "es": "No tengas miedo, todo está bien.", "kr": "Ka bu medi, tudu sta sertu!", "n": "", "star": false}, {"t": "Expresiones", "es": "Correr no es nada, llegar lo es todo.", "kr": "Djanti i ka nada, tciga ki tudu.", "n": "refrán", "star": false}, {"t": "Expresiones", "es": "Quien pregunta no se pierde.", "kr": "Dunu di boka ka ta pirdi ku kaminhu.", "n": "refrán", "star": false}, {"t": "Gimnasio", "es": "¿Cómo estás? — Estoy aquí.", "kr": "Kuma ki bu sta? — N' sta li.", "n": "chat: kuma k bu xta? · m'xta li", "star": false}, {"t": "Gimnasio", "es": "No, no me he ido.", "kr": "N' ka bai.", "n": "chat: m'ca bay", "star": false}, {"t": "Gimnasio", "es": "Estoy bien, bueno… estoy trabajando.", "kr": "N' sta bon, bon… n' na tarbadja.", "n": "", "star": true}, {"t": "Gimnasio", "es": "¿Vas a venir a entrenar hoy? Si tienes energía.", "kr": "Bu na bin treina aos? Si bu tene energia.", "n": "chat: buna bim treina aos", "star": false}, {"t": "Gimnasio", "es": "Luego voy al sitio de entrenamiento.", "kr": "N' na bin bai pa kau di treinu.", "n": "chat: na bim bay pa cau de treino", "star": false}, {"t": "Gimnasio", "es": "Hoy no, pero voy mañana a las seis.", "kr": "Aos ka, ma n' na bin amanha, seis ora.", "n": "", "star": true}, {"t": "Gimnasio", "es": "La semana que viene a lo mejor voy algún día más.", "kr": "Sumana ki na bin, talves n' na bin mas un dia.", "n": "sumana ki na bin = p. 66", "star": true}, {"t": "Gimnasio", "es": "Hoy me molestaba un poco la mano.", "kr": "Aos nha mon na denba un bokadu.", "n": "-ba = pasado", "star": true}, {"t": "Gimnasio", "es": "Me duele el cuerpo.", "kr": "Kurpu na den.", "n": "", "star": true}, {"t": "Gimnasio", "es": "No hay problema.", "kr": "I ka tene problema.", "n": "chat: ica tene problema", "star": false}, {"t": "Gimnasio", "es": "Mañana cambiamos la forma de poner la venda.", "kr": "Amanha no na muda manera di pui ligadura.", "n": "chat: nona muda manera de pui ligadura", "star": false}, {"t": "Gimnasio", "es": "¡Genial! Gracias, ¡hasta mañana!", "kr": "Bwe fixe! Obrigadu, te amanha!", "n": "bwe fx = muy guay", "star": false}, {"t": "Frase del día", "es": "¿Puedes repetirlo despacio, por favor?", "kr": "Bu pudi ripiti divagar, di fabur?", "n": "frase del día 26/10", "star": false}, {"t": "Frase del día", "es": "¿Qué te duele? — Me duele la barriga.", "kr": "Ke ki na dou? — Bariga na den.", "n": "frase del día 26/10", "star": false}, {"t": "Frase del día", "es": "¿Este toca-toca va a Bandim? (¡Me bajo aquí!)", "kr": "E toka-toka na bai Bande? N' na sai li!", "n": "frase del día 27/10", "star": false}, {"t": "Frase del día", "es": "¿Estás libre mañana por la noche? ¿Quedamos allí?", "kr": "Bu sta livri amanha di noti? No kontra la?", "n": "frase del día 28/10", "star": false}, {"t": "Frase del día", "es": "Desde la semana pasada me duele aquí.", "kr": "Dedi sumana pasadu, li na den.", "n": "frase del día 29/10", "star": false}, {"t": "Frase del día", "es": "¿Qué vas a hacer el sábado? — Voy a descansar.", "kr": "Ke ki bu na fasi dia sabadu? — N' na diskansa.", "n": "frase del día 30/10", "star": false}, {"t": "Frase del día", "es": "Compré pescado en el mercado, ¡pero estaba carísimo!", "kr": "N' kumpra pis na fera, ma i karu dimas!", "n": "frase del día 31/10", "star": false}, {"t": "Frase del día", "es": "Los domingos me levanto tarde.", "kr": "Dia dumingu n' ta lanta tardi.", "n": "frase del día 01/11", "star": false}, {"t": "Frase del día", "es": "¿Qué tal el trabajo? — El trabajo va bien. ¿Y tú, qué tal estás?", "kr": "Kuma di tarbadju? — Tarbadju kuri ben. Kuma di kurpu?", "n": "frase del día 02/11", "star": false}];
+const CHAT = [
+  ["m', m", "n'", "yo (m'xta = n' sta)"],["xta, sta","sta","estar"],["k","ki / ku","que, con"],["ca","ka","no"],
+  ["bim","bin","venir"],["bay","bai","ir"],["buna","bu na","tú vas a / estás"],["nona","no na","nosotros vamos a"],
+  ["mna, m'na","n' na","yo voy a / estoy"],["papya","papia","hablar"],["tem","ten","tener (que)"],["fx","fixe","guay"],
+  ["bwe","bwe","muy"],["yha","ya","sí"],["cau, kau","kau","lugar"],["de","di","de"],["d","di","de"],["amanhã","amanha","mañana"],
+  ["aos","aos","hoy"],["perrau","perau","esperarte"]
+];
+const RULES = [
+  [/\bm'?xta\b/gi,"n' sta"],[/\bxta\b/gi,"sta"],[/\bm'?na\b/gi,"n' na"],[/\bm'(?=\s*[a-z])/gi,"n' "],
+  [/\bbuna\b/gi,"bu na"],[/\bnona\b/gi,"no na"],[/\bica\b/gi,"i ka"],[/\bca\b/gi,"ka"],
+  [/\bk\b/gi,"ki"],[/\bd\b/gi,"di"],[/\bbim\b/gi,"bin"],[/\bbay\b/gi,"bai"],[/\bpapya\b/gi,"papia"],
+  [/\btem\b/gi,"ten"],[/\bfx\b/gi,"fixe"],[/\byha\b/gi,"ya"],[/\bcau\b/gi,"kau"],
+  [/\bde\b/gi,"di"],[/\bamanhã\b/gi,"amanha"],[/\bperrau\b/gi,"perau"],[/\bbem\b/gi,"ben"]
+];
+const GRAM = ["na","ta","ka","dja","inda","ki","ku","di","sta","bu","no","e","i","n'","ba","bin","bai","ten","mas","son"];
+const STEP = [0,1,2,4,7,15,30];   // días hasta repasar según nivel
+
+/* ---------- utilidades ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[’‘`´]/g,"'")
+  .replace(/[^a-z0-9' ]/g," ").replace(/\s+/g," ").trim();
+const shuffle = a => {a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick = (a,n) => shuffle(a).slice(0,n);
+const today = () => { const d=new Date(); return Math.floor((d - d.getTimezoneOffset()*60000)/86400000); };
+const words = s => s.replace(/[—·]/g," ").split(/\s+/).map(w=>w.replace(/^[¿¡"(]+|[.,!?:;")]+$/g,"")).filter(Boolean);
+function lev(a,b){const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>[i]);for(let j=1;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[m][n]}
+function toast(t){const e=document.createElement("div");e.className="toast";e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2200)}
+
+/* ---------- guardado ---------- */
+const KEY="kriol-app-v1";
+let S;
+try{ S = JSON.parse(localStorage.getItem(KEY)) }catch(e){}
+S = Object.assign({xp:0,days:{},cards:{},streak:0,last:null,lessons:0,ok:0,bad:0}, S||{});
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){} }
+if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+const st = c => S.cards[c.kr] || (S.cards[c.kr] = {l:0,due:0,ok:0,bad:0,seen:0});
+const known = () => CARDS.filter(c=>(S.cards[c.kr]||{}).l>=3).length;
+function addXP(n){ const t=today(); S.xp+=n; S.days[t]=(S.days[t]||0)+n; }
+function bumpStreak(){
+  const t=today(); if(S.last===t) return;
+  S.streak = (S.last===t-1) ? S.streak+1 : 1; S.last=t;
+}
+function curStreak(){ const t=today(); return (S.last===t||S.last===t-1)?S.streak:0; }
+
+/* ---------- sonido ---------- */
+let AC;
+function beep(ok){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+  const notes = ok?[660,880]:[300,220];
+  notes.forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.type="sine";o.frequency.value=f;
+    g.gain.setValueAtTime(.0001,AC.currentTime+i*.09);g.gain.exponentialRampToValueAtTime(.18,AC.currentTime+i*.09+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+i*.09+.18);o.connect(g).connect(AC.destination);o.start(AC.currentTime+i*.09);o.stop(AC.currentTime+i*.09+.2)});
+}catch(e){} }
+
+/* ---------- navegación ---------- */
+const SCREENS=["home","lesson","end","topics","cards","chat","prog","list"];
+function show(s){ SCREENS.forEach(x=>$("s-"+x).hidden = x!==s); window.scrollTo(0,0); if(s==="home") home(); }
+document.querySelectorAll("[data-home]").forEach(b=>b.onclick=()=>show("home"));
+
+function home(){
+  const t=today(), h=new Date().getHours();
+  $("hello").textContent = h<12?"Bon dia! Kuma ke bu mansi?":h<19?"Bon tardi! Kuma di tarbadju?":"Bo noti! Kuma di dia?";
+  $("st-streak").textContent=curStreak(); $("st-xp").textContent=S.xp; $("st-known").textContent=known()+"/"+CARDS.length;
+  const g=Math.min(S.days[t]||0,50); $("goal-txt").textContent=g+"/50"; $("goal-bar").style.width=(g*2)+"%";
+  const due = CARDS.filter(c=>{const x=S.cards[c.kr];return x&&x.seen&&x.due<=t}).length;
+  const fresh = CARDS.filter(c=>!(S.cards[c.kr]||{}).seen).length;
+  $("lesson-sub").textContent = (due?due+" por repasar · ":"") + (fresh?fresh+" frases nuevas":"todo visto, ¡a repasar!");
+  const hard = hardCards().length; $("rev-sub").textContent = hard? hard+" frases con fallos":"Aún sin fallos";
+  $("list-sub").textContent = CARDS.length+" frases";
+}
+function hardCards(){ return CARDS.filter(c=>{const x=S.cards[c.kr];return x&&x.bad>0&&x.l<4})
+  .sort((a,b)=>(st(b).bad-st(b).ok)-(st(a).bad-st(a).ok)); }
+
+/* ---------- construir lección ---------- */
+function chooseCards(pool, n){
+  const t=today();
+  const due = shuffle(pool.filter(c=>{const x=S.cards[c.kr];return x&&x.seen&&x.due<=t})).sort((a,b)=>st(a).l-st(b).l);
+  const fresh = pool.filter(c=>!(S.cards[c.kr]||{}).seen);
+  const rest = shuffle(pool.filter(c=>{const x=S.cards[c.kr];return x&&x.seen&&x.due>t})).sort((a,b)=>st(a).l-st(b).l);
+  const out=[]; const nNew = due.length>=n-2 ? 2 : 3;
+  out.push(...fresh.slice(0,nNew));
+  for(const c of due){ if(out.length>=n) break; out.push(c); }
+  for(const c of fresh.slice(nNew)){ if(out.length>=n) break; out.push(c); }
+  for(const c of rest){ if(out.length>=n) break; out.push(c); }
+  return out;
+}
+function makeEx(c, pool){
+  const x=st(c), n=words(c.kr).length;
+  if(!x.seen) return {type:"intro",c};
+  const opts=[];
+  if(x.l<=1){ opts.push("choiceKr","choiceKr","choiceEs"); if(gapOk(c)) opts.push("gap"); }
+  else if(x.l<=3){ if(n<=11) opts.push("tiles","tiles"); if(gapOk(c)) opts.push("gap"); opts.push("choiceKr"); }
+  else { if(n<=11) opts.push("tiles"); if(n<=6) opts.push("write","write"); if(gapOk(c)) opts.push("gap"); opts.push("choiceEs"); }
+  return {type:pick(opts,1)[0],c};
+}
+function gapOk(c){ return words(c.kr).some(w=>GRAM.includes(w.toLowerCase())); }
+let L=null;
+function startLesson(pool, title){
+  pool = pool && pool.length ? pool : CARDS;
+  const cs = chooseCards(pool, 8);
+  let ex=[];
+  cs.forEach(c=>{ const e=makeEx(c,pool); ex.push(e); if(e.type==="intro") ex.push({type:"choiceKr",c,afterIntro:true}); });
+  // ejercicio de parejas
+  const short = shuffle(pool.filter(c=>c.kr.length<=34 && c.es.length<=44));
+  const seenShort = short.filter(c=>(S.cards[c.kr]||{}).seen || cs.includes(c));
+  if(seenShort.length>=4) ex.splice(Math.min(ex.length,5),0,{type:"pairs",set:seenShort.slice(0,4)});
+  ex = ex.slice(0,12);
+  L={ex,i:0,ok:0,bad:0,xp:0,pool,retry:[],title};
+  show("lesson"); render();
+}
+$("b-lesson").onclick=()=>startLesson(CARDS);
+$("e-more").onclick=()=>startLesson(L&&L.pool||CARDS);
+$("e-home").onclick=()=>show("home");
+$("b-review").onclick=()=>{ const h=hardCards(); if(h.length<3){toast("Todavía no hay fallos suficientes. ¡Haz una lección!");return;}
+  h.forEach(c=>st(c).due=0); startLesson(h.slice(0,10)); };
+$("l-close").onclick=()=>{ save(); show("home"); };
+
+/* ---------- pintar ejercicio ---------- */
+let answer=null, checked=false;
+function setCheck(enabled, label){ const b=$("l-check"); b.disabled=!enabled; b.textContent=label||"Comprobar"; b.className="check"; }
+function render(){
+  checked=false; answer=null; $("l-fb").innerHTML="";
+  $("l-bar").style.width = (L.i/(L.ex.length+L.retry.length||1)*100)+"%";
+  const e=L.ex[L.i], b=$("l-body"); b.className=""; void b.offsetWidth; b.className="pop";
+  setCheck(false);
+  const c=e.c;
+  if(e.type==="intro"){
+    b.innerHTML=`<div class="kind">✨ Frase nueva</div>
+      <div class="fc"><div class="es">${esc(c.es)}</div><div class="kr">${esc(c.kr)}</div>
+      ${c.n?`<div class="note">${esc(c.n)}</div>`:""}${c.star?`<div class="note">* Montada por Claude con piezas del libro.</div>`:""}</div>
+      <p class="muted small">Léela en voz alta un par de veces. Ahora te la pregunto.</p>`;
+    setCheck(true,"¡Entendido!"); answer="intro"; return;
+  }
+  if(e.type==="choiceKr"||e.type==="choiceEs"){
+    const toKr = e.type==="choiceKr";
+    const field = toKr?"kr":"es";
+    let base = L.pool.filter(o=>o!==c && o[field]!==c[field]);
+    if(base.length<3) base = CARDS.filter(o=>o!==c && o[field]!==c[field]);
+    const others = pick(base,3);
+    const opts = shuffle([c,...others]);
+    b.innerHTML=`<div class="kind">${toKr?"¿Cómo se dice en crioulo?":"¿Qué significa?"}</div>
+      <div class="prompt ${toKr?"":"kr"}">${esc(toKr?c.es:c.kr)}</div>
+      <div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o[field])}</button>`).join("")}</div>`;
+    b.querySelectorAll(".opt").forEach(btn=>btn.onclick=()=>{ if(checked)return;
+      b.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel")); btn.classList.add("sel");
+      answer = opts[+btn.dataset.i]===c; e._btn=btn; e._right=b.querySelectorAll(".opt")[opts.indexOf(c)]; setCheck(true); });
+    return;
+  }
+  if(e.type==="gap"){
+    const ws = c.kr.split(" ");
+    const idxs = ws.map((w,i)=>[w,i]).filter(([w])=>GRAM.includes(w.replace(/[.,!?:;]+$/,"").toLowerCase()));
+    const [w,i] = pick(idxs,1)[0]; const clean=w.replace(/[.,!?:;]+$/,""), tail=w.slice(clean.length);
+    const opts = shuffle([clean.toLowerCase(), ...pick(GRAM.filter(g=>g!==clean.toLowerCase()),3)]);
+    const shown = ws.map((x,j)=>j===i?`<span style="display:inline-block;min-width:54px;border-bottom:3px solid var(--brand)" id="gapslot">&nbsp;</span>${esc(tail)}`:esc(x)).join(" ");
+    b.innerHTML=`<div class="kind">Completa el hueco</div><div class="muted" style="margin-bottom:8px">${esc(c.es)}</div>
+      <div class="prompt kr">${shown}</div>
+      <div class="bank">${opts.map(o=>`<button class="w" data-w="${esc(o)}">${esc(o)}</button>`).join("")}</div>`;
+    b.querySelectorAll(".w").forEach(btn=>btn.onclick=()=>{ if(checked)return; $("gapslot").textContent=btn.dataset.w;
+      answer = btn.dataset.w===clean.toLowerCase(); setCheck(true); });
+    return;
+  }
+  if(e.type==="tiles"){
+    const target = words(c.kr);
+    const extra = pick(words(pick(CARDS.filter(o=>o!==c),3).map(o=>o.kr).join(" ")).filter(w=>!target.map(t=>t.toLowerCase()).includes(w.toLowerCase())),Math.min(3,Math.max(1,12-target.length)));
+    const bank = shuffle([...target,...extra].map((w,i)=>({w,i})));
+    const chosen=[];
+    b.innerHTML=`<div class="kind">Monta la frase en crioulo</div><div class="prompt">${esc(c.es)}</div>
+      <div class="answer" id="ans"></div><div class="bank" id="bank"></div>`;
+    const draw=()=>{
+      $("ans").innerHTML = chosen.map((t,k)=>`<button class="w" data-k="${k}">${esc(t.w)}</button>`).join("");
+      $("bank").innerHTML = bank.map(t=>`<button class="w ${chosen.includes(t)?"used":""}" data-i="${t.i}">${esc(t.w)}</button>`).join("");
+      $("ans").querySelectorAll(".w").forEach(x=>x.onclick=()=>{ if(checked)return; chosen.splice(+x.dataset.k,1); draw(); });
+      $("bank").querySelectorAll(".w").forEach(x=>x.onclick=()=>{ if(checked)return; const t=bank.find(q=>q.i==x.dataset.i); if(!chosen.includes(t)) chosen.push(t); draw(); });
+      answer = chosen.length? norm(chosen.map(t=>t.w).join(" "))===norm(target.join(" ")) : null;
+      setCheck(chosen.length>0);
+    }; draw(); return;
+  }
+  if(e.type==="write"){
+    b.innerHTML=`<div class="kind">Escríbelo en crioulo</div><div class="prompt">${esc(c.es)}</div>
+      <textarea id="wr" rows="3" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Escribe aquí…"></textarea>
+      <p class="muted small">Se aceptan pequeños despistes y la forma de chat (m', ka, bim…).</p>`;
+    const wr=$("wr"); wr.oninput=()=>{ setCheck(wr.value.trim().length>0); };
+    setTimeout(()=>wr.focus(),150); return;
+  }
+  if(e.type==="pairs"){
+    const set=e.set, L1=shuffle(set), R=shuffle(set); let sel=null, done=0, miss=0;
+    b.innerHTML=`<div class="kind">Une las parejas</div><div class="pairs" id="pr">
+      ${L1.map((o,k)=>`<button class="opt" data-s="l" data-k="${CARDS.indexOf(o)}">${esc(o.es)}</button>`).join("")}
+      ${R.map((o,k)=>`<button class="opt" data-s="r" data-k="${CARDS.indexOf(o)}" style="font-weight:650;color:var(--brand)">${esc(o.kr)}</button>`).join("")}
+    </div>`;
+    // ordenar en dos columnas: izquierda español, derecha crioulo
+    const pr=$("pr"); const ls=[...pr.querySelectorAll('[data-s="l"]')], rs=[...pr.querySelectorAll('[data-s="r"]')];
+    pr.innerHTML=""; for(let k=0;k<ls.length;k++){ pr.appendChild(ls[k]); pr.appendChild(rs[k]); }
+    pr.querySelectorAll(".opt").forEach(btn=>btn.onclick=()=>{
+      if(btn.classList.contains("done")) return;
+      if(!sel || sel.dataset.s===btn.dataset.s){ pr.querySelectorAll(".sel").forEach(x=>x.classList.remove("sel")); btn.classList.add("sel"); sel=btn; return; }
+      if(sel.dataset.k===btn.dataset.k){ [sel,btn].forEach(x=>{x.classList.remove("sel");x.classList.add("done")}); beep(true); done++; sel=null;
+        if(done===set.length){ answer = miss<=1; setCheck(true, "Continuar"); checkAnswer(); } }
+      else { miss++; [sel,btn].forEach(x=>{x.classList.add("wrong","shake"); setTimeout(()=>x.classList.remove("wrong","shake","sel"),450)}); sel=null; beep(false); }
+    });
+    return;
+  }
+}
+
+/* ---------- comprobar ---------- */
+function grade(c, ok){
+  const x=st(c);
+  if(ok){ x.ok++; x.l=Math.min(6,x.l+1); x.due=today()+STEP[x.l]; }
+  else { x.bad++; x.l=Math.max(0,x.l-2); x.due=today(); }
+}
+function checkAnswer(){
+  const e=L.ex[L.i], c=e.c, fb=$("l-fb"), btn=$("l-check");
+  if(e.type==="intro"){ st(c).seen=1; st(c).due=today(); next(); return; }
+  if(e.type==="write"){
+    const v=norm(RULES.reduce((s,[r,t])=>s.replace(r,t),$("wr").value)), t=norm(c.kr);
+    answer = v===t || lev(v,t) <= Math.max(1,Math.floor(t.length*0.12));
+    $("wr").readOnly=true;
+  }
+  checked=true;
+  const ok=!!answer;
+  if(e.type!=="pairs"){ grade(c,ok); }
+  else e.set.forEach(o=>{ const x=st(o); x.seen=1; if(ok){x.ok++; if(x.l<2){x.l++; x.due=today()+STEP[x.l];}} });
+  if(ok){ L.ok++; L.xp+=10; addXP(10); } else { L.bad++; S.bad++; if(e.type!=="pairs") L.retry.push({type: e.type==="write"?"tiles":e.type, c, retry:true}); }
+  if(ok) S.ok++;
+  beep(ok);
+  if(e._btn){ e._btn.classList.add(ok?"right":"wrong"); if(!ok&&e._right) e._right.classList.add("right"); }
+  const showSol = e.type!=="pairs";
+  fb.innerHTML = `<div class="fb ${ok?"ok":"bad"}"><b>${ok?pick(["¡Muy bien!","Bwe fixe! 💪","¡Perfecto!","Djitu! ¡Eso es!","¡Genial!"],1)[0]:"Casi… la buena es:"}</b>
+    ${showSol?`<div class="sol">${esc(c.kr)}</div><div class="es">${esc(c.es)}${c.n?" · "+esc(c.n):""}${c.star?" · * montada con piezas del libro":""}</div>`:(ok?"":"Has fallado alguna pareja, repásalas en Tarjetas.")}</div>`;
+  if(!ok) $("l-body").classList.add("shake");
+  btn.disabled=false; btn.textContent="Continuar"; btn.className="check "+(ok?"ok":"bad");
+  save();
+}
+function next(){
+  L.i++;
+  if(L.i>=L.ex.length && L.retry.length){ L.ex.push(...L.retry.splice(0)); }
+  if(L.i>=L.ex.length) return finish();
+  render();
+}
+$("l-check").onclick=()=>{ if(answer==="intro") return checkAnswer(); if(!checked) checkAnswer(); else next(); };
+
+function finish(){
+  L.xp+=20; addXP(20); bumpStreak(); S.lessons++; save();
+  const tot=L.ok+L.bad, acc=tot?Math.round(L.ok/tot*100):100;
+  $("e-xp").textContent="+"+L.xp; $("e-acc").textContent=acc+"%"; $("e-streak").textContent=curStreak();
+  $("e-emoji").textContent = acc>=90?"🏆":acc>=70?"🎉":"💪";
+  $("e-title").textContent = acc>=90?"Bwe fixe!":acc>=70?"¡Muy bien!":"¡Lección hecha!";
+  $("e-text").textContent = acc>=90?"Kuma di kurpu? ¡Tu crioulo va volando!":acc>=70?"Las que has fallado volverán pronto para repasarlas.":"Lo importante es practicar. Djitu ten ku ten!";
+  show("end"); confetti();
+}
+function confetti(){ const d=document.createElement("div"); d.className="confetti";
+  const cols=["#ce1126","#fcd116","#009e49","#1f7a5c","#e9a23b"];
+  for(let i=0;i<60;i++){ const p=document.createElement("i"); p.style.left=Math.random()*100+"%"; p.style.background=cols[i%5];
+    p.style.animationDelay=Math.random()*.6+"s"; p.style.animationDuration=1.4+Math.random()+"s"; d.appendChild(p); }
+  document.body.appendChild(d); setTimeout(()=>d.remove(),3200); }
+
+/* ---------- temas ---------- */
+const TEMAS=[...new Set(CARDS.map(c=>c.t))];
+$("b-topics").onclick=()=>{
+  $("t-list").innerHTML = TEMAS.map(t=>{ const cs=CARDS.filter(c=>c.t===t), k=cs.filter(c=>(S.cards[c.kr]||{}).l>=3).length;
+    return `<button class="tilebtn" style="width:100%;margin-bottom:10px" data-t="${esc(t)}"><b>${esc(t)}</b>
+      <div class="tbar"><div class="goal"><i style="width:${k/cs.length*100}%"></i></div><span class="small muted">${k}/${cs.length}</span></div></button>`}).join("");
+  $("t-list").querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>startLesson(CARDS.filter(c=>c.t===b.dataset.t), b.dataset.t));
+  show("topics");
+};
+
+/* ---------- tarjetas ---------- */
+let cDir="es", cTopic="Todas", cCur=null, cFlipped=false;
+function cardNext(){
+  const pool = CARDS.filter(c=>cTopic==="Todas"||c.t===cTopic);
+  const w = pool.map(c=>{const x=S.cards[c.kr]||{l:0}; return 7-Math.min(6,x.l)});
+  let r=Math.random()*w.reduce((a,b)=>a+b,0), i=0; while(r>w[i]){r-=w[i];i++}
+  cCur=pool[Math.min(i,pool.length-1)]; cFlipped=false; drawCard();
+}
+function drawCard(){ const c=cCur, front = cDir==="es"?c.es:c.kr, back = cDir==="es"?c.kr:c.es;
+  $("c-card").innerHTML = `<div class="${cDir==="es"?"es":"kr"}" style="font-size:22px;${cDir==="es"?"color:var(--ink)":""}">${esc(front)}</div>
+   ${cFlipped?`<div class="${cDir==="es"?"kr":"es"}" style="margin-top:14px">${esc(back)}</div>${c.n?`<div class="note">${esc(c.n)}</div>`:""}${c.star?`<div class="note">* montada con piezas del libro</div>`:""}`:`<div class="note" style="margin-top:18px">Toca para girar</div>`}`; }
+$("c-card").onclick=()=>{ cFlipped=!cFlipped; drawCard(); };
+$("c-dir").onclick=()=>{ cDir=cDir==="es"?"kr":"es"; $("c-dir").textContent=cDir==="es"?"Español → crioulo":"Crioulo → español"; cFlipped=false; drawCard(); };
+$("c-topic").onclick=()=>{ const all=["Todas",...TEMAS]; cTopic=all[(all.indexOf(cTopic)+1)%all.length]; $("c-topic").textContent=cTopic; cardNext(); };
+$("c-yes").onclick=()=>{ const x=st(cCur); x.seen=1; x.ok++; if(x.l<3){x.l++; x.due=today()+STEP[x.l];} addXP(2); save(); cardNext(); };
+$("c-no").onclick=()=>{ const x=st(cCur); x.seen=1; x.bad++; x.l=Math.max(0,x.l-1); x.due=today(); save(); cardNext(); };
+$("b-cards").onclick=()=>{ cardNext(); show("cards"); };
+
+/* ---------- chat ---------- */
+$("ch-in").oninput=()=>{ $("ch-out").textContent = RULES.reduce((s,[r,t])=>s.replace(r,t),$("ch-in").value); };
+$("ch-tab").innerHTML = CHAT.map(r=>`<tr><td>${esc(r[0])}</td><td><code>${esc(r[1])}</code></td><td class="muted">${esc(r[2])}</td></tr>`).join("");
+$("b-chat").onclick=()=>show("chat");
+
+/* ---------- lista ---------- */
+function drawList(){ const q=norm($("l-search").value);
+  $("l-all").innerHTML = CARDS.filter(c=>!q||norm(c.es+" "+c.kr).includes(q)).map(c=>{ const l=(S.cards[c.kr]||{}).l||0;
+    return `<div class="li"><div class="kr">${esc(c.kr)}${c.star?" *":""}</div><div class="es">${esc(c.es)}</div>
+    <div style="margin-top:4px">${[1,2,3,4,5,6].map(k=>`<span class="lvl ${l>=k?"on":""}"></span>`).join("")}<span class="small muted"> ${esc(c.t)}</span></div></div>`}).join(""); }
+$("l-search").oninput=drawList;
+$("b-list").onclick=()=>{ drawList(); show("list"); };
+
+/* ---------- progreso ---------- */
+function summary(){
+  const k=known(), seen=CARDS.filter(c=>(S.cards[c.kr]||{}).seen).length, tot=S.ok+S.bad;
+  const hard=hardCards().slice(0,8);
+  const tem = TEMAS.map(t=>{const cs=CARDS.filter(c=>c.t===t);return `${t} ${cs.filter(c=>(S.cards[c.kr]||{}).l>=3).length}/${cs.length}`}).join(", ");
+  return `📊 Progreso Kriol (${new Date().toLocaleDateString("es-ES")})
+Racha: ${curStreak()} días · Puntos: ${S.xp} · Lecciones: ${S.lessons}
+Frases sabidas: ${k}/${CARDS.length} · vistas: ${seen} · aciertos: ${tot?Math.round(S.ok/tot*100):0}%
+Por temas: ${tem}
+Me cuestan: ${hard.length?hard.map(c=>`"${c.kr}"`).join("; "):"nada todavía"}`;
+}
+$("b-prog").onclick=()=>{
+  $("p-topics").innerHTML = TEMAS.map(t=>{const cs=CARDS.filter(c=>c.t===t),k=cs.filter(c=>(S.cards[c.kr]||{}).l>=3).length;
+    return `<div class="tbar"><span style="width:110px">${esc(t)}</span><div class="goal"><i style="width:${k/cs.length*100}%"></i></div><span class="small muted">${k}/${cs.length}</span></div>`}).join("");
+  const h=hardCards().slice(0,8);
+  $("p-hard").innerHTML = h.length? h.map(c=>`<div class="li"><div class="kr">${esc(c.kr)}</div><div class="es">${esc(c.es)} · ❌ ${st(c).bad}</div></div>`).join("") : `<p class="muted small">Nada todavía. ¡Sigue así!</p>`;
+  show("prog");
+};
+async function copy(t){ try{ await navigator.clipboard.writeText(t); toast("Copiado"); }catch(e){ prompt("Copia esto:",t); } }
+$("p-share").onclick=async()=>{ const t=summary();
+  if(navigator.share){ try{ await navigator.share({text:t}); return; }catch(e){ if(e.name==="AbortError") return; } }
+  copy(t); };
+$("p-export").onclick=()=>copy("KRIOL1:"+btoa(unescape(encodeURIComponent(JSON.stringify(S)))));
+$("p-import").onclick=()=>{ $("p-code").hidden=false; $("p-load").hidden=false; $("p-code").focus(); };
+$("p-load").onclick=()=>{ try{ const v=$("p-code").value.trim().replace(/^KRIOL1:/,"");
+  const d=JSON.parse(decodeURIComponent(escape(atob(v)))); if(!d.cards) throw 0; S=Object.assign(S,d); save(); toast("Progreso cargado"); show("home"); }
+  catch(e){ toast("Ese código no es válido"); } };
+
+/* ---------- offline ---------- */
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  navigator.serviceWorker.register("sw.js").then(()=>{ $("offline-ok").textContent="✓ Lista para usar sin internet."; }).catch(()=>{});
+}
+show("home");
+</script>
+</body>
+</html>
