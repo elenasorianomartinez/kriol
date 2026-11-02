@@ -26,18 +26,18 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 
 /* ---------- INICIO ---------- */
 #home{display:flex;flex-direction:column;overflow:hidden}
-.top{display:flex;flex:none;justify-content:space-between;align-items:flex-start;gap:12px}
+.top{display:flex;flex:none;justify-content:space-between;align-items:center;gap:12px}
 .lbl{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.04em}
-.month{font-size:30px;font-weight:900;letter-spacing:-.03em;color:var(--lime);line-height:1.1;margin-top:2px}
-.month small{font-size:14px;color:var(--lime);font-weight:700;letter-spacing:0;margin-left:4px}
+.month{display:flex;align-items:center;gap:6px;font-size:30px;font-weight:900;letter-spacing:-.03em;color:var(--lime);line-height:1.1;margin-top:2px}
+.month small{font-size:15px;color:var(--lime);font-weight:800;letter-spacing:0;line-height:1;padding-top:2px}
 .month-eur{font-size:15px;font-weight:700;margin-top:1px}
-.datepill{position:relative;flex:none;background:var(--card);border-radius:99px;padding:8px 14px;font-size:14px;font-weight:700;margin-top:2px}
+.datepill{position:relative;flex:none;background:var(--card);border-radius:99px;padding:8px 14px;font-size:14px;font-weight:700;}
 .datepill.past{background:var(--lime);color:#000}
 .datepill input{position:absolute;inset:0;opacity:0;width:100%;height:100%;border:0}
 .display{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;padding:6px 2px 4px}
-.amt{font-size:clamp(48px,15vw,68px);font-weight:900;letter-spacing:-.04em;line-height:1;white-space:nowrap}
+.amt{display:flex;align-items:center;gap:8px;font-size:clamp(48px,15vw,68px);font-weight:900;letter-spacing:-.04em;line-height:1;white-space:nowrap}
 .amt.zero{color:#3a3a3e}
-.amt small{font-size:20px;color:var(--muted);letter-spacing:0;margin-left:6px;font-weight:800}
+.amt small{font-size:20px;color:var(--muted);letter-spacing:0;font-weight:800;line-height:1;padding-top:4px}
 .conv{min-height:24px;color:var(--lime);font-weight:800;font-size:18px;margin-top:6px}
 .chips{display:flex;gap:8px;overflow-x:auto;margin:10px -18px 12px;padding:0 18px;scrollbar-width:none;flex:none}
 .chips::-webkit-scrollbar{display:none}
@@ -76,6 +76,17 @@ h2 span{text-transform:none;letter-spacing:0}
 .sqb{background:var(--card);border-radius:18px;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:700;text-align:center;padding:8px}
 .sqb svg{width:28px;height:28px;color:var(--lime)}
 .sqb:active{background:var(--card2)}
+.crow{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 16px;border-top:1px solid var(--line)}
+.crow:first-child{border-top:0}
+.crow .n{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{width:42px;height:42px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;flex:none}
+.ib svg{width:20px;height:20px}
+.ib:disabled{opacity:.25}
+.ib.x{color:var(--red)}
+.addchip{display:flex;gap:8px;margin-top:10px}
+.addchip input{flex:1;min-width:0;background:var(--card);border:0;border-radius:14px;color:var(--ink);font:inherit;font-size:17px;padding:12px 14px;outline:none}
+.addchip input:focus{box-shadow:0 0 0 2px var(--lime) inset}
+.addchip button{width:50px;border-radius:14px;background:var(--lime);color:#000;font-size:26px;font-weight:800}
 .wide{width:100%;background:var(--card);border-radius:16px;padding:14px;font-weight:700;margin-top:12px}
 .note{font-size:13px;color:var(--muted);text-align:center;margin:12px 6px 0}
 .note.warn{color:var(--lime)}
@@ -88,10 +99,10 @@ h2 span{text-transform:none;letter-spacing:0}
 .tb.on{background:var(--lime);color:#000}
 
 /* ---------- toast / sheet ---------- */
-.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 12px);transform:translate(-50%,-150%);visibility:hidden;
-  transition:transform .25s ease,visibility 0s .25s;background:var(--lime);color:#000;font-weight:700;padding:12px 16px;border-radius:16px;
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 120px);transform:translate(-50%,-20px) scale(.96);opacity:0;white-space:nowrap;visibility:hidden;
+  transition:transform .25s ease,opacity .2s,visibility 0s .25s;background:var(--lime);color:#000;font-weight:700;padding:12px 16px;border-radius:16px;
   display:flex;gap:14px;align-items:center;z-index:40;max-width:calc(100% - 32px);font-size:15px}
-.toast.on{transform:translate(-50%,0);visibility:visible;transition:transform .25s ease}
+.toast.on{transform:translate(-50%,0);opacity:1;visibility:visible;transition:transform .25s ease,opacity .2s}
 .toast button{font-weight:900;text-decoration:underline}
 .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
 .sheet{position:fixed;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;background:var(--card);border-radius:26px 26px 0 0;
@@ -156,6 +167,10 @@ h2 span{text-transform:none;letter-spacing:0}
   <p class="note" id="bk"></p>
 
   <div id="days"></div>
+
+  <h2>Conceptos rápidos</h2>
+  <div class="list" id="chiplist"></div>
+  <div class="addchip"><input id="newchip" placeholder="Nuevo concepto" maxlength="40" enterkeyhint="done"><button id="b-addchip" aria-label="Añadir">+</button></div>
 </section>
 
 <!-- ============ TAB BAR ============ -->
@@ -254,11 +269,21 @@ function setDay(s){
 }
 $("dt").addEventListener("change", () => setDay($("dt").value));
 
+// conceptos rápidos: lista propia que Elena ordena y borra desde «Más»
+const CKEY = "gastos-xof-chips";
+let CH = null;
+function loadChips(){
+  try{ CH = JSON.parse(localStorage.getItem(CKEY)) }catch(e){ CH = null }
+  if (!Array.isArray(CH)) CH = [...DEFAULT_CHIPS];
+}
+function saveChips(){ try{ localStorage.setItem(CKEY, JSON.stringify(CH)) }catch(e){} }
+function addChip(c){
+  c = (c || "").trim(); if (!c || c === "Sin concepto") return false;
+  if (CH.some(x => x.toLowerCase() === c.toLowerCase())) return false;
+  CH.push(c); saveChips(); return true;
+}
 function renderChips(){
-  const count = {};
-  G.forEach(g => { const k = g.concepto; if (k && k !== "Sin concepto") count[k] = (count[k]||0) + 1; });
-  const used = Object.keys(count).sort((a,b) => count[b]-count[a]).slice(0,6);
-  const list = [...used, ...DEFAULT_CHIPS.filter(c => !used.some(u => u.toLowerCase() === c.toLowerCase()))].slice(0,10);
+  const list = CH;
   const wrap = $("chips"); wrap.innerHTML = "";
   const otherOn = $("other").classList.contains("on");
   list.forEach(c => {
@@ -285,7 +310,7 @@ $("ok").onclick = () => {
   const typed = $("other").classList.contains("on") ? $("other-in").value.trim() : "";
   const g = { id: uid(), fecha: day, hora: pad(now.getHours())+":"+pad(now.getMinutes()),
               xof: x, eur: toEur(x), concepto: typed || concept || "Sin concepto", creado: now.toISOString() };
-  G.push(g); save();
+  G.push(g); save(); if (typed) addChip(typed);
   digits = ""; concept = ""; $("other").classList.remove("on"); $("other-in").value = ""; $("other-in").blur();
   setDay(ymd(now)); renderAmount(); renderSummary(); renderChips();
   toast("✓ " + fmtX(x) + " XOF · " + g.concepto, () => { G = G.filter(y => y.id !== g.id); save(); renderAll(); });
@@ -308,6 +333,7 @@ function dayLabel(s){
   return dmy(s);
 }
 function renderMore(){
+  renderChipList();
   const tx = G.reduce((s,g) => s + g.xof, 0);
   $("all").textContent = G.length ? "Total: " + fmtX(tx) + " XOF · " + fmtE(toEur(tx)) + " · " + G.length + " gasto" + (G.length>1?"s":"") : "Aún no hay gastos.";
   const wrap = $("days"); wrap.innerHTML = "";
@@ -343,6 +369,35 @@ function renderMore(){
   }
   renderBackupNote();
 }
+const UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>';
+const DOWN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+const XX = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+function renderChipList(){
+  const wrap = $("chiplist"); wrap.innerHTML = "";
+  if (!CH.length){ wrap.innerHTML = '<div class="empty">No hay conceptos. Añade uno abajo.</div>'; return; }
+  CH.forEach((c,i) => {
+    const r = document.createElement("div"); r.className = "crow";
+    r.innerHTML = '<span class="n"></span><button class="ib" aria-label="Subir">'+UP+'</button><button class="ib" aria-label="Bajar">'+DOWN+'</button><button class="ib x" aria-label="Borrar">'+XX+'</button>';
+    r.querySelector(".n").textContent = c;
+    const [up, down, del] = r.querySelectorAll("button");
+    up.disabled = i === 0; down.disabled = i === CH.length - 1;
+    up.onclick = () => { [CH[i-1], CH[i]] = [CH[i], CH[i-1]]; saveChips(); renderChipList(); renderChips(); };
+    down.onclick = () => { [CH[i+1], CH[i]] = [CH[i], CH[i+1]]; saveChips(); renderChipList(); renderChips(); };
+    del.onclick = () => {
+      CH.splice(i,1); saveChips(); if (concept === c) concept = ""; renderChipList(); renderChips();
+      toast("Concepto borrado", () => { CH.splice(i,0,c); saveChips(); renderChipList(); renderChips(); });
+    };
+    wrap.appendChild(r);
+  });
+}
+function addFromInput(){
+  const v = $("newchip").value.trim(); if (!v) return;
+  if (addChip(v)) { $("newchip").value = ""; renderChipList(); renderChips(); toast("Añadido «" + v + "»"); }
+  else toast("Ese concepto ya está");
+}
+$("b-addchip").onclick = addFromInput;
+$("newchip").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); addFromInput(); $("newchip").blur(); } });
+
 function renderAll(){ renderSummary(); renderChips(); if (!$("more").hidden) renderMore(); }
 
 // ---------- editar ----------
@@ -440,7 +495,7 @@ $("imp").onchange = async e => {
 };
 
 // ---------- arranque ----------
-load(); setDay(); renderAmount(); renderAll();
+load(); loadChips(); setDay(); renderAmount(); renderAll();
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
 document.addEventListener("visibilitychange", () => { if (!document.hidden) { if (!digits) setDay(); renderAll(); } });
