@@ -259,8 +259,9 @@ code{background:var(--line);padding:1px 6px;border-radius:6px}
   <h3>Mis dudas</h3>
   <div class="list" id="p-dudas"></div>
   <button class="big" id="p-dudas-send" hidden>Enviar dudas a Claude</button>
-  <p class="muted small" id="p-dudas-note" hidden>Se abre GitHub con tus dudas: dale a <b>Create</b>. Luego, en el chat, pregúntame «¿qué dudas he tenido?» y te las resuelvo.</p>
-  <button class="tilebtn" id="p-dudas-done" hidden style="text-align:center;width:100%">Hecho, ya las he enviado</button>
+  <textarea id="p-dudas-txt" rows="5" hidden></textarea>
+  <p class="muted small" id="p-dudas-note" hidden>Copiadas ✅ Pégalas en el chat de Claude (hilo «Aprender crioulo») y te las resuelvo.</p>
+  <button class="tilebtn" id="p-dudas-done" hidden style="text-align:center;width:100%;margin-top:8px">Hecho, ya las he pegado (borrar de la lista)</button>
   <h3>Enviar a Claude</h3>
   <p class="muted small">Cuando tengas conexión, mándame el resumen en el chat y adapto la frase del día a lo que más te cuesta.</p>
   <button class="big" id="p-share">Compartir mi progreso</button>
@@ -777,13 +778,13 @@ $("b-prog").onclick=()=>{
 };
 function drawDudas(){ const ds=(S.dudas||[]).filter(d=>!d.sent);
   $("p-dudas").innerHTML = ds.length? ds.map(d=>`<div class="li"><div class="kr">${esc(d.kr)}</div>${d.mine&&!d.ok?`<div class="small" style="color:var(--bad)">Tú: ${esc(d.mine)}</div>`:""}<div class="es">❓ ${esc(d.q||"(sin texto)")}</div></div>`).join("") : `<p class="muted small">No tienes dudas pendientes. Después de comprobar un ejercicio, toca «❓ Tengo una duda».</p>`;
-  $("p-dudas-send").hidden=!ds.length; $("p-dudas-send").textContent=`Enviar ${ds.length} duda${ds.length>1?"s":""} a Claude`; }
-$("p-dudas-send").onclick=()=>{ const ds=(S.dudas||[]).filter(d=>!d.sent); if(!ds.length) return;
-  const body="Dudas desde la app Kriol:\n\n"+ds.map((d,i)=>`${i+1}. Frase: ${d.kr} (${d.es})${d.mine&&!d.ok?`\n   Yo puse: ${d.mine}`:""}\n   Duda: ${d.q||"(sin texto)"}`).join("\n\n");
-  const f=new Date(); const title=`Dudas ${f.getDate()}/${f.getMonth()+1} (${ds.length})`;
-  window.open(`https://github.com/${REPO}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`,"_blank");
-  $("p-dudas-note").hidden=false; $("p-dudas-done").hidden=false; };
-$("p-dudas-done").onclick=()=>{ (S.dudas||[]).forEach(d=>d.sent=true); save(); $("p-dudas-done").hidden=true; drawDudas(); toast("Listo ✅ Pregúntame en el chat"); };
+  $("p-dudas-send").hidden=!ds.length; $("p-dudas-send").textContent=`Copiar ${ds.length} duda${ds.length>1?"s":""} para Claude`; }
+$("p-dudas-send").onclick=async()=>{ const ds=(S.dudas||[]).filter(d=>!d.sent); if(!ds.length) return;
+  const text="Mis dudas de crioulo:\n\n"+ds.map((d,i)=>`${i+1}. Frase: ${d.kr} (${d.es})${d.mine&&!d.ok?`\n   Yo puse: ${d.mine}`:""}\n   Duda: ${d.q||"(sin texto)"}`).join("\n\n");
+  $("p-dudas-txt").hidden=false; $("p-dudas-txt").value=text; $("p-dudas-done").hidden=false;
+  try{ await navigator.clipboard.writeText(text); $("p-dudas-note").hidden=false; toast("Dudas copiadas ✅"); }
+  catch(e){ $("p-dudas-txt").focus(); $("p-dudas-txt").select(); toast("Mantén pulsado el texto y dale a Copiar"); } };
+$("p-dudas-done").onclick=()=>{ (S.dudas||[]).forEach(d=>d.sent=true); save(); $("p-dudas-done").hidden=true; drawDudas(); $("p-dudas-txt").hidden=true; $("p-dudas-note").hidden=true; toast("Listo ✅"); };
 async function copy(t){ try{ await navigator.clipboard.writeText(t); toast("Copiado"); }catch(e){ prompt("Copia esto:",t); } }
 $("p-share").onclick=async()=>{ const t=summary();
   if(navigator.share){ try{ await navigator.share({text:t}); return; }catch(e){ if(e.name==="AbortError") return; } }
