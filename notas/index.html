@@ -154,7 +154,7 @@ canvas.live{width:100%;height:90px;display:block}
   <button class="dlink" id="dNew">+ Nueva etiqueta</button>
   <button class="dlink" id="dEdit">Editar etiquetas</button>
   <button class="dlink" id="dBackup">Copia de seguridad</button>
-  <div style="color:#55555f;font-size:13px;padding:18px 14px 0">Versión 6</div>
+  <div style="color:#55555f;font-size:13px;padding:18px 14px 0">Versión 7</div>
 </nav>
 
 <div class="sheet" id="recSheet">
@@ -415,23 +415,24 @@ function unwireGraph(){try{if(srcNode)srcNode.disconnect();}catch(e){}try{if(pro
 async function startRec(){
   if(recording) return;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast("Este navegador no permite grabar. Actualiza iOS.");return;}
-  ensureCtx(); // must happen inside the tap, before any await
+  ensureCtx(); // inside the tap, before any await
   stopPlayer();render();
   try{await getMic();}
   catch(e){toast(e&&e.name==="NotAllowedError"?"Sin permiso de micrófono. Dale a «Permitir» cuando te lo pida.":"No se pudo abrir el micrófono");return;}
-  if(actx&&actx.state!=="running"){try{await actx.resume();}catch(e){}}
-  chunks=[];pcm=[];pcmLen=0;cancelled=false;levels=[];allLevels=[];
-  wireGraph();
-  rec=null;
+  // Show the recording screen right away; nothing below may block it (on iOS actx.resume() can hang forever).
+  chunks=[];pcm=[];pcmLen=0;cancelled=false;levels=[];allLevels=[];rec=null;analyser=null;
+  recording=true;t0=Date.now();acc=0;paused=false;setPausedUI();$("#timer").textContent="0:00";
+  tick=setInterval(()=>{$("#timer").textContent=fmt(elapsed());},200);
+  show("#recSheet");
+  if(actx&&actx.state!=="running"){try{actx.resume().catch(()=>{});}catch(e){}}
+  try{wireGraph();}catch(e){analyser=null;}
   if(window.MediaRecorder){
     const mime=pickMime();
     try{rec=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);}catch(e){try{rec=new MediaRecorder(stream);}catch(e2){rec=null;}}
     if(rec){rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};try{rec.start();}catch(e){rec=null;}}
   }
-  recording=true;t0=Date.now();acc=0;paused=false;setPausedUI();$("#timer").textContent="0:00";
-  tick=setInterval(()=>{$("#timer").textContent=fmt(elapsed());},200);
-  show("#recSheet");
-  if(analyser) drawLive();
+  if(!rec&&!proc){recording=false;clearInterval(tick);hide();releaseMic();toast("Este iPhone no deja grabar desde la app. Actualiza iOS.");return;}
+  if(analyser) try{drawLive();}catch(e){}
 }
 function elapsed(){return (acc+(paused?0:Date.now()-t0))/1000;}
 const ICON_MIC_W='<svg viewBox="0 0 24 24" fill="currentColor"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
