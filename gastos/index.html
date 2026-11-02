@@ -20,14 +20,15 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);overscroll-
 body{font:16px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;touch-action:manipulation}
 .num{font-variant-numeric:tabular-nums}
-.view{position:fixed;inset:0;bottom:calc(var(--tabh) + env(safe-area-inset-bottom));overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:calc(env(safe-area-inset-top) + 14px) 18px 16px;max-width:520px;margin:0 auto}
+.view{position:fixed;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:calc(env(safe-area-inset-top) + 14px) 18px calc(env(safe-area-inset-bottom) + 14px);max-width:520px;margin:0 auto}
+#more,#tags{padding-bottom:calc(env(safe-area-inset-bottom) + 100px)}
 [hidden]{display:none!important}
 
 /* ---------- INICIO ---------- */
 #home{display:flex;flex-direction:column;overflow:hidden}
 .top{display:flex;flex:none;justify-content:space-between;align-items:center;gap:12px}
-.lbl{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.lbl{white-space:nowrap;font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.04em}
 .month{display:flex;align-items:center;gap:6px;font-size:30px;font-weight:900;letter-spacing:-.03em;color:var(--lime);line-height:1.1;margin-top:2px}
 .month small{font-size:15px;color:var(--lime);font-weight:800;letter-spacing:0;line-height:1;padding-top:2px}
 .month-eur{font-size:15px;font-weight:700;margin-top:1px}
@@ -52,7 +53,13 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .k{height:clamp(50px,7.4vh,64px);background:var(--card);border-radius:18px;font-size:27px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .k:active{background:var(--card2);transform:scale(.97)}
 .k svg{width:28px;height:28px}
-.ok{margin-top:8px;height:clamp(54px,7.8vh,66px);width:100%;border-radius:18px;background:var(--lime);color:#000;font-size:24px;font-weight:900;letter-spacing:.04em;flex:none}
+.okrow{display:flex;gap:8px;margin-top:8px;flex:none}
+.mbtn{width:76px;flex:none;border-radius:18px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:700}
+.mbtn svg{width:24px;height:24px;color:var(--lime)}
+.mbtn:active{background:var(--card2)}
+.homebar{position:fixed;left:18px;right:18px;bottom:calc(env(safe-area-inset-bottom) + 14px);max-width:484px;margin:0 auto;height:60px;border-radius:18px;background:var(--lime);color:#000;display:flex;align-items:center;justify-content:center;gap:10px;font-size:19px;font-weight:900;z-index:5}
+.homebar svg{width:22px;height:22px}
+.ok{flex:1;height:clamp(54px,7.8vh,66px);border-radius:18px;background:var(--lime);color:#000;font-size:24px;font-weight:900;letter-spacing:.04em}
 .ok:disabled{background:#2a3300;color:#55661a}
 .ok:active:not(:disabled){transform:scale(.98)}
 
@@ -156,7 +163,10 @@ h2 span{text-transform:none;letter-spacing:0}
     <button class="k" data-k="000">000</button><button class="k" data-k="0">0</button>
     <button class="k" data-k="del" aria-label="Borrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M17 9l-6 6M11 9l6 6"/></svg></button>
   </div>
-  <button class="ok" id="ok" disabled>OK</button>
+  <div class="okrow">
+    <button class="mbtn" id="t-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Más</button>
+    <button class="ok" id="ok" disabled>OK</button>
+  </div>
 </main>
 
 <!-- ============ MÁS ============ -->
@@ -188,10 +198,7 @@ h2 span{text-transform:none;letter-spacing:0}
 </section>
 
 <!-- ============ TAB BAR ============ -->
-<nav class="tabbar">
-  <button class="tb on" id="t-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button>
-  <button class="tb" id="t-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Más</button>
-</nav>
+<button class="homebar" id="t-home" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Volver a Inicio</button>
 
 <div class="toast" id="toast"><span id="t-msg"></span><button id="t-undo" hidden>Deshacer</button></div>
 
@@ -244,7 +251,7 @@ function save(){ try{ localStorage.setItem(KEY, JSON.stringify(G)) }catch(e){ to
 function show(tab){
   $("toast").classList.remove("on");
   $("home").hidden = tab !== "home"; $("more").hidden = tab !== "more"; $("tags").hidden = tab !== "tags";
-  $("t-home").classList.toggle("on", tab === "home"); $("t-more").classList.toggle("on", tab === "more" || tab === "tags");
+  $("t-home").hidden = tab === "home";
   if (tab === "more") { renderMore(); $("more").scrollTop = 0; }
   if (tab === "tags") { renderChipList(); $("tags").scrollTop = 0; }
 }
