@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffd23f">
+<title>¿La Ruta del Sabor?</title>
+<meta property="og:title" content="¿La Ruta del Sabor?">
+<meta property="og:description" content="Hola Saúl y Sergio 👋 Esto es lo que os propongo para las redes.">
+<meta property="og:image" content="https://elenasorianomartinez.github.io/kriol/ruta/og.png">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#141414;font-family:'Bricolage Grotesque',system-ui,sans-serif;-webkit-user-select:none;user-select:none}
+#app{position:fixed;inset:0;max-width:520px;margin:0 auto}
+.s{position:absolute;inset:0;padding:calc(env(safe-area-inset-top) + 60px) 28px calc(env(safe-area-inset-bottom) + 26px);display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .35s}
+.s.on{opacity:1;pointer-events:auto}
+.bars{position:absolute;top:calc(env(safe-area-inset-top) + 16px);left:16px;right:16px;display:flex;gap:5px;z-index:5;pointer-events:none}
+.bars i{flex:1;height:4px;border-radius:4px;background:rgba(0,0,0,.18);overflow:hidden}
+.bars i b{display:block;height:100%;width:0;border-radius:4px;transition:width .4s}
+.bars i.done b{width:100%}
+h1{font-weight:800;font-size:clamp(42px,14vw,58px);line-height:.92;letter-spacing:-2.5px}
+p{font-weight:500;font-size:20px;line-height:1.25}
+.tap{margin-top:auto;font-weight:700;font-size:16px;opacity:.6;text-align:center;padding-top:12px}
+.up{opacity:0;transform:translateY(18px)}
+.s.on .up{animation:up .55s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes up{to{opacity:1;transform:none}}
+#s1{background:#ffd23f;color:#141414}
+#s1 .wave{font-size:84px;margin-bottom:18px;display:inline-block;transform-origin:70% 80%}
+#s1.on .wave{animation:wave 1.4s ease-in-out .3s 2}
+@keyframes wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-16deg)}40%,80%{transform:rotate(14deg)}}
+#s1 .nm{display:inline-block;background:#141414;color:#ffd23f;padding:0 10px 4px;border-radius:8px;transform:rotate(-2deg)}
+#s2{background:#ff4b2b;color:#fff}
+#s2 .hint{font-size:16px;font-weight:700;opacity:.8;margin-top:22px}
+.it{display:flex;gap:16px;align-items:center;margin-top:16px;cursor:pointer;position:relative}
+.it .em{font-size:40px;background:#fff;border-radius:20px;width:70px;height:70px;display:flex;align-items:center;justify-content:center;flex:none;transition:transform .2s}
+.it:active .em{transform:scale(.92)}
+.it .tx{font-weight:700;font-size:21px;line-height:1.1;flex:1;padding-right:74px}
+.it .pr{position:absolute;right:0;top:50%;margin-top:-20px;background:#ffd23f;color:#141414;font-weight:800;font-size:22px;padding:6px 12px;border-radius:14px;transform:scale(0) rotate(-10deg);transition:transform .35s cubic-bezier(.3,1.6,.5,1);box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.it.show .pr{transform:scale(1) rotate(6deg)}
+#s3{background:#141414;color:#fff}
+#s3 .bars i{background:rgba(255,255,255,.2)}
+.big{font-weight:800;font-size:clamp(120px,40vw,160px);line-height:.85;letter-spacing:-8px;color:#ffd23f;margin:22px 0 10px}
+.big small{font-size:.45em;letter-spacing:-2px}
+.save{display:inline-block;background:#ff4b2b;color:#fff;font-weight:800;font-size:16px;padding:4px 10px;border-radius:10px;transform:rotate(-3deg);margin-bottom:16px}
+.note{margin-top:22px;background:#2a2a2a;border-radius:18px;padding:16px 18px;font-size:17px;line-height:1.3;font-weight:500}
+#s35{background:#0e6e5c;color:#fff}
+#s35 .big{color:#ffd23f;letter-spacing:-5px}
+.it2{display:flex;gap:16px;align-items:center;margin-top:22px}
+.it2 .em{font-size:40px;background:#fff;border-radius:20px;width:70px;height:70px;display:flex;align-items:center;justify-content:center;flex:none}
+.it2 .tx{font-weight:700;font-size:21px;line-height:1.1}
+#s4{background:#fff;color:#141414;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sec{font-weight:800;font-size:15px;letter-spacing:1px;text-transform:uppercase;opacity:.5;margin-top:20px}
+.seg{display:flex;gap:8px;margin-top:8px}
+.seg div{flex:1;border:2.5px solid #141414;border-radius:16px;padding:10px 8px;text-align:center;font-weight:800;font-size:16px;line-height:1.15;cursor:pointer}
+.seg div small{display:block;font-weight:500;font-size:13px;opacity:.75}
+.seg div.on{background:#141414;color:#ffd23f}
+#s4 h1{font-size:clamp(38px,12vw,48px)}
+.op{display:flex;align-items:center;gap:14px;border:2.5px solid #141414;border-radius:18px;padding:11px 16px;margin-top:9px;font-weight:700;font-size:18px;cursor:pointer;transition:background .2s,transform .15s}
+.op:active{transform:scale(.97)}
+.op span{flex:1}
+.op i{font-style:normal;font-weight:800}
+.op .ck{width:26px;height:26px;border-radius:50%;border:2.5px solid #141414;flex:none;transition:all .2s}
+.op.on{background:#ffd23f}
+.op.on .ck{background:#141414;box-shadow:inset 0 0 0 5px #ffd23f}
+.deal{font-size:15px;font-weight:700;margin-top:10px;color:#ff4b2b;min-height:20px}
+.tot{margin-top:auto;padding:10px 4px 12px;font-weight:700;font-size:17px;line-height:1.5}
+.tot div{display:flex;justify-content:space-between}
+.tot b{font-weight:800}
+.btn{display:block;width:100%;border:none;background:#25d366;color:#fff;border-radius:40px;padding:18px;text-align:center;font:800 21px 'Bricolage Grotesque',system-ui,sans-serif;cursor:pointer;text-decoration:none}
+.back{position:absolute;top:calc(env(safe-area-inset-top) + 30px);left:16px;font-weight:700;font-size:15px;opacity:.5;background:none;border:none;font-family:inherit;padding:6px 0;cursor:pointer;color:inherit}
+.zone{position:absolute;top:0;bottom:0;width:30%;left:0;z-index:2}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="bars" id="bars"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+
+  <section class="s on" id="s1" data-tap>
+    <div class="up"><span class="wave">👋</span></div>
+    <h1 class="up" style="animation-delay:.1s">¡Hola <span class="nm">Saúl</span><br>y <span class="nm">Sergio</span>!</h1>
+    <p class="up" style="margin-top:26px;animation-delay:.25s">Esto es lo que os propongo para las redes de <b>¿La Ruta del Sabor?</b></p>
+    <div class="tap">Toca para seguir →</div>
+  </section>
+
+  <section class="s" id="s2" data-tap>
+    <h1 class="up">Cada vez que salgáis con el food truck, os hago:</h1>
+    <div class="hint up" style="animation-delay:.1s">👆 Tocad cada cosa para ver su precio</div>
+    <div class="it up" style="animation-delay:.15s"><div class="em">📍</div><div class="tx">Un póster para anunciar dónde vais a estar</div><div class="pr">10 €</div></div>
+    <div class="it up" style="animation-delay:.25s"><div class="em">🍔</div><div class="tx">Un vídeo enseñando un plato</div><div class="pr">15 €</div></div>
+    <div class="it up" style="animation-delay:.35s"><div class="em">🎉</div><div class="tx">Un vídeo de cómo ha ido la fiesta</div><div class="pr">20 €</div></div>
+    <div class="tap">Toca aquí abajo para seguir →</div>
+  </section>
+
+  <section class="s" id="s3" data-tap>
+    <p class="up">Las tres cosas, por cada fiesta:</p>
+    <div class="big up" style="animation-delay:.1s"><span id="n40">0</span><small>€</small></div>
+    <div class="up" style="animation-delay:.2s"><span class="save">os ahorráis 5 €</span></div>
+    <p class="up" style="animation-delay:.25s">Si un mes no salís, no pagáis nada.</p>
+    <div class="note up" style="animation-delay:.35s">📲 Mientras estoy en Guinea, vosotros grabáis y me mandáis los vídeos y fotos, y yo lo edito y lo publico.<br><br>🚐 Cuando vuelva, si puedo, me planto en la fiesta y grabo yo.</div>
+    <div class="tap">Toca para seguir →</div>
+  </section>
+
+  <section class="s" id="s35" data-tap>
+    <h1 class="up">¿Y las semanas sin fiesta?</h1>
+    <p class="up" style="margin-top:18px;animation-delay:.1s">Al principio igual no salís todas las semanas. Para que el Instagram no se quede parado:</p>
+    <div class="it2 up" style="animation-delay:.2s"><div class="em">📸</div><div class="tx">1 publicación a la semana con las fotos y vídeos que ya tengamos</div></div>
+    <div class="big up" style="animation-delay:.3s;font-size:clamp(90px,30vw,120px);margin-top:26px"><span>15</span><small>€</small></div>
+    <p class="up" style="animation-delay:.35s">por semana. Es opcional: lo activáis cuando queráis y lo quitáis cuando ya tengáis fiestas.</p>
+    <div class="tap">Toca para seguir →</div>
+  </section>
+
+  <section class="s" id="s4">
+    <button class="back" id="back">← atrás</button>
+    <h1 class="up">Elegid</h1>
+    <div class="sec up">¿Cómo lo queréis?</div>
+    <div class="seg up" id="seg" style="animation-delay:.05s"><div class="on" data-w="0">Solo fiestas<small>40 € por fiesta</small></div><div data-w="1">Fiestas + semanal<small>+15 € por semana</small></div></div>
+    <div class="sec up" style="animation-delay:.08s">¿Os falta algo? <span style="text-transform:none;letter-spacing:0;font-weight:500">(se paga una vez)</span></div>
+    <div class="op up" data-p="60" data-n="Logo" style="animation-delay:.1s"><div class="ck"></div><span>Logo</span><i>60 €</i></div>
+    <div class="op up" data-p="40" data-n="Colores y estilo" style="animation-delay:.15s"><div class="ck"></div><span>Colores y estilo</span><i>40 €</i></div>
+    <div class="op up" data-p="30" data-n="La carta" style="animation-delay:.2s"><div class="ck"></div><span>La carta</span><i>30 €</i></div>
+    <div class="op up" data-p="25" data-n="Crear el Instagram" style="animation-delay:.25s"><div class="ck"></div><span>Crear el Instagram</span><i>25 €</i></div>
+    <div class="deal" id="deal">Si lo queréis todo, os lo dejo en 130 €</div>
+    <div class="tot"><div><span>Cada fiesta</span><b>40 €</b></div><div id="wk" style="display:none"><span>Semanas sin fiesta</span><b>15 €/semana</b></div><div><span>Extras (una vez)</span><b id="ext">0 €</b></div></div>
+    <a class="btn" id="go" href="#" target="_blank" rel="noopener">¡Contad conmigo! 💬</a>
+  </section>
+</div>
+<script>
+const S=[...document.querySelectorAll('.s')],B=[...document.querySelectorAll('#bars i')];let cur=0;
+function show(i){i=Math.max(0,Math.min(S.length-1,i)); S[cur].classList.remove('on');cur=i;
+ S[i].querySelectorAll('.up').forEach(e=>{e.style.animation='none';e.offsetHeight;e.style.animation=''});
+ S[i].classList.add('on');B.forEach((b,k)=>b.classList.toggle('done',k<=i));
+ const dark=i>=1&&i<=3;B.forEach(b=>{b.style.background=dark?'rgba(255,255,255,.25)':'rgba(0,0,0,.18)';b.firstChild.style.background=dark?'#fff':'#141414'});
+ document.querySelector('meta[name=theme-color]').content=['#ffd23f','#ff4b2b','#141414','#0e6e5c','#ffffff'][i];
+ if(i===2)count();}
+function count(){const el=document.getElementById('n40');let t0=null;function f(t){t0??=t;const k=Math.min(1,(t-t0)/700);el.textContent=Math.round(40*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+S.forEach(s=>{if(!s.hasAttribute('data-tap'))return;s.addEventListener('click',e=>{
+ const it=e.target.closest('.it');if(it){it.classList.toggle('show');return}
+ if(e.clientX<window.innerWidth*0.28&&cur>0)show(cur-1);else show(cur+1)})});
+document.getElementById('back').onclick=()=>show(cur-1);
+let sx=null;document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{if(sx==null)return;const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>60){d<0?show(cur+1):show(cur-1)}sx=null},{passive:true});
+const O=[...document.querySelectorAll('.op')];let W=0;
+document.querySelectorAll('#seg div').forEach(d=>d.onclick=()=>{W=+d.dataset.w;document.querySelectorAll('#seg div').forEach(x=>x.classList.toggle('on',x===d));document.getElementById('wk').style.display=W?'flex':'none';upd()});
+function upd(){const sel=O.filter(o=>o.classList.contains('on'));let sum=sel.reduce((a,o)=>a+ +o.dataset.p,0);const all=sel.length===O.length;
+ if(all)sum=130;document.getElementById('ext').textContent=sum+' €';
+ document.getElementById('deal').textContent=all?'🎁 ¡Todo junto! 155 € → 130 €':'Si lo queréis todo, os lo dejo en 130 €';
+ let m='¡Hola Elena! 🍔 Desde ¿La Ruta del Sabor? contamos contigo para las redes.\n\n• Cada fiesta: póster + vídeo del plato + vídeo resumen (40 €)';
+ if(W)m+='\n• Semanas sin fiesta: 1 publicación semanal (15 €/semana)';
+ if(sel.length)m+='\n• Extras: '+sel.map(o=>o.dataset.n).join(', ')+' ('+sum+' €)';
+ document.getElementById('go').href='https://wa.me/?text='+encodeURIComponent(m)}
+O.forEach(o=>o.onclick=()=>{o.classList.toggle('on');upd()});upd();show(0);B[0].classList.add('done');
+</script>
+</body>
+</html>
