@@ -151,7 +151,7 @@ function upd(){const sel=O.filter(o=>o.classList.contains('on'));let sum=sel.red
  let m='¡Hola Elena! 🍔 Desde ¿La Ruta del Sabor? contamos contigo para las redes.\n\n• Cada fiesta: póster + vídeo del plato + vídeo resumen (40 €)';
  if(W)m+='\n• Semanas sin fiesta: 1 publicación semanal (15 €/semana)';
  if(sel.length)m+='\n• Extras: '+sel.map(o=>o.dataset.n).join(', ')+' ('+sum+' €)';
- document.getElementById('go').href='https://wa.me/?text='+encodeURIComponent(m)}
+ document.getElementById('go').href='https://wa.me/34601732901?text='+encodeURIComponent(m)}
 O.forEach(o=>o.onclick=()=>{o.classList.toggle('on');upd()});upd();show(0);B[0].classList.add('done');
 </script>
 </body>
