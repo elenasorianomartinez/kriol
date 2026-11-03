@@ -47,17 +47,27 @@ p{font-weight:500;font-size:20px;line-height:1.25}
 .big small{font-size:.45em;letter-spacing:-2px}
 .save{display:inline-block;background:#ff4b2b;color:#fff;font-weight:800;font-size:16px;padding:4px 10px;border-radius:10px;transform:rotate(-3deg);margin-bottom:16px}
 .note{margin-top:22px;background:#2a2a2a;border-radius:18px;padding:16px 18px;font-size:17px;line-height:1.3;font-weight:500}
-#s4{background:#fff;color:#141414}
+#s35{background:#0e6e5c;color:#fff}
+#s35 .big{color:#ffd23f;letter-spacing:-5px}
+.it2{display:flex;gap:16px;align-items:center;margin-top:22px}
+.it2 .em{font-size:40px;background:#fff;border-radius:20px;width:70px;height:70px;display:flex;align-items:center;justify-content:center;flex:none}
+.it2 .tx{font-weight:700;font-size:21px;line-height:1.1}
+#s4{background:#fff;color:#141414;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sec{font-weight:800;font-size:15px;letter-spacing:1px;text-transform:uppercase;opacity:.5;margin-top:20px}
+.seg{display:flex;gap:8px;margin-top:8px}
+.seg div{flex:1;border:2.5px solid #141414;border-radius:16px;padding:10px 8px;text-align:center;font-weight:800;font-size:16px;line-height:1.15;cursor:pointer}
+.seg div small{display:block;font-weight:500;font-size:13px;opacity:.75}
+.seg div.on{background:#141414;color:#ffd23f}
 #s4 h1{font-size:clamp(38px,12vw,48px)}
-.op{display:flex;align-items:center;gap:14px;border:2.5px solid #141414;border-radius:18px;padding:13px 16px;margin-top:11px;font-weight:700;font-size:19px;cursor:pointer;transition:background .2s,transform .15s}
+.op{display:flex;align-items:center;gap:14px;border:2.5px solid #141414;border-radius:18px;padding:11px 16px;margin-top:9px;font-weight:700;font-size:18px;cursor:pointer;transition:background .2s,transform .15s}
 .op:active{transform:scale(.97)}
 .op span{flex:1}
 .op i{font-style:normal;font-weight:800}
 .op .ck{width:26px;height:26px;border-radius:50%;border:2.5px solid #141414;flex:none;transition:all .2s}
 .op.on{background:#ffd23f}
 .op.on .ck{background:#141414;box-shadow:inset 0 0 0 5px #ffd23f}
-.deal{font-size:15px;font-weight:700;margin-top:12px;color:#ff4b2b;min-height:20px}
-.tot{margin-top:auto;padding:14px 4px 12px;font-weight:700;font-size:17px;line-height:1.5}
+.deal{font-size:15px;font-weight:700;margin-top:10px;color:#ff4b2b;min-height:20px}
+.tot{margin-top:auto;padding:10px 4px 12px;font-weight:700;font-size:17px;line-height:1.5}
 .tot div{display:flex;justify-content:space-between}
 .tot b{font-weight:800}
 .btn{display:block;width:100%;border:none;background:#25d366;color:#fff;border-radius:40px;padding:18px;text-align:center;font:800 21px 'Bricolage Grotesque',system-ui,sans-serif;cursor:pointer;text-decoration:none}
@@ -67,7 +77,7 @@ p{font-weight:500;font-size:20px;line-height:1.25}
 </head>
 <body>
 <div id="app">
-  <div class="bars" id="bars"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+  <div class="bars" id="bars"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
 
   <section class="s on" id="s1" data-tap>
     <div class="up"><span class="wave">👋</span></div>
@@ -94,16 +104,27 @@ p{font-weight:500;font-size:20px;line-height:1.25}
     <div class="tap">Toca para seguir →</div>
   </section>
 
+  <section class="s" id="s35" data-tap>
+    <h1 class="up">¿Y las semanas sin fiesta?</h1>
+    <p class="up" style="margin-top:18px;animation-delay:.1s">Al principio igual no salís todas las semanas. Para que el Instagram no se quede parado:</p>
+    <div class="it2 up" style="animation-delay:.2s"><div class="em">📸</div><div class="tx">1 publicación a la semana con las fotos y vídeos que ya tengamos</div></div>
+    <div class="big up" style="animation-delay:.3s;font-size:clamp(90px,30vw,120px);margin-top:26px"><span>15</span><small>€</small></div>
+    <p class="up" style="animation-delay:.35s">por semana. Es opcional: lo activáis cuando queráis y lo quitáis cuando ya tengáis fiestas.</p>
+    <div class="tap">Toca para seguir →</div>
+  </section>
+
   <section class="s" id="s4">
     <button class="back" id="back">← atrás</button>
-    <h1 class="up">¿Os falta algo?</h1>
-    <p class="up" style="margin-top:8px;font-size:17px;opacity:.7;animation-delay:.05s">Solo se paga una vez. Marcad lo que queráis.</p>
+    <h1 class="up">Elegid</h1>
+    <div class="sec up">¿Cómo lo queréis?</div>
+    <div class="seg up" id="seg" style="animation-delay:.05s"><div class="on" data-w="0">Solo fiestas<small>40 € por fiesta</small></div><div data-w="1">Fiestas + semanal<small>+15 € por semana</small></div></div>
+    <div class="sec up" style="animation-delay:.08s">¿Os falta algo? <span style="text-transform:none;letter-spacing:0;font-weight:500">(se paga una vez)</span></div>
     <div class="op up" data-p="60" data-n="Logo" style="animation-delay:.1s"><div class="ck"></div><span>Logo</span><i>60 €</i></div>
     <div class="op up" data-p="40" data-n="Colores y estilo" style="animation-delay:.15s"><div class="ck"></div><span>Colores y estilo</span><i>40 €</i></div>
     <div class="op up" data-p="30" data-n="La carta" style="animation-delay:.2s"><div class="ck"></div><span>La carta</span><i>30 €</i></div>
     <div class="op up" data-p="25" data-n="Crear el Instagram" style="animation-delay:.25s"><div class="ck"></div><span>Crear el Instagram</span><i>25 €</i></div>
     <div class="deal" id="deal">Si lo queréis todo, os lo dejo en 130 €</div>
-    <div class="tot"><div><span>Cada fiesta</span><b>40 €</b></div><div><span>Extras (una vez)</span><b id="ext">0 €</b></div></div>
+    <div class="tot"><div><span>Cada fiesta</span><b>40 €</b></div><div id="wk" style="display:none"><span>Semanas sin fiesta</span><b>15 €/semana</b></div><div><span>Extras (una vez)</span><b id="ext">0 €</b></div></div>
     <a class="btn" id="go" href="#" target="_blank" rel="noopener">¡Contad conmigo! 💬</a>
   </section>
 </div>
@@ -112,8 +133,8 @@ const S=[...document.querySelectorAll('.s')],B=[...document.querySelectorAll('#b
 function show(i){i=Math.max(0,Math.min(S.length-1,i)); S[cur].classList.remove('on');cur=i;
  S[i].querySelectorAll('.up').forEach(e=>{e.style.animation='none';e.offsetHeight;e.style.animation=''});
  S[i].classList.add('on');B.forEach((b,k)=>b.classList.toggle('done',k<=i));
- const dark=i===1||i===2;B.forEach(b=>{b.style.background=dark?'rgba(255,255,255,.25)':'rgba(0,0,0,.18)';b.firstChild.style.background=dark?'#fff':'#141414'});
- document.querySelector('meta[name=theme-color]').content=['#ffd23f','#ff4b2b','#141414','#ffffff'][i];
+ const dark=i>=1&&i<=3;B.forEach(b=>{b.style.background=dark?'rgba(255,255,255,.25)':'rgba(0,0,0,.18)';b.firstChild.style.background=dark?'#fff':'#141414'});
+ document.querySelector('meta[name=theme-color]').content=['#ffd23f','#ff4b2b','#141414','#0e6e5c','#ffffff'][i];
  if(i===2)count();}
 function count(){const el=document.getElementById('n40');let t0=null;function f(t){t0??=t;const k=Math.min(1,(t-t0)/700);el.textContent=Math.round(40*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
 S.forEach(s=>{if(!s.hasAttribute('data-tap'))return;s.addEventListener('click',e=>{
@@ -122,11 +143,13 @@ S.forEach(s=>{if(!s.hasAttribute('data-tap'))return;s.addEventListener('click',e
 document.getElementById('back').onclick=()=>show(cur-1);
 let sx=null;document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
 document.addEventListener('touchend',e=>{if(sx==null)return;const d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>60){d<0?show(cur+1):show(cur-1)}sx=null},{passive:true});
-const O=[...document.querySelectorAll('.op')];
+const O=[...document.querySelectorAll('.op')];let W=0;
+document.querySelectorAll('#seg div').forEach(d=>d.onclick=()=>{W=+d.dataset.w;document.querySelectorAll('#seg div').forEach(x=>x.classList.toggle('on',x===d));document.getElementById('wk').style.display=W?'flex':'none';upd()});
 function upd(){const sel=O.filter(o=>o.classList.contains('on'));let sum=sel.reduce((a,o)=>a+ +o.dataset.p,0);const all=sel.length===O.length;
  if(all)sum=130;document.getElementById('ext').textContent=sum+' €';
  document.getElementById('deal').textContent=all?'🎁 ¡Todo junto! 155 € → 130 €':'Si lo queréis todo, os lo dejo en 130 €';
  let m='¡Hola Elena! 🍔 Desde ¿La Ruta del Sabor? contamos contigo para las redes.\n\n• Cada fiesta: póster + vídeo del plato + vídeo resumen (40 €)';
+ if(W)m+='\n• Semanas sin fiesta: 1 publicación semanal (15 €/semana)';
  if(sel.length)m+='\n• Extras: '+sel.map(o=>o.dataset.n).join(', ')+' ('+sum+' €)';
  document.getElementById('go').href='https://wa.me/?text='+encodeURIComponent(m)}
 O.forEach(o=>o.onclick=()=>{o.classList.toggle('on');upd()});upd();show(0);B[0].classList.add('done');
