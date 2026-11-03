@@ -90,8 +90,8 @@ p{font-weight:500;font-size:20px;line-height:1.25}
     <h1 class="up">Cada vez que salgáis con el food truck, os hago:</h1>
     <div class="hint up" style="animation-delay:.1s">👆 Tocad cada cosa para ver su precio</div>
     <div class="it up" style="animation-delay:.15s"><div class="em">📍</div><div class="tx">Un póster para anunciar dónde vais a estar</div><div class="pr">10 €</div></div>
-    <div class="it up" style="animation-delay:.25s"><div class="em">🍔</div><div class="tx">Un vídeo enseñando un plato</div><div class="pr">15 €</div></div>
-    <div class="it up" style="animation-delay:.35s"><div class="em">🎉</div><div class="tx">Un vídeo de cómo ha ido la fiesta</div><div class="pr">20 €</div></div>
+    <div class="it up" style="animation-delay:.25s"><div class="em">🍔</div><div class="tx">Un vídeo enseñando un plato</div><div class="pr">20 €</div></div>
+    <div class="it up" style="animation-delay:.35s"><div class="em">🎉</div><div class="tx">Un vídeo de cómo ha ido la fiesta</div><div class="pr">25 €</div></div>
     <div class="tap">Toca aquí abajo para seguir →</div>
   </section>
 
@@ -106,10 +106,10 @@ p{font-weight:500;font-size:20px;line-height:1.25}
 
   <section class="s" id="s35" data-tap>
     <h1 class="up">¿Y las semanas sin fiesta?</h1>
-    <p class="up" style="margin-top:18px;animation-delay:.1s">Al principio igual no salís todas las semanas. Para que el Instagram no se quede parado:</p>
-    <div class="it2 up" style="animation-delay:.2s"><div class="em">📸</div><div class="tx">1 publicación a la semana con las fotos y vídeos que ya tengamos</div></div>
-    <div class="big up" style="animation-delay:.3s;font-size:clamp(90px,30vw,120px);margin-top:26px"><span>15</span><small>€</small></div>
-    <p class="up" style="animation-delay:.35s">por semana. Es opcional: lo activáis cuando queráis y lo quitáis cuando ya tengáis fiestas.</p>
+    <p class="up" style="margin-top:18px;animation-delay:.1s">Al principio igual no salís todas las semanas. Para que el Instagram no se quede parado, esas semanas os hago:</p>
+    <div class="it2 up" style="animation-delay:.2s"><div class="em">📸</div><div class="tx">1 publicación y 3 historias con las fotos y vídeos que ya tengamos</div></div>
+    <div class="big up" style="animation-delay:.3s;font-size:clamp(90px,30vw,120px);margin-top:26px"><span>30</span><small>€</small></div>
+    <p class="up" style="animation-delay:.35s">por semana sin fiesta. Así, cada semana pagáis solo una cosa: 50 € si hay fiesta y 30 € si no la hay.</p>
     <div class="tap">Toca para seguir →</div>
   </section>
 
@@ -117,14 +117,14 @@ p{font-weight:500;font-size:20px;line-height:1.25}
     <button class="back" id="back">← atrás</button>
     <h1 class="up">Elegid</h1>
     <div class="sec up">¿Cómo lo queréis?</div>
-    <div class="seg up" id="seg" style="animation-delay:.05s"><div class="on" data-w="0">Solo fiestas<small>40 € por fiesta</small></div><div data-w="1">Fiestas + semanal<small>+15 € por semana</small></div></div>
+    <div class="seg up" id="seg" style="animation-delay:.05s"><div class="on" data-w="0">Solo fiestas<small>50 € por fiesta</small></div><div data-w="1">Fiestas + semanas sin fiesta<small>30 € esas semanas</small></div></div>
     <div class="sec up" style="animation-delay:.08s">¿Os falta algo? <span style="text-transform:none;letter-spacing:0;font-weight:500">(se paga una vez)</span></div>
     <div class="op up" data-p="60" data-n="Logo" style="animation-delay:.1s"><div class="ck"></div><span>Logo</span><i>60 €</i></div>
     <div class="op up" data-p="40" data-n="Colores y estilo" style="animation-delay:.15s"><div class="ck"></div><span>Colores y estilo</span><i>40 €</i></div>
     <div class="op up" data-p="30" data-n="La carta" style="animation-delay:.2s"><div class="ck"></div><span>La carta</span><i>30 €</i></div>
     <div class="op up" data-p="25" data-n="Crear el Instagram" style="animation-delay:.25s"><div class="ck"></div><span>Crear el Instagram</span><i>25 €</i></div>
     <div class="deal" id="deal">Si lo queréis todo, os lo dejo en 130 €</div>
-    <div class="tot"><div><span>Cada fiesta</span><b>40 €</b></div><div id="wk" style="display:none"><span>Semanas sin fiesta</span><b>15 €/semana</b></div><div><span>Extras (una vez)</span><b id="ext">0 €</b></div></div>
+    <div class="tot"><div><span>Cada fiesta</span><b>50 €</b></div><div id="wk" style="display:none"><span>Semanas sin fiesta</span><b>30 €/semana</b></div><div><span>Extras (una vez)</span><b id="ext">0 €</b></div></div>
     <a class="btn" id="go" href="#" target="_blank" rel="noopener">¡Contad conmigo! 💬</a>
   </section>
 </div>
@@ -136,7 +136,7 @@ function show(i){i=Math.max(0,Math.min(S.length-1,i)); S[cur].classList.remove('
  const dark=i>=1&&i<=3;B.forEach(b=>{b.style.background=dark?'rgba(255,255,255,.25)':'rgba(0,0,0,.18)';b.firstChild.style.background=dark?'#fff':'#141414'});
  document.querySelector('meta[name=theme-color]').content=['#ffd23f','#ff4b2b','#141414','#0e6e5c','#ffffff'][i];
  if(i===2)count();}
-function count(){const el=document.getElementById('n40');let t0=null;function f(t){t0??=t;const k=Math.min(1,(t-t0)/700);el.textContent=Math.round(40*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+function count(){const el=document.getElementById('n40');let t0=null;function f(t){t0??=t;const k=Math.min(1,(t-t0)/700);el.textContent=Math.round(50*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
 S.forEach(s=>{if(!s.hasAttribute('data-tap'))return;s.addEventListener('click',e=>{
  const it=e.target.closest('.it');if(it){it.classList.toggle('show');return}
  if(e.clientX<window.innerWidth*0.28&&cur>0)show(cur-1);else show(cur+1)})});
@@ -148,8 +148,8 @@ document.querySelectorAll('#seg div').forEach(d=>d.onclick=()=>{W=+d.dataset.w;d
 function upd(){const sel=O.filter(o=>o.classList.contains('on'));let sum=sel.reduce((a,o)=>a+ +o.dataset.p,0);const all=sel.length===O.length;
  if(all)sum=130;document.getElementById('ext').textContent=sum+' €';
  document.getElementById('deal').textContent=all?'🎁 ¡Todo junto! 155 € → 130 €':'Si lo queréis todo, os lo dejo en 130 €';
- let m='¡Hola Elena! 🍔 Desde ¿La Ruta del Sabor? contamos contigo para las redes.\n\n• Cada fiesta: póster + vídeo del plato + vídeo resumen (40 €)';
- if(W)m+='\n• Semanas sin fiesta: 1 publicación semanal (15 €/semana)';
+ let m='¡Hola Elena! 🍔 Desde ¿La Ruta del Sabor? contamos contigo para las redes.\n\n• Cada fiesta: póster + vídeo del plato + vídeo resumen (50 €)';
+ if(W)m+='\n• Semanas sin fiesta: 1 publicación + 3 historias (30 €/semana)';
  if(sel.length)m+='\n• Extras: '+sel.map(o=>o.dataset.n).join(', ')+' ('+sum+' €)';
  document.getElementById('go').href='https://wa.me/34601732901?text='+encodeURIComponent(m)}
 O.forEach(o=>o.onclick=()=>{o.classList.toggle('on');upd()});upd();show(0);B[0].classList.add('done');
