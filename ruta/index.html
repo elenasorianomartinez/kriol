@@ -75,43 +75,76 @@ p{font-weight:500;font-size:20px;line-height:1.25}
 .btn{display:block;width:100%;border:none;background:#25d366;color:#fff;border-radius:40px;padding:18px;text-align:center;font:800 21px 'Bricolage Grotesque',system-ui,sans-serif;cursor:pointer;text-decoration:none}
 .back{position:absolute;top:calc(env(safe-area-inset-top) + 30px);left:16px;font-weight:700;font-size:15px;opacity:.5;background:none;border:none;font-family:inherit;padding:6px 0;cursor:pointer;color:inherit}
 .zone{position:absolute;top:0;bottom:0;width:30%;left:0;z-index:2}
+.s{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ds{display:block;font-weight:500;font-size:15px;line-height:1.25;max-height:0;overflow:hidden;opacity:0;transition:max-height .35s,opacity .3s,margin .3s}
+.it.show .ds{max-height:160px;opacity:.95;margin-top:6px}
+.it.q{margin-top:10px}.it.q .em{width:50px;height:50px;font-size:26px;border-radius:15px}.it.q .tx{font-size:18px;padding-right:0}
+#s35 .it .tx{padding-right:0}
+#s2 h1,#s35 h1{font-size:clamp(34px,10.5vw,46px)}
+#s2 .it{margin-top:12px}#s2 .it .em,#s35 .em{width:58px;height:58px;font-size:32px;border-radius:17px}
+#s5{background:#ffd23f;color:#141414}
+.note.lt{background:#fff;color:#141414}
+.wh{display:block;font-weight:800;font-size:22px;margin-bottom:6px}
+#s6{background:#141414;color:#fff}
+.op span small{display:block;font-weight:500;font-size:13px;opacity:.65;line-height:1.2;margin-top:2px}
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="bars" id="bars"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+  <div class="bars" id="bars"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
 
   <section class="s on" id="s1" data-tap>
     <div class="up"><span class="wave">👋</span></div>
     <h1 class="up" style="animation-delay:.1s">¡Hola <span class="nm">Saúl</span><br>y <span class="nm">Sergio</span>!</h1>
     <p class="up" style="margin-top:26px;animation-delay:.25s">Esto es lo que os propongo para las redes de <b>¿La Ruta del Sabor?</b></p>
+    <p class="up" style="margin-top:16px;animation-delay:.35s">Vosotros cocináis, grabáis y disfrutáis de las fiestas. Yo me encargo de que todo eso se vea bien en Instagram.</p>
     <div class="tap">Toca para seguir →</div>
   </section>
 
-  <section class="s" id="s2" data-tap>
-    <h1 class="up">Cada vez que salgáis con el food truck, os hago:</h1>
-    <div class="hint up" style="animation-delay:.1s">👆 Tocad cada cosa para ver su precio</div>
-    <div class="it up" style="animation-delay:.15s"><div class="em">📍</div><div class="tx">Un póster para anunciar dónde vais a estar</div><div class="pr">10 €</div></div>
-    <div class="it up" style="animation-delay:.25s"><div class="em">🍔</div><div class="tx">Un vídeo enseñando un plato</div><div class="pr">20 €</div></div>
-    <div class="it up" style="animation-delay:.35s"><div class="em">🎉</div><div class="tx">Un vídeo de cómo ha ido la fiesta</div><div class="pr">25 €</div></div>
+  <section class="s" id="s2" data-tap data-dark>
+    <h1 class="up">Las semanas que tengáis fiesta, os hago:</h1>
+    <div class="hint up" style="animation-delay:.1s">👆 Tocad cada cosa para ver qué es y cuánto cuesta</div>
+    <div class="it up" style="animation-delay:.15s"><div class="em">📍</div><div class="tx">Un cartel para anunciar dónde vais a estar<small class="ds">Un diseño para Instagram con el sitio, la fecha y lo importante del evento.</small></div><div class="pr">10 €</div></div>
+    <div class="it up" style="animation-delay:.25s"><div class="em">🍔</div><div class="tx">Un vídeo enseñando un plato<small class="ds">Me mandáis los clips y yo elijo lo mejor, lo edito, le pongo música y lo dejo listo para Instagram.</small></div><div class="pr">20 €</div></div>
+    <div class="it up" style="animation-delay:.35s"><div class="em">🎉</div><div class="tx">Un vídeo resumen de la fiesta<small class="ds">Lo mejor de la fiesta en un vídeo corto: el ambiente, la comida, la gente, cómo cocináis…</small></div><div class="pr">25 €</div></div>
     <div class="tap">Toca aquí abajo para seguir →</div>
   </section>
 
-  <section class="s" id="s3" data-tap>
-    <p class="up">Las tres cosas, por cada fiesta:</p>
+  <section class="s" id="s3" data-tap data-dark>
+    <p class="up">Semana con fiesta, las tres cosas juntas:</p>
     <div class="big up" style="animation-delay:.1s"><span id="n40">0</span><small>€</small></div>
     <div class="up" style="animation-delay:.2s"><span class="save">os ahorráis 5 €</span></div>
-    <p class="up" style="animation-delay:.25s">Si un mes no salís, no pagáis nada.</p>
-    <div class="note up" style="animation-delay:.35s">📲 Mientras estoy en Guinea, vosotros grabáis y me mandáis los vídeos y fotos, y yo lo edito y lo publico.<br><br>🚐 Cuando vuelva, si puedo, me planto en la fiesta y grabo yo.</div>
+    <p class="up" style="animation-delay:.25s">Solo lo pagáis las semanas que tengáis fiesta.</p>
+    <div class="note up" style="animation-delay:.35s">🧾 Por separado serían 10 € + 20 € + 25 € = <b>55 €</b>.<br>Juntas, <b>50 €</b>.</div>
     <div class="tap">Toca para seguir →</div>
   </section>
 
-  <section class="s" id="s35" data-tap>
+  <section class="s" id="s35" data-tap data-dark>
     <h1 class="up">¿Y las semanas sin fiesta?</h1>
-    <p class="up" style="margin-top:18px;animation-delay:.1s">Al principio igual no salís todas las semanas. Para que el Instagram no se quede parado, esas semanas os hago:</p>
-    <div class="it2 up" style="animation-delay:.2s"><div class="em">📸</div><div class="tx">1 publicación y 3 historias con las fotos y vídeos que ya tengamos</div></div>
-    <div class="big up" style="animation-delay:.3s;font-size:clamp(90px,30vw,120px);margin-top:26px"><span>30</span><small>€</small></div>
-    <p class="up" style="animation-delay:.35s">por semana sin fiesta. Así, cada semana pagáis solo una cosa: 50 € si hay fiesta y 30 € si no la hay.</p>
+    <p class="up" style="margin-top:14px;animation-delay:.1s">Para que el Instagram no se quede parado aunque no tengáis eventos, esa semana os hago:</p>
+    <div class="it2 up" style="animation-delay:.15s"><div class="em">📸</div><div class="tx">1 publicación y 3 historias, con sus textos, y las publico yo</div></div>
+    <div class="it up" style="animation-delay:.25s"><div class="em">✨</div><div class="tx">¿Y si esa semana hay novedad?<small class="ds">Un plato nuevo, una promo, un anuncio… Le damos prioridad y cambiamos lo que tocaba publicar para contar lo más importante.</small></div></div>
+    <div class="big up" style="animation-delay:.3s;font-size:clamp(72px,22vw,96px);margin-top:14px"><span>30</span><small>€</small></div>
+    <p class="up" style="animation-delay:.35s">por semana sin fiesta, con las fotos y vídeos que ya me hayáis mandado.</p>
+    <div class="tap">Toca para seguir →</div>
+  </section>
+
+  <section class="s" id="s5" data-tap>
+    <h1 class="up">¿Cómo lo hacemos?</h1>
+    <div class="note lt up" style="animation-delay:.1s"><b class="wh">🍔 Vosotros</b>Grabáis vídeos y hacéis fotos de los platos, del food truck y de las fiestas, y me lo mandáis con tiempo para preparar las publicaciones. No hace falta que esté editado ni que sea profesional: solo que se vea bien.</div>
+    <div class="note lt up" style="animation-delay:.2s"><b class="wh">📲 Yo</b>Elijo el material, edito los vídeos, hago los diseños, escribo los textos y lo publico en Instagram.</div>
+    <div class="tap">Toca para seguir →</div>
+  </section>
+
+  <section class="s" id="s6" data-tap data-dark>
+    <h1 class="up">¿Dudas?</h1>
+    <div class="hint up" style="animation-delay:.05s;opacity:.7">👆 Tocad cada pregunta</div>
+    <div class="it q up" style="animation-delay:.1s"><div class="em">🎥</div><div class="tx">¿Tienes que venir tú a grabar?<small class="ds">No. Estos precios son para trabajar con lo que me mandéis vosotros. Si algún día necesitáis que vaya a grabar, lo hablamos aparte.</small></div></div>
+    <div class="it q up" style="animation-delay:.15s"><div class="em">🎬</div><div class="tx">¿Y si queremos un vídeo más currado?<small class="ds">Los precios son para vídeos sencillos y chulos para redes. Si queréis algo más complejo o con mucho más trabajo, lo hablamos y vemos el precio antes de hacerlo.</small></div></div>
+    <div class="it q up" style="animation-delay:.2s"><div class="em">💬</div><div class="tx">¿Contestas tú los mensajes?<small class="ds">No. Yo preparo y publico el contenido. Los mensajes, los comentarios y los pedidos los seguís llevando vosotros.</small></div></div>
+    <div class="it q up" style="animation-delay:.25s"><div class="em">📅</div><div class="tx">¿Y si una semana no hay fiesta?<small class="ds">No pasa nada. Esa semana es la de 30 €: seguimos enseñando los platos, el food truck y las novedades.</small></div></div>
+    <div class="it q up" style="animation-delay:.3s"><div class="em">🧪</div><div class="tx">¿Podemos probar primero?<small class="ds">Sí. Empezamos un mes con estos precios y luego vemos juntos cómo ha ido, cuánto trabajo ha sido y si hay que ajustar algo.</small></div></div>
+    <div class="it q up" style="animation-delay:.35s"><div class="em">🗓️</div><div class="tx">¿Cómo sería el primer mes?<small class="ds">Semana 1: si lo necesitáis, logo, colores e Instagram listos.<br>Semanas 2 a 4: contenido normal (50 € con fiesta, 30 € sin fiesta).<br>Al final del mes: lo hablamos.</small></div></div>
     <div class="tap">Toca para seguir →</div>
   </section>
 
@@ -119,14 +152,14 @@ p{font-weight:500;font-size:20px;line-height:1.25}
     <button class="back" id="back">← atrás</button>
     <h1 class="up">Elegid</h1>
     <div class="sec up">¿Cómo lo queréis?</div>
-    <div class="seg up" id="seg" style="animation-delay:.05s"><div class="on" data-w="0">Solo fiestas<small>50 € por fiesta</small></div><div data-w="1">Fiestas + semanas sin fiesta<small>30 € esas semanas</small></div></div>
+    <div class="seg up" id="seg" style="animation-delay:.05s"><div class="on" data-w="0">Solo semanas con fiesta<small>50 € esas semanas</small></div><div data-w="1">Con y sin fiesta<small>50 € o 30 € según la semana</small></div></div>
     <div class="sec up" style="animation-delay:.08s">¿Os falta algo? <span style="text-transform:none;letter-spacing:0;font-weight:500">(se paga una vez)</span></div>
-    <div class="op up" data-p="60" data-n="Logo" style="animation-delay:.1s"><div class="ck"></div><span>Logo</span><i>60 €</i></div>
-    <div class="op up" data-p="40" data-n="Colores y estilo" style="animation-delay:.15s"><div class="ck"></div><span>Colores y estilo</span><i>40 €</i></div>
-    <div class="op up" data-p="30" data-n="La carta" style="animation-delay:.2s"><div class="ck"></div><span>La carta</span><i>30 €</i></div>
-    <div class="op up" data-p="25" data-n="Crear el Instagram" style="animation-delay:.25s"><div class="ck"></div><span>Crear el Instagram</span><i>25 €</i></div>
-    <div class="deal" id="deal">Si lo queréis todo, os lo dejo en 130 €</div>
-    <div class="tot"><div><span>Cada fiesta</span><b>50 €</b></div><div id="wk" style="display:none"><span>Semanas sin fiesta</span><b>30 €/semana</b></div><div><span>Extras (una vez)</span><b id="ext">0 €</b></div></div>
+    <div class="op up" data-p="60" data-n="Logo" style="animation-delay:.1s"><div class="ck"></div><span>Logo<small>Sencillo y fácil de reconocer</small></span><i>60 €</i></div>
+    <div class="op up" data-p="40" data-n="Colores y estilo" style="animation-delay:.15s"><div class="ck"></div><span>Colores y estilo<small>Colores, letras y estilo para que todo vaya a juego</small></span><i>40 €</i></div>
+    <div class="op up" data-p="30" data-n="La carta" style="animation-delay:.2s"><div class="ck"></div><span>La carta<small>Vuestros platos y precios, claros y bonitos</small></span><i>30 €</i></div>
+    <div class="op up" data-p="25" data-n="Crear el Instagram" style="animation-delay:.25s"><div class="ck"></div><span>Crear el Instagram<small>Perfil, bio, foto y datos, listo para publicar</small></span><i>25 €</i></div>
+    <div class="deal" id="deal"></div>
+    <div class="tot"><div><span>Semana con fiesta</span><b>50 €</b></div><div id="wk" style="display:none"><span>Semana sin fiesta</span><b>30 €</b></div><div><span>Extras (una vez)</span><b id="ext">0 €</b></div></div>
     <a class="btn" id="go" href="#" target="_blank" rel="noopener">¡Contad conmigo! 💬</a>
   </section>
 </div>
@@ -135,9 +168,9 @@ const S=[...document.querySelectorAll('.s')],B=[...document.querySelectorAll('#b
 function show(i){i=Math.max(0,Math.min(S.length-1,i)); S[cur].classList.remove('on');cur=i;
  S[i].querySelectorAll('.up').forEach(e=>{e.style.animation='none';e.offsetHeight;e.style.animation=''});
  S[i].classList.add('on');B.forEach((b,k)=>b.classList.toggle('done',k<=i));
- const dark=i>=1&&i<=3;B.forEach(b=>{b.style.background=dark?'rgba(255,255,255,.25)':'rgba(0,0,0,.18)';b.firstChild.style.background=dark?'#fff':'#141414'});
- document.querySelector('meta[name=theme-color]').content=['#ffd23f','#ff4b2b','#141414','#0e6e5c','#ffffff'][i];
- if(i===2)count();}
+ const dark=S[i].hasAttribute('data-dark');B.forEach(b=>{b.style.background=dark?'rgba(255,255,255,.25)':'rgba(0,0,0,.18)';b.firstChild.style.background=dark?'#fff':'#141414'});
+ document.querySelector('meta[name=theme-color]').content=getComputedStyle(S[i]).backgroundColor;
+ if(S[i].id==='s3')count();}
 function count(){const el=document.getElementById('n40');let t0=null;function f(t){t0??=t;const k=Math.min(1,(t-t0)/700);el.textContent=Math.round(50*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
 S.forEach(s=>{if(!s.hasAttribute('data-tap'))return;s.addEventListener('click',e=>{
  const it=e.target.closest('.it');if(it){it.classList.toggle('show');return}
@@ -149,9 +182,9 @@ const O=[...document.querySelectorAll('.op')];let W=0;
 document.querySelectorAll('#seg div').forEach(d=>d.onclick=()=>{W=+d.dataset.w;document.querySelectorAll('#seg div').forEach(x=>x.classList.toggle('on',x===d));document.getElementById('wk').style.display=W?'flex':'none';upd()});
 function upd(){const sel=O.filter(o=>o.classList.contains('on'));let sum=sel.reduce((a,o)=>a+ +o.dataset.p,0);const all=sel.length===O.length;
  if(all)sum=130;document.getElementById('ext').textContent=sum+' €';
- document.getElementById('deal').textContent=all?'🎁 ¡Todo junto! 155 € → 130 €':'Si lo queréis todo, os lo dejo en 130 €';
- let m='¡Hola Elena! 🍔 Desde ¿La Ruta del Sabor? contamos contigo para las redes.\n\n• Cada fiesta: póster + vídeo del plato + vídeo resumen (50 €)';
- if(W)m+='\n• Semanas sin fiesta: 1 publicación + 3 historias (30 €/semana)';
+ document.getElementById('deal').textContent=all?'🎁 Los cuatro juntos: 155 € → 130 €':'Los cuatro juntos: 130 € en vez de 155 €';
+ let m='¡Hola Elena! 🍔 Desde ¿La Ruta del Sabor? contamos contigo para las redes.\n\n• Semana con fiesta: cartel + vídeo de un plato + vídeo resumen (50 €)';
+ if(W)m+='\n• Semana sin fiesta: 1 publicación + 3 historias (30 €)';
  if(sel.length)m+='\n• Extras: '+sel.map(o=>o.dataset.n).join(', ')+' ('+sum+' €)';
  document.getElementById('go').href='https://wa.me/34601732901?text='+encodeURIComponent(m)}
 O.forEach(o=>o.onclick=()=>{o.classList.toggle('on');upd()});upd();show(0);B[0].classList.add('done');
