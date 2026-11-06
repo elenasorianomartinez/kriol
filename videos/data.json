@@ -1,5 +1,5 @@
 {
- "version": 2,
+ "version": 3,
  "videos": [
   {
    "id": "v00",
@@ -249,7 +249,7 @@
    },
    {
     "label": "vistas presentación nueva (TikTok + Insta)",
-    "valor": "10,7k"
+    "valor": "12,6k"
    }
   ],
   "consejo": "Lo que mejor te funciona es el humor corto, de 20 segundos o menos, porque se comparte mucho. Las fiestas y lo de Valencia vs Bissau te traen seguidores.",
@@ -259,18 +259,18 @@
     "titulo": "Presentación nueva",
     "fecha": "5/11",
     "tiktok": {
-     "vistas": 5515,
-     "likes": 474,
-     "coment": 10,
-     "compart": 12
+     "vistas": 6087,
+     "likes": 545,
+     "coment": 13,
+     "compart": 15
     },
     "instagram": {
-     "vistas": 5135,
-     "likes": 221,
-     "coment": 21,
+     "vistas": 6472,
+     "likes": 261,
+     "coment": 23,
      "compart": 16
     },
-    "nota": "En Instagram tiene el doble de comentarios que en TikTok."
+    "nota": "Instagram ya tiene más vistas que TikTok y crece más rápido. 22 guardados y +31 seguidores en TikTok."
    },
    {
     "titulo": "Presentación original (borrada)",
