@@ -42,7 +42,7 @@ h3{font-size:12px;letter-spacing:.5px;font-weight:800;color:var(--mu);margin:22p
 .day{text-align:center;border-radius:12px;padding:7px 0;background:var(--card);font-size:10px;font-weight:700;color:var(--mu)}
 .day b{display:block;font-size:16px;color:var(--tx)}
 .day.v{background:var(--naranja);color:var(--bg)} .day.v b{color:var(--bg)}
-.day.p{background:var(--card2)}
+.day.p{background:var(--amarillo);color:var(--tinta)} .day.p b{color:var(--tinta)}
 .day.h{box-shadow:inset 0 0 0 2px var(--amarillo)}
 .day.sel{box-shadow:inset 0 0 0 3px var(--tx)}
 .day.out{opacity:.35}
@@ -73,6 +73,7 @@ h3{font-size:12px;letter-spacing:.5px;font-weight:800;color:var(--mu);margin:22p
 .item .m{font-size:12px;color:var(--mu);margin-top:3px}
 .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .chip{flex:0 0 auto;padding:7px 12px;border-radius:10px;background:var(--card);font-size:12px;font-weight:800;text-transform:uppercase}
+.chips.filt{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible}.chips.filt .chip{text-align:center;padding:8px 4px;font-size:11px}
 .chip.on{background:var(--amarillo);color:var(--tinta)}
 .form{display:grid;gap:10px;margin-top:12px;background:var(--card);padding:14px;border-radius:18px}
 .form label{font-size:11px;font-weight:800;color:var(--mu);text-transform:uppercase;display:grid;gap:5px}
@@ -92,6 +93,8 @@ textarea{min-height:70px;resize:vertical}
 .sbar .row em{font-style:normal;color:var(--mu);font-variant-numeric:tabular-nums}
 .sbar .tr{height:10px;border-radius:6px;background:var(--linea);margin-top:5px;overflow:hidden}
 .sbar .tr i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--naranja),var(--amarillo))}
+.gv{background:var(--card);border-radius:16px;padding:14px;margin-top:8px}.gv .t{font-weight:800;font-size:16px}.gv>.row b{color:var(--naranja);font-size:13px}
+.net{display:grid;grid-template-columns:70px repeat(4,1fr);gap:4px;align-items:center;margin-top:10px;font-size:10px;color:var(--mu);font-weight:700}.net>span{font-size:11px;color:var(--tx);font-weight:800}.net b{display:block;font-size:15px;color:var(--tx);font-variant-numeric:tabular-nums}
 .tip{background:var(--amarillo);color:var(--tinta);border-radius:16px;padding:14px;font-weight:700;font-size:14px;margin-top:8px}
 .state{font-size:11px;color:var(--mu);text-align:center;margin-top:18px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -117,6 +120,7 @@ const iso=d=>d.toISOString().slice(0,10);
 const fmt=f=>{const d=at(f);return d.getUTCDate()+"/"+(d.getUTCMonth()+1)+"/"+String(d.getUTCFullYear()).slice(2)};
 const fmtC=f=>{const d=at(f);return d.getUTCDate()+"/"+(d.getUTCMonth()+1)};
 const dia=f=>DIAS[at(f).getUTCDay()];
+const nf=n=>n==null?"–":String(n).replace(/\B(?=(\d{3})+(?!\d))/g,".");
 const hoyISO=()=>iso(new Date());
 
 function cache(save){try{if(save)localStorage.setItem("pv",JSON.stringify({videos:S.videos,notas:S.notas,ideas:S.ideas,stats:S.stats}));else{const c=JSON.parse(localStorage.getItem("pv")||"null");if(c)Object.assign(S,c)}}catch(e){}}
@@ -191,7 +195,7 @@ function vVideos(){
   if(S.edit)return editForm();
   const f=S.filtro;const vs=S.videos.filter(v=>f==="todos"||v.estado===f).sort((a,b)=>(a.fecha||"9999").localeCompare(b.fecha||"9999"));
   return `<div class="row"><div class="lbl">Vídeos</div><button class="btn o" style="flex:0 0 auto;padding:9px 14px" id="vNew">+ Nuevo</button></div>
-  <div class="chips" style="margin-top:12px">${["todos",...ESTADOS].map(e=>`<button class="chip ${f===e?"on":""}" data-filtro="${e}">${e}${e!=="todos"?" "+S.videos.filter(v=>v.estado===e).length:""}</button>`).join("")}</div>
+  <div class="chips filt" style="margin-top:12px">${["todos",...ESTADOS].map(e=>`<button class="chip ${f===e?"on":""}" data-filtro="${e}">${e}${e!=="todos"?" "+S.videos.filter(v=>v.estado===e).length:""}</button>`).join("")}</div>
   ${vs.length?vs.map(v=>`<button class="item${v.estado==="publicado"?" hecho":""}" data-edit="${v.id}"><div class="row"><div class="t">${esc(v.titulo)}</div>${v.fecha?`<b style="color:var(--naranja);flex:0 0 auto">${fmtC(v.fecha)}</b>`:""}</div><div class="tags">${videoTags(v)}</div>${v.notas?`<div class="m">${esc(v.notas)}</div>`:""}</button>`).join(""):`<div class="empty">No hay vídeos aquí todavía.</div>`}${estado()}`;
 }
 function editForm(){
@@ -213,11 +217,14 @@ function vIdeas(){
 function vStats(){
   const s=S.stats;
   if(!s)return `<div class="lbl">Stats</div><div class="empty">Las estadísticas aparecerán aquí cuando las actualice después de cada análisis.</div>${estado()}`;
-  const vids=s.videos||[];const max=Math.max(1,...vids.map(v=>v.vistas||0));
+  const maxG=Math.max(1,...(s.guinea||[]).map(v=>(v.tiktok?.vistas||0)+(v.instagram?.vistas||0)));
   return `<div class="lbl">Stats</div><div class="hint" style="margin-top:4px">Actualizado ${esc(s.actualizado||"")}</div>
   <div class="kpis" style="margin-top:12px">${(s.kpis||[]).map((k,i)=>`<div class="kpi ${i===0?"o":""}"><b>${esc(k.valor)}</b><span>${esc(k.label)}</span></div>`).join("")}</div>
   ${s.consejo?`<h3>Qué toca</h3><div class="tip">${esc(s.consejo)}</div>`:""}
-  ${vids.length?`<h3>Vídeos (vistas TikTok + Instagram)</h3>${vids.map(v=>`<div class="sbar"><div class="row"><span>${esc(v.titulo)}</span><em>${(v.vistas||0).toLocaleString("es-ES")}</em></div><div class="tr"><i style="width:${(v.vistas||0)/max*100}%"></i></div>${v.nota?`<div class="hint" style="margin-top:4px">${esc(v.nota)}</div>`:""}</div>`).join("")}`:""}
+  ${(s.guinea||[]).length?`<h3>Vídeos de Guinea</h3>${s.guinea.map(v=>{const tot=(v.tiktok?.vistas||0)+(v.instagram?.vistas||0);return `<div class="gv"><div class="row"><div class="t">${esc(v.titulo)}</div><b>${esc(v.fecha||"")}</b></div>
+   <div class="sbar" style="margin-top:6px"><div class="row"><span>Vistas totales</span><em>${tot.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")}</em></div><div class="tr"><i style="width:${tot/maxG*100}%"></i></div></div>
+   ${[["TikTok",v.tiktok],["Instagram",v.instagram]].filter(x=>x[1]).map(([n,d])=>`<div class="net"><span>${n}</span><div><b>${(d.vistas||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")}</b>vistas</div><div><b>${nf(d.likes)}</b>likes</div><div><b>${d.coment??"–"}</b>coment.</div><div><b>${d.compart??"–"}</b>compart.</div></div>`).join("")}
+   ${v.nota?`<div class="hint">${esc(v.nota)}</div>`:""}</div>`}).join("")}`:""}
   ${s.mejores_dias?`<h3>Mejores días</h3><div class="item" style="margin-top:0">${esc(s.mejores_dias)}</div>`:""}${estado()}`;
 }
 function estado(){return `<div class="state">Se guarda en este móvil${S.stats?.actualizado?" · stats del "+esc(S.stats.actualizado):""}</div>`}
