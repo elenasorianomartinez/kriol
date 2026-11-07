@@ -1,5 +1,5 @@
 {
- "version": 5,
+ "version": 6,
  "videos": [
   {
    "id": "v00",
@@ -233,11 +233,11 @@
   }
  ],
  "stats": {
-  "actualizado": "6/11/26",
+  "actualizado": "7/11/26",
   "kpis": [
    {
-    "label": "seguidores TikTok",
-    "valor": "599"
+    "label": "seguidores nuevos en TikTok con la presentación",
+    "valor": "+236"
    },
    {
     "label": "seguidores Instagram",
@@ -249,39 +249,45 @@
    },
    {
     "label": "vistas presentación nueva (TikTok + Insta)",
-    "valor": "18,8k"
+    "valor": "28,8k"
    }
   ],
-  "consejo": "Lo que mejor te funciona es el humor corto, de 20 segundos o menos, porque se comparte mucho. Las fiestas y lo de Valencia vs Bissau te traen seguidores.",
+  "consejo": "La presentación ha sido un éxito: casi 29.000 vistas y 236 seguidores nuevos. Publica a las 19:30 en las dos redes a la vez: el mono salió a las 21:39 en TikTok y arrancó más lento.",
   "mejores_dias": "Martes, jueves y domingo a las 19:30 de Bissau (20:30 en España). La mayoría de tu público está en España.",
   "guinea": [
    {
     "titulo": "Probando el mono",
     "fecha": "6/11",
     "instagram": {
-     "vistas": 129,
-     "likes": 4,
-     "coment": 0,
-     "compart": 0
+     "vistas": 3682,
+     "likes": 75,
+     "coment": 9,
+     "compart": 16
     },
-    "nota": "Recién publicado: datos a los 15 minutos."
+    "nota": "A las ~20 h. En Instagram va el doble que en TikTok.",
+    "tiktok": {
+     "vistas": 1790,
+     "likes": 106,
+     "coment": 5,
+     "compart": 12
+    }
    },
    {
     "titulo": "Presentación nueva",
     "fecha": "5/11",
     "tiktok": {
-     "vistas": 8213,
-     "likes": 743,
-     "coment": 23,
-     "compart": 62
+     "vistas": 16965,
+     "likes": 1584,
+     "coment": 55,
+     "compart": 141
     },
     "instagram": {
-     "vistas": 10597,
-     "likes": 406,
-     "coment": 25,
-     "compart": 35
+     "vistas": 11794,
+     "likes": 450,
+     "coment": 37,
+     "compart": 42
     },
-    "nota": "Ya supera a la original: 18.810 vistas entre las dos redes. Instagram tira más (10.597)."
+    "nota": "28.759 vistas en total: ya casi el doble que la original. +236 seguidores en TikTok."
    },
    {
     "titulo": "Presentación original (borrada)",
