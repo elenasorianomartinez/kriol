@@ -1,5 +1,5 @@
 {
- "version": 6,
+ "version": 7,
  "videos": [
   {
    "id": "v00",
@@ -233,11 +233,11 @@
   }
  ],
  "stats": {
-  "actualizado": "7/11/26",
+  "actualizado": "9/11/26",
   "kpis": [
    {
     "label": "seguidores nuevos en TikTok con la presentación",
-    "valor": "+236"
+    "valor": "+336"
    },
    {
     "label": "seguidores Instagram",
@@ -249,45 +249,62 @@
    },
    {
     "label": "vistas presentación nueva (TikTok + Insta)",
-    "valor": "28,8k"
+    "valor": "34,6k"
    }
   ],
-  "consejo": "La presentación ha sido un éxito: casi 29.000 vistas y 236 seguidores nuevos. Publica a las 19:30 en las dos redes a la vez: el mono salió a las 21:39 en TikTok y arrancó más lento.",
+  "consejo": "Instagram es tu red para Guinea: el Interbarrios va 7 veces mejor allí que en TikTok. En TikTok, texto en español y gancho en el primer segundo.",
   "mejores_dias": "Martes, jueves y domingo a las 19:30 de Bissau (20:30 en España). La mayoría de tu público está en España.",
   "guinea": [
+   {
+    "titulo": "Final del Interbarrios",
+    "fecha": "8/11",
+    "tiktok": {
+     "vistas": 824,
+     "likes": 54,
+     "coment": 2,
+     "compart": 2
+    },
+    "instagram": {
+     "vistas": 6058,
+     "likes": 381,
+     "coment": 10,
+     "compart": 31
+    },
+    "nota": "Instagram 7 veces más que TikTok, y con muchos likes: allí lo ve la gente de Guinea."
+   },
    {
     "titulo": "Probando el mono",
     "fecha": "6/11",
     "instagram": {
-     "vistas": 3682,
-     "likes": 75,
-     "coment": 9,
-     "compart": 16
+     "vistas": 5127,
+     "likes": 101,
+     "coment": 10,
+     "compart": 35
     },
-    "nota": "A las ~20 h. En Instagram va el doble que en TikTok.",
+    "nota": "A los 2,5 días.",
     "tiktok": {
-     "vistas": 1790,
-     "likes": 106,
-     "coment": 5,
-     "compart": 12
+     "vistas": 3005,
+     "likes": 154,
+     "coment": 9,
+     "compart": 24
     }
    },
    {
     "titulo": "Presentación nueva",
     "fecha": "5/11",
     "tiktok": {
-     "vistas": 16965,
-     "likes": 1584,
-     "coment": 55,
-     "compart": 141
+     "vistas": 21421,
+     "likes": 2050,
+     "coment": 72,
+     "compart": 194
     },
     "instagram": {
-     "vistas": 11794,
-     "likes": 450,
-     "coment": 37,
-     "compart": 42
+     "vistas": 13154,
+     "likes": 520,
+     "coment": 44,
+     "compart": 50
     },
-    "nota": "28.759 vistas en total: ya casi el doble que la original. +236 seguidores en TikTok."
+    "nota": "34.575 vistas en total y +336 seguidores en TikTok."
    },
    {
     "titulo": "Presentación original (borrada)",
