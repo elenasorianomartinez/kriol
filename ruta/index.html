@@ -118,7 +118,7 @@ h1{text-wrap:balance}p,.tx,.note,.ds,.hint,.op span small,.tap{text-wrap:pretty}
     <h1 class="up">Las semanas que tengáis fiesta, os hago:</h1>
     <div class="hint up" style="animation-delay:.1s">👆 Tocad cada cosa para ver qué es y cuánto cuesta</div>
     <div class="it up" style="animation-delay:.15s"><div class="em">📍</div><div class="tx">Un cartel para anunciar dónde vais a estar<small class="ds">Un diseño para Instagram con el sitio, la fecha y lo importante del evento.</small></div><div class="pr">10 €</div></div>
-    <div class="it up" style="animation-delay:.25s"><div class="em">🍔</div><div class="tx">Un vídeo enseñando un plato<small class="ds">Me mandáis los clips y yo elijo lo mejor, lo edito, le pongo música y lo dejo listo para Instagram.</small></div><div class="pr">20 €</div></div>
+    <div class="it up" style="animation-delay:.25s"><div class="em">🍲</div><div class="tx">Un vídeo enseñando un plato<small class="ds">Me mandáis los clips y yo elijo lo mejor, lo edito, le pongo música y lo dejo listo para Instagram.</small></div><div class="pr">20 €</div></div>
     <div class="it up" style="animation-delay:.35s"><div class="em">🎉</div><div class="tx">Un vídeo resumen de la fiesta<small class="ds">Lo mejor de la fiesta en un vídeo corto: el ambiente, la comida, la gente, cómo cocináis…</small></div><div class="pr">25 €</div></div>
     <div class="tap">Toca aquí abajo para seguir →</div>
   </section>
@@ -142,7 +142,7 @@ h1{text-wrap:balance}p,.tx,.note,.ds,.hint,.op span small,.tap{text-wrap:pretty}
 
   <section class="s" id="s5" data-tap>
     <h1 class="up">Cómo lo hacemos?</h1>
-    <div class="note lt up" style="animation-delay:.1s"><b class="wh">🍔 Vosotros</b>Grabáis vídeos y hacéis fotos de los platos, del food truck y de las fiestas, y me lo mandáis con tiempo para preparar las publicaciones. No hace falta que esté editado ni que sea profesional: solo que se vea bien.</div>
+    <div class="note lt up" style="animation-delay:.1s"><b class="wh">🍲 Vosotros</b>Grabáis vídeos y hacéis fotos de los platos, del food truck y de las fiestas, y me lo mandáis con tiempo para preparar las publicaciones. No hace falta que esté editado ni que sea profesional: solo que se vea bien.</div>
     <div class="note lt up" style="animation-delay:.2s"><b class="wh">📲 Yo</b>Elijo el material, edito los vídeos, hago los diseños, escribo los textos y lo publico en Instagram.</div>
     <div class="tap">Toca para seguir →</div>
   </section>
@@ -193,7 +193,7 @@ document.querySelectorAll('#seg div').forEach(d=>d.onclick=()=>{W=+d.dataset.w;d
 function upd(){const sel=O.filter(o=>o.classList.contains('on'));let sum=sel.reduce((a,o)=>a+ +o.dataset.p,0);const all=sel.length===O.length;
  if(all)sum=130;document.getElementById('ext').textContent=sum+' €';
  document.getElementById('deal').textContent=all?'🎁 Los cuatro juntos: 155 € → 130 €':'Los cuatro juntos: 130 € en vez de 155 €';
- let m='Hola Elena! 🍔 Desde La Ruta del Sabor? contamos contigo para las redes.\n\n• Semana con fiesta: cartel + vídeo de un plato + vídeo resumen (50 €)';
+ let m='Hola Elena! 🍲 Desde La Ruta del Sabor? contamos contigo para las redes.\n\n• Semana con fiesta: cartel + vídeo de un plato + vídeo resumen (50 €)';
  if(W)m+='\n• Semana sin fiesta: 1 publicación + 3 historias (30 €)';
  if(sel.length)m+='\n• Extras: '+sel.map(o=>o.dataset.n).join(', ')+' ('+sum+' €)';
  document.getElementById('go').href='https://wa.me/34601732901?text='+encodeURIComponent(m)}
