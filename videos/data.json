@@ -1,322 +1,322 @@
 {
- "version": 7,
- "videos": [
-  {
-   "id": "v00",
-   "titulo": "Presentación",
-   "fecha": "2026-11-04",
-   "hora": "19:30",
-   "formato": "Valencia vs Bissau",
-   "estado": "publicado",
-   "notas": ""
-  },
-  {
-   "id": "v01",
-   "titulo": "Presentación editada sin cónsul",
-   "fecha": "2026-11-05",
-   "hora": "19:30",
-   "formato": "Valencia vs Bissau",
-   "estado": "publicado",
-   "notas": "Fijada en el perfil"
-  },
-  {
-   "id": "v02",
-   "titulo": "Probando el mono",
-   "fecha": "2026-11-06",
-   "hora": "19:30",
-   "formato": "Humor corto",
-   "estado": "listo",
-   "notas": ""
-  },
-  {
-   "id": "v03",
-   "titulo": "Final del Interbarrios",
-   "fecha": "2026-11-08",
-   "hora": "19:30",
-   "formato": "Fiesta",
-   "estado": "por grabar",
-   "notas": "Texto en español y portugués"
-  },
-  {
-   "id": "v04",
-   "titulo": "Donetes que eran rosquillas",
-   "fecha": "2026-11-10",
-   "hora": "19:30",
-   "formato": "Humor corto",
-   "estado": "grabado",
-   "notas": "Caco"
-  },
-  {
-   "id": "v05",
-   "titulo": "Los platos de aquí",
-   "fecha": "2026-11-12",
-   "hora": "19:30",
-   "formato": "Humor corto",
-   "estado": "grabado",
-   "notas": "Uno y corto"
-  },
-  {
-   "id": "v06",
-   "titulo": "Noche de bar en Almohada",
-   "fecha": "2026-11-15",
-   "hora": "19:30",
-   "formato": "Fiesta",
-   "estado": "grabado",
-   "notas": "Sin repetir lo del mono"
-  },
-  {
-   "id": "v07",
-   "titulo": "Cosas que me sorprendieron",
-   "fecha": "2026-11-17",
-   "hora": "19:30",
-   "formato": "A cámara",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v08",
-   "titulo": "Motos sin casco",
-   "fecha": "2026-11-19",
-   "hora": "19:30",
-   "formato": "Humor corto",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v09",
-   "titulo": "El pan viene a ti",
-   "fecha": "2026-11-22",
-   "hora": "19:30",
-   "formato": "A cámara",
-   "estado": "grabado",
-   "notas": "Hermogenio"
-  },
-  {
-   "id": "v10",
-   "titulo": "Comodín de humor",
-   "fecha": "2026-11-24",
-   "hora": "19:30",
-   "formato": "Humor corto",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v11",
-   "titulo": "Ir al fútbol: Valencia vs Bissau",
-   "fecha": "2026-11-26",
-   "hora": "19:30",
-   "formato": "Valencia vs Bissau",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v12",
-   "titulo": "Un día conmigo",
-   "fecha": "2026-11-29",
-   "hora": "19:30",
-   "formato": "A cámara",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v13",
-   "titulo": "25 kilos de arroz",
-   "fecha": "2026-12-01",
-   "hora": "19:30",
-   "formato": "Humor corto",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v14",
-   "titulo": "Primer vídeo entero en crioulo",
-   "fecha": "2026-12-03",
-   "hora": "19:30",
-   "formato": "A cámara",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v15",
-   "titulo": "Misión oftalmológica",
-   "fecha": "2026-12-06",
-   "hora": "19:30",
-   "formato": "Otro",
-   "estado": "grabado",
-   "notas": "Si hay permiso; si no, palabras en crioulo"
-  },
-  {
-   "id": "v16",
-   "titulo": "Moverse: Valencia vs Bissau",
-   "fecha": "2026-12-08",
-   "hora": "19:30",
-   "formato": "Valencia vs Bissau",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v17",
-   "titulo": "Comodín",
-   "fecha": "2026-12-10",
-   "hora": "19:30",
-   "formato": "Humor corto",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v18",
-   "titulo": "El TAC: ingeniera en Bissau",
-   "fecha": "2026-12-13",
-   "hora": "19:30",
-   "formato": "A cámara",
-   "estado": "grabado",
-   "notas": "Si hay permiso; si no, el mercado"
-  },
-  {
-   "id": "v19",
-   "titulo": "Navidad: Valencia vs Bissau",
-   "fecha": "2026-12-15",
-   "hora": "19:30",
-   "formato": "Valencia vs Bissau",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v20",
-   "titulo": "Comodín",
-   "fecha": "2026-12-17",
-   "hora": "19:30",
-   "formato": "Humor corto",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v21",
-   "titulo": "Mi último pan de Hermogenio",
-   "fecha": "2026-12-20",
-   "hora": "19:30",
-   "formato": "A cámara",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v22",
-   "titulo": "Último día",
-   "fecha": "2026-12-22",
-   "hora": "19:30",
-   "formato": "A cámara",
-   "estado": "por grabar",
-   "notas": ""
-  },
-  {
-   "id": "v90",
-   "titulo": "Estadio 24 de Setembro",
-   "fecha": "",
-   "hora": "19:30",
-   "formato": "Fiesta",
-   "estado": "grabado",
-   "notas": ""
-  }
- ],
- "notas": [
-  {
-   "id": "n1",
-   "texto": "Pedir permiso para los vídeos del TAC y de la misión",
-   "color": "amarillo",
-   "creado": "2026-11-06T09:00:00Z"
-  },
-  {
-   "id": "n2",
-   "texto": "Interbarrios: pedir a guineanos que comenten y etiquetar gente de aquí",
-   "color": "azul",
-   "creado": "2026-11-06T09:01:00Z"
-  }
- ],
- "stats": {
-  "actualizado": "9/11/26",
-  "kpis": [
-   {
-    "label": "seguidores nuevos en TikTok con la presentación",
-    "valor": "+336"
-   },
-   {
-    "label": "seguidores Instagram",
-    "valor": "394"
-   },
-   {
-    "label": "vistas presentación original",
-    "valor": "16,8k"
-   },
-   {
-    "label": "vistas presentación nueva (TikTok + Insta)",
-    "valor": "34,6k"
-   }
-  ],
-  "consejo": "Instagram es tu red para Guinea: el Interbarrios va 7 veces mejor allí que en TikTok. En TikTok, texto en español y gancho en el primer segundo.",
-  "mejores_dias": "Martes, jueves y domingo a las 19:30 de Bissau (20:30 en España). La mayoría de tu público está en España.",
-  "guinea": [
-   {
-    "titulo": "Final del Interbarrios",
-    "fecha": "8/11",
-    "tiktok": {
-     "vistas": 824,
-     "likes": 54,
-     "coment": 2,
-     "compart": 2
+  "version": 8,
+  "videos": [
+    {
+      "id": "v00",
+      "titulo": "Presentación",
+      "fecha": "2026-11-04",
+      "hora": "19:30",
+      "formato": "Valencia vs Bissau",
+      "estado": "publicado",
+      "notas": ""
     },
-    "instagram": {
-     "vistas": 6058,
-     "likes": 381,
-     "coment": 10,
-     "compart": 31
+    {
+      "id": "v01",
+      "titulo": "Presentación editada sin cónsul",
+      "fecha": "2026-11-05",
+      "hora": "19:30",
+      "formato": "Valencia vs Bissau",
+      "estado": "publicado",
+      "notas": "Fijada en el perfil"
     },
-    "nota": "Instagram 7 veces más que TikTok, y con muchos likes: allí lo ve la gente de Guinea."
-   },
-   {
-    "titulo": "Probando el mono",
-    "fecha": "6/11",
-    "instagram": {
-     "vistas": 5127,
-     "likes": 101,
-     "coment": 10,
-     "compart": 35
+    {
+      "id": "v02",
+      "titulo": "Probando el mono",
+      "fecha": "2026-11-06",
+      "hora": "19:30",
+      "formato": "Humor corto",
+      "estado": "listo",
+      "notas": ""
     },
-    "nota": "A los 2,5 días.",
-    "tiktok": {
-     "vistas": 3005,
-     "likes": 154,
-     "coment": 9,
-     "compart": 24
+    {
+      "id": "v03",
+      "titulo": "Final del Interbarrios",
+      "fecha": "2026-11-08",
+      "hora": "19:30",
+      "formato": "Fiesta",
+      "estado": "por grabar",
+      "notas": "Texto en español y portugués"
+    },
+    {
+      "id": "v04",
+      "titulo": "Donetes que eran rosquillas",
+      "fecha": "2026-11-10",
+      "hora": "19:30",
+      "formato": "Humor corto",
+      "estado": "grabado",
+      "notas": "Caco"
+    },
+    {
+      "id": "v05",
+      "titulo": "Los platos de aquí",
+      "fecha": "2026-11-12",
+      "hora": "19:30",
+      "formato": "Humor corto",
+      "estado": "grabado",
+      "notas": "Uno y corto"
+    },
+    {
+      "id": "v06",
+      "titulo": "Noche de bar en Almohada",
+      "fecha": "2026-11-15",
+      "hora": "19:30",
+      "formato": "Fiesta",
+      "estado": "grabado",
+      "notas": "Sin repetir lo del mono"
+    },
+    {
+      "id": "v07",
+      "titulo": "Cosas que me sorprendieron",
+      "fecha": "2026-11-17",
+      "hora": "19:30",
+      "formato": "A cámara",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v08",
+      "titulo": "Motos sin casco",
+      "fecha": "2026-11-19",
+      "hora": "19:30",
+      "formato": "Humor corto",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v09",
+      "titulo": "El pan viene a ti",
+      "fecha": "2026-11-22",
+      "hora": "19:30",
+      "formato": "A cámara",
+      "estado": "grabado",
+      "notas": "Hermogenio"
+    },
+    {
+      "id": "v10",
+      "titulo": "Comodín de humor",
+      "fecha": "2026-11-24",
+      "hora": "19:30",
+      "formato": "Humor corto",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v11",
+      "titulo": "Ir al fútbol: Valencia vs Bissau",
+      "fecha": "2026-11-26",
+      "hora": "19:30",
+      "formato": "Valencia vs Bissau",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v12",
+      "titulo": "Un día conmigo",
+      "fecha": "2026-11-29",
+      "hora": "19:30",
+      "formato": "A cámara",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v13",
+      "titulo": "25 kilos de arroz",
+      "fecha": "2026-12-01",
+      "hora": "19:30",
+      "formato": "Humor corto",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v14",
+      "titulo": "Primer vídeo entero en crioulo",
+      "fecha": "2026-12-03",
+      "hora": "19:30",
+      "formato": "A cámara",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v15",
+      "titulo": "Misión oftalmológica",
+      "fecha": "2026-12-06",
+      "hora": "19:30",
+      "formato": "Otro",
+      "estado": "grabado",
+      "notas": "Si hay permiso; si no, palabras en crioulo"
+    },
+    {
+      "id": "v16",
+      "titulo": "Moverse: Valencia vs Bissau",
+      "fecha": "2026-12-08",
+      "hora": "19:30",
+      "formato": "Valencia vs Bissau",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v17",
+      "titulo": "Comodín",
+      "fecha": "2026-12-10",
+      "hora": "19:30",
+      "formato": "Humor corto",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v18",
+      "titulo": "El TAC: ingeniera en Bissau",
+      "fecha": "2026-12-13",
+      "hora": "19:30",
+      "formato": "A cámara",
+      "estado": "grabado",
+      "notas": "Si hay permiso; si no, el mercado"
+    },
+    {
+      "id": "v19",
+      "titulo": "Navidad: Valencia vs Bissau",
+      "fecha": "2026-12-15",
+      "hora": "19:30",
+      "formato": "Valencia vs Bissau",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v20",
+      "titulo": "Comodín",
+      "fecha": "2026-12-17",
+      "hora": "19:30",
+      "formato": "Humor corto",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v21",
+      "titulo": "Mi último pan de Hermogenio",
+      "fecha": "2026-12-20",
+      "hora": "19:30",
+      "formato": "A cámara",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v22",
+      "titulo": "Último día",
+      "fecha": "2026-12-22",
+      "hora": "19:30",
+      "formato": "A cámara",
+      "estado": "por grabar",
+      "notas": ""
+    },
+    {
+      "id": "v90",
+      "titulo": "Estadio 24 de Setembro",
+      "fecha": "",
+      "hora": "19:30",
+      "formato": "Fiesta",
+      "estado": "grabado",
+      "notas": ""
     }
-   },
-   {
-    "titulo": "Presentación nueva",
-    "fecha": "5/11",
-    "tiktok": {
-     "vistas": 21421,
-     "likes": 2050,
-     "coment": 72,
-     "compart": 194
+  ],
+  "notas": [
+    {
+      "id": "n1",
+      "texto": "Pedir permiso para los vídeos del TAC y de la misión",
+      "color": "amarillo",
+      "creado": "2026-11-06T09:00:00Z"
     },
-    "instagram": {
-     "vistas": 13154,
-     "likes": 520,
-     "coment": 44,
-     "compart": 50
-    },
-    "nota": "34.575 vistas en total y +336 seguidores en TikTok."
-   },
-   {
-    "titulo": "Presentación original (borrada)",
-    "fecha": "4/11",
-    "tiktok": {
-     "vistas": 16839,
-     "likes": 2128,
-     "coment": 43,
-     "compart": 116
-    },
-    "nota": "La que más seguidores trajo: 164."
-   }
-  ]
- }
+    {
+      "id": "n2",
+      "texto": "Interbarrios: pedir a guineanos que comenten y etiquetar gente de aquí",
+      "color": "azul",
+      "creado": "2026-11-06T09:01:00Z"
+    }
+  ],
+  "stats": {
+    "actualizado": "9/11/26",
+    "kpis": [
+      {
+        "label": "seguidores nuevos en TikTok con la presentación",
+        "valor": "+340"
+      },
+      {
+        "label": "seguidores Instagram",
+        "valor": "394"
+      },
+      {
+        "label": "vistas presentación original",
+        "valor": "16,8k"
+      },
+      {
+        "label": "vistas presentación nueva (TikTok + Insta)",
+        "valor": "35,1k"
+      }
+    ],
+    "consejo": "Instagram es tu red para Guinea: el Interbarrios va 8 veces mejor allí que en TikTok. En TikTok, texto en español y gancho en el primer segundo.",
+    "mejores_dias": "Martes, jueves y domingo a las 19:30 de Bissau (20:30 en España). La mayoría de tu público está en España.",
+    "guinea": [
+      {
+        "titulo": "Final del Interbarrios",
+        "fecha": "8/11",
+        "tiktok": {
+          "vistas": 890,
+          "likes": 56,
+          "coment": 2,
+          "compart": 2
+        },
+        "instagram": {
+          "vistas": 7299,
+          "likes": 468,
+          "coment": 10,
+          "compart": 40
+        },
+        "nota": "Instagram 8 veces más que TikTok y sigue subiendo: allí lo ve la gente de Guinea."
+      },
+      {
+        "titulo": "Probando el mono",
+        "fecha": "6/11",
+        "instagram": {
+          "vistas": 5255,
+          "likes": 106,
+          "coment": 10,
+          "compart": 35
+        },
+        "nota": "8.359 vistas en total a los 3 días.",
+        "tiktok": {
+          "vistas": 3104,
+          "likes": 158,
+          "coment": 9,
+          "compart": 27
+        }
+      },
+      {
+        "titulo": "Presentación nueva",
+        "fecha": "5/11",
+        "tiktok": {
+          "vistas": 21732,
+          "likes": 2069,
+          "coment": 73,
+          "compart": 197
+        },
+        "instagram": {
+          "vistas": 13369,
+          "likes": 532,
+          "coment": 44,
+          "compart": 51
+        },
+        "nota": "35.101 vistas en total y +340 seguidores en TikTok."
+      },
+      {
+        "titulo": "Presentación original (borrada)",
+        "fecha": "4/11",
+        "tiktok": {
+          "vistas": 16839,
+          "likes": 2128,
+          "coment": 43,
+          "compart": 116
+        },
+        "nota": "La que más seguidores trajo: 164."
+      }
+    ]
+  }
 }
