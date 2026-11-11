@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "videos": [
     {
       "id": "v00",
@@ -233,11 +233,11 @@
     }
   ],
   "stats": {
-    "actualizado": "9/11/26",
+    "actualizado": "11/11/26",
     "kpis": [
       {
         "label": "seguidores nuevos en TikTok con la presentación",
-        "valor": "+340"
+        "valor": "+370"
       },
       {
         "label": "seguidores Instagram",
@@ -249,62 +249,79 @@
       },
       {
         "label": "vistas presentación nueva (TikTok + Insta)",
-        "valor": "35,1k"
+        "valor": "37,3k"
       }
     ],
-    "consejo": "Instagram es tu red para Guinea: el Interbarrios va 8 veces mejor allí que en TikTok. En TikTok, texto en español y gancho en el primer segundo.",
+    "consejo": "Publica una sola vez y a las 19:30: el tchep salió a las 16:30 y duplicado en Insta. Instagram sigue siendo tu red para Guinea; en TikTok, gancho en el primer segundo.",
     "mejores_dias": "Martes, jueves y domingo a las 19:30 de Bissau (20:30 en España). La mayoría de tu público está en España.",
     "guinea": [
+      {
+        "titulo": "Tchep, mi comida de cada día",
+        "fecha": "10/11",
+        "tiktok": {
+          "vistas": 1289,
+          "likes": 71,
+          "coment": 5,
+          "compart": 3
+        },
+        "instagram": {
+          "vistas": 4216,
+          "likes": 125,
+          "coment": 3,
+          "compart": 6
+        },
+        "nota": "A las 28 h. Subido a las 16:30 (no a las 19:30) y dos veces en Insta (2.911 + 1.305): mejor una sola vez y a su hora."
+      },
       {
         "titulo": "Final del Interbarrios",
         "fecha": "8/11",
         "tiktok": {
-          "vistas": 890,
-          "likes": 56,
+          "vistas": 1136,
+          "likes": 76,
           "coment": 2,
           "compart": 2
         },
         "instagram": {
-          "vistas": 7299,
-          "likes": 468,
-          "coment": 10,
-          "compart": 40
+          "vistas": 8932,
+          "likes": 577,
+          "coment": 12,
+          "compart": 45
         },
-        "nota": "Instagram 8 veces más que TikTok y sigue subiendo: allí lo ve la gente de Guinea."
+        "nota": "Instagram 8 veces más que TikTok y con el mejor % de likes (6,5 %): la gente de Guinea lo ve allí."
       },
       {
         "titulo": "Probando el mono",
         "fecha": "6/11",
         "instagram": {
-          "vistas": 5255,
-          "likes": 106,
-          "coment": 10,
-          "compart": 35
+          "vistas": 5734,
+          "likes": 123,
+          "coment": 13,
+          "compart": 60
         },
-        "nota": "8.359 vistas en total a los 3 días.",
+        "nota": "9.599 vistas en total. 60 compartidos en Insta: se pasa mucho por privado.",
         "tiktok": {
-          "vistas": 3104,
-          "likes": 158,
-          "coment": 9,
-          "compart": 27
+          "vistas": 3865,
+          "likes": 193,
+          "coment": 10,
+          "compart": 30
         }
       },
       {
         "titulo": "Presentación nueva",
         "fecha": "5/11",
         "tiktok": {
-          "vistas": 21732,
-          "likes": 2069,
-          "coment": 73,
-          "compart": 197
+          "vistas": 23287,
+          "likes": 2210,
+          "coment": 78,
+          "compart": 207
         },
         "instagram": {
-          "vistas": 13369,
-          "likes": 532,
-          "coment": 44,
-          "compart": 51
+          "vistas": 14000,
+          "likes": 574,
+          "coment": 47,
+          "compart": 56
         },
-        "nota": "35.101 vistas en total y +340 seguidores en TikTok."
+        "nota": "37.287 vistas en total y +370 seguidores en TikTok."
       },
       {
         "titulo": "Presentación original (borrada)",
