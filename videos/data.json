@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "videos": [
     {
       "id": "v00",
@@ -233,61 +233,78 @@
     }
   ],
   "stats": {
-    "actualizado": "18/11/26",
+    "actualizado": "20/11/26",
     "kpis": [
       {
-        "label": "seguidores nuevos en TikTok con los Djurtus (8 h)",
-        "valor": "+534"
+        "label": "seguidores nuevos en TikTok con los Djurtus",
+        "valor": "+1.634"
       },
       {
-        "label": "vistas Djurtus (TikTok + Insta, 8 h)",
-        "valor": "36,6k"
+        "label": "vistas Djurtus (TikTok + Insta)",
+        "valor": "71k"
+      },
+      {
+        "label": "vistas Djurtus 2 en Instagram",
+        "valor": "24,3k"
       },
       {
         "label": "seguidores nuevos en TikTok con la presentación",
         "valor": "+395"
-      },
-      {
-        "label": "vistas presentación nueva (TikTok + Insta)",
-        "valor": "39,2k"
       }
     ],
-    "consejo": "La fórmula ganadora: un momento grande de Guinea (fútbol, fiesta) contado por ti en español, con un toque de crioulo. Funciona en las dos redes a la vez. Lo que es solo en portugués o tipo anuncio, mejor solo para Instagram.",
+    "consejo": "Los Djurtus son tu filón: sigue con la selección y los momentos grandes de Guinea. En TikTok, en español con un toque de crioulo; en Instagram vale el portugués.",
     "mejores_dias": "Martes, jueves y domingo a las 19:30 de Bissau (20:30 en España). La mayoría de tu público está en España.",
     "guinea": [
+      {
+        "titulo": "Djurtus: orgullo de un país",
+        "fecha": "19/11",
+        "tiktok": {
+          "vistas": 4649,
+          "likes": 1215,
+          "coment": 39,
+          "compart": 13
+        },
+        "instagram": {
+          "vistas": 24348,
+          "likes": 2503,
+          "coment": 40,
+          "compart": 60
+        },
+        "nota": "A las 31 h. En portugués: Insta 5 veces más que TikTok. En TikTok, 26 % de likes: gusta mucho, pero llega a menos gente."
+      },
       {
         "titulo": "Djurtus en el 24 de Setembro",
         "fecha": "18/11",
         "tiktok": {
-          "vistas": 19376,
-          "likes": 2968,
-          "coment": 99,
-          "compart": 41
+          "vistas": 38024,
+          "likes": 7204,
+          "coment": 255,
+          "compart": 88
         },
         "instagram": {
-          "vistas": 17186,
-          "likes": 1419,
-          "coment": 21,
-          "compart": 27
+          "vistas": 32926,
+          "likes": 2838,
+          "coment": 33,
+          "compart": 89
         },
-        "nota": "¡El mejor arranque! En 8 h: 36.562 vistas, +534 seguidores en TikTok y 15 % de likes. Texto en español + crioulo y un tema caliente (victoria de la selección)."
+        "nota": "¡Tu mejor vídeo! 70.950 vistas y +1.634 seguidores en TikTok. Español + crioulo y tema del día."
       },
       {
         "titulo": "Boxeo en Mon de Timba",
         "fecha": "15/11",
         "tiktok": {
-          "vistas": 936,
-          "likes": 42,
+          "vistas": 1573,
+          "likes": 87,
           "coment": 2,
           "compart": 3
         },
         "instagram": {
-          "vistas": 7994,
-          "likes": 248,
+          "vistas": 9069,
+          "likes": 289,
           "coment": 8,
           "compart": 5
         },
-        "nota": "A los 3 días. Portugués y tono de anuncio: en Insta 8 veces más que en TikTok."
+        "nota": "Portugués y tono de anuncio: en Insta 6 veces más que en TikTok."
       },
       {
         "titulo": "Tchep, mi comida de cada día",
