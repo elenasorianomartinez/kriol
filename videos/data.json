@@ -1,5 +1,5 @@
 {
-  "version": 15,
+  "version": 16,
   "videos": [
     {
       "id": "v00",
@@ -233,15 +233,15 @@
     }
   ],
   "stats": {
-    "actualizado": "23/11/26",
+    "actualizado": "25/11/26",
     "kpis": [
       {
         "label": "seguidores nuevos en TikTok con los Djurtus",
-        "valor": "+1.948"
+        "valor": "+2.006"
       },
       {
         "label": "vistas Djurtus (TikTok + Insta)",
-        "valor": "78,1k"
+        "valor": "80,1k"
       },
       {
         "label": "vistas Djurtus 2 (TikTok + Insta)",
@@ -259,33 +259,33 @@
         "titulo": "Noche a la luz de una vela",
         "fecha": "22/11",
         "tiktok": {
-          "vistas": 7625,
-          "likes": 567,
-          "coment": 30,
-          "compart": 3
+          "vistas": 9506,
+          "likes": 753,
+          "coment": 34,
+          "compart": 4
         },
         "instagram": {
-          "vistas": 2620,
-          "likes": 78,
-          "coment": 5,
+          "vistas": 2795,
+          "likes": 87,
+          "coment": 6,
           "compart": 0
         },
-        "nota": "Reflexión en español: en TikTok va bien (+74 seguidores), en Insta menos."
+        "nota": "Reflexión en español: en TikTok sigue creciendo (+101 seguidores), en Insta menos."
       },
       {
         "titulo": "Djurtus: orgullo de un país",
         "fecha": "19/11",
         "tiktok": {
-          "vistas": 8603,
-          "likes": 2445,
-          "coment": 66,
+          "vistas": 9161,
+          "likes": 2543,
+          "coment": 69,
           "compart": 28
         },
         "instagram": {
-          "vistas": 28401,
-          "likes": 2928,
-          "coment": 45,
-          "compart": 66
+          "vistas": 29211,
+          "likes": 3000,
+          "coment": 46,
+          "compart": 67
         },
         "nota": "En portugués: Insta 3 veces más que TikTok. En TikTok, 29 % de likes."
       },
@@ -293,18 +293,18 @@
         "titulo": "Djurtus en el 24 de Setembro",
         "fecha": "18/11",
         "tiktok": {
-          "vistas": 42920,
-          "likes": 8297,
-          "coment": 284,
-          "compart": 97
+          "vistas": 44140,
+          "likes": 8585,
+          "coment": 291,
+          "compart": 99
         },
         "instagram": {
-          "vistas": 35190,
-          "likes": 3009,
-          "coment": 37,
+          "vistas": 35960,
+          "likes": 3071,
+          "coment": 38,
           "compart": 91
         },
-        "nota": "¡Tu mejor vídeo! 78.110 vistas y +1.948 seguidores en TikTok."
+        "nota": "¡Tu mejor vídeo! 80.100 vistas y +2.006 seguidores en TikTok."
       },
       {
         "titulo": "Boxeo en Mon de Timba",
