@@ -59,9 +59,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .mhd{display:flex;align-items:center;justify-content:space-between}
 .mhd h2{font-size:42px;font-weight:800;letter-spacing:-.04em;color:var(--pink);text-transform:capitalize}
 .mhd button{font-size:28px;font-weight:800;width:44px;height:44px}
-.msub{font:700 13px 'Space Mono',monospace;margin:2px 0 12px}
+.msub{font:700 13px 'Space Mono',monospace;margin:2px 0 12px;padding-left:5px}
 .dows,.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-.dows div{text-align:center;font:700 11px 'Space Mono',monospace;opacity:.6}
+.dows div{text-align:left;padding-left:5px;font:700 11px 'Space Mono',monospace;opacity:.6}
 .dia{aspect-ratio:.78;border:2px solid var(--ink);border-radius:12px;background:#fff;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
 .dia.f{border:0;background:transparent}
 .dia small{position:absolute;top:3px;left:5px;font:700 10px 'Space Mono',monospace}
@@ -126,7 +126,7 @@ const TEMAS=[
  {n:'Blanco, negro y rojo',bg:'#fafafa',ink:'#111111',acc:'#ff2e2e',hl:'#ffd0d0',a1:'#111111',a2:'#444444',b1:'#ff2e2e',b2:'#ff7070',c1:'#111111',c2:'#999999',g:'#111111',o:'#ff2e2e',f:'#ffffff',pot:'#111111',pot2:'#444444'},
  {n:'Chicle neón',bg:'#fff0fb',ink:'#2b0a3d',acc:'#ff2bd6',hl:'#b6ff00',a1:'#ff2bd6',a2:'#ff8ae8',b1:'#00e5ff',b2:'#8ff4ff',c1:'#7a00ff',c2:'#b980ff',g:'#00b37a',o:'#ffe600',f:'#2b0a3d',pot:'#b6ff00',pot2:'#ddff80'},
 ];
-let TEMA=0;try{const q=new URLSearchParams(location.search).get('tema');TEMA=q!=null?+q:+(localStorage.getItem('ramo.tema')||6)}catch(e){}
+let TEMA=0;try{const q=new URLSearchParams(location.search).get('tema');TEMA=q!=null?+q:+(localStorage.getItem('ramo.tema')||2)}catch(e){}
 const T=TEMAS[TEMA]||TEMAS[0];
 const C={P:T.a1,P2:T.a2,B:T.c1,B2:T.c2,Y:T.b1,Y2:T.b2,G:T.g,O:T.o,F:T.f,R:'#e0262b'};
 {const r=document.documentElement.style;r.setProperty('--bg',T.bg);r.setProperty('--ink',T.ink);r.setProperty('--pink',T.acc);r.setProperty('--yel2',T.hl);document.querySelector('meta[name=theme-color]').content=T.bg}
