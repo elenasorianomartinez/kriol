@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff4ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ramo">
+<title>Ramo</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff4ec;--ink:#1b2cc1;--pink:#ff4f8b;--pink2:#ff9cc0;--yel:#ffb000;--yel2:#ffd36b;--blue2:#5a6bff;--green:#1f9d55;--org:#ff6a2b}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,sans-serif;overscroll-behavior:none;touch-action:manipulation}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.main{height:100dvh;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 22px) 22px calc(env(safe-area-inset-bottom) + 10px);user-select:none;-webkit-user-select:none}
+.date{font-size:clamp(54px,17vw,76px);font-weight:800;letter-spacing:-.05em;line-height:.9;color:var(--pink)}
+.count{font:700 14px 'Space Mono',monospace;margin-top:8px;letter-spacing:.02em}
+.stage{flex:1;position:relative;isolation:isolate;display:flex;align-items:flex-end;justify-content:center;min-height:0}
+.ramo{position:relative;width:300px;height:min(470px,62dvh);max-width:100%}
+.flores{position:absolute;left:50%;bottom:158px;width:0;height:0}
+.flor{position:absolute;left:-50px;bottom:-20px;width:100px;height:250px;transform-origin:50% 100%;transition:transform .5s}
+.flor svg{width:100%;height:100%;overflow:visible}
+.flor.nueva{animation:crece .9s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes crece{from{transform:rotate(var(--r)) scale(.1)}to{transform:rotate(var(--r)) scale(1)}}
+.maceta{position:absolute;left:50%;bottom:0;z-index:20;width:190px;height:190px;transform:translateX(-50%);display:block}
+.maceta svg{width:100%;height:100%;overflow:visible}
+.maceta:active{transform:translateX(-50%) scale(.96)}
+.vacia{position:absolute;left:0;right:0;bottom:210px;text-align:center;font-weight:600;font-size:18px;opacity:.7}
+.asa{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 0 4px;font:700 11px 'Space Mono',monospace;opacity:.55}
+.asa i{width:44px;height:5px;border-radius:9px;background:var(--ink)}
+/* hojas (sheets) */
+.velo{position:fixed;inset:0;background:#1b2cc155;opacity:0;pointer-events:none;transition:opacity .25s;z-index:5}
+.velo.on{opacity:1;pointer-events:auto}
+.hoja{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-radius:28px 28px 0 0;z-index:6;transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.9,.3,1);max-height:92dvh;overflow:auto;padding:12px 20px calc(env(safe-area-inset-bottom) + 20px)}
+.hoja.on{transform:none}
+.hoja .tir{width:44px;height:5px;border-radius:9px;background:var(--ink);opacity:.3;margin:0 auto 14px}
+.hoja h2{font-size:30px;font-weight:800;letter-spacing:-.03em;color:var(--pink);line-height:1}
+.hoja .hora{font:700 13px 'Space Mono',monospace;margin:6px 0 14px}
+.tipos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tipo{border:2.5px solid var(--ink);border-radius:18px;padding:6px 2px 8px;background:#fff;display:flex;flex-direction:column;align-items:center;font:700 10px 'Space Mono',monospace;line-height:1.2;text-align:center}
+.tipo svg{width:52px;height:52px}
+.tipo b{font-size:13px}
+.tipo.on{background:var(--yel2);box-shadow:0 0 0 3px var(--pink)}
+.fila{margin-top:16px}
+.fila h4{font:700 12px 'Space Mono',monospace;text-transform:uppercase;margin-bottom:7px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:2.5px solid var(--ink);border-radius:999px;padding:8px 15px;font-weight:600;font-size:16px;background:#fff}
+.chip.on{background:var(--ink);color:var(--bg)}
+.plantar{display:block;width:100%;margin-top:20px;background:var(--pink);color:var(--bg);font-weight:800;font-size:21px;padding:17px;border-radius:999px}
+.plantar:disabled{opacity:.35}
+.borrar{display:block;margin:12px auto 0;text-decoration:underline;font-weight:600}
+.aviso{margin-top:14px;background:var(--ink);color:var(--bg);border-radius:16px;padding:12px 14px;font-weight:600;font-size:15px;line-height:1.35}
+/* mes */
+.mes{position:fixed;inset:0;background:var(--bg);z-index:4;transform:translateY(100%);transition:transform .38s cubic-bezier(.2,.9,.3,1);overflow:auto;padding:calc(env(safe-area-inset-top) + 10px) 18px calc(env(safe-area-inset-bottom) + 24px)}
+.mes.on{transform:none}
+.mes .asa{padding:4px 0 10px}
+.mhd{display:flex;align-items:center;justify-content:space-between}
+.mhd h2{font-size:42px;font-weight:800;letter-spacing:-.04em;color:var(--pink);text-transform:capitalize}
+.mhd button{font-size:28px;font-weight:800;width:44px;height:44px}
+.msub{font:700 13px 'Space Mono',monospace;margin:2px 0 12px}
+.dows,.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.dows div{text-align:center;font:700 11px 'Space Mono',monospace;opacity:.6}
+.dia{aspect-ratio:.78;border:2px solid var(--ink);border-radius:12px;background:#fff;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.dia.f{border:0;background:transparent}
+.dia small{position:absolute;top:3px;left:5px;font:700 10px 'Space Mono',monospace}
+.dia.hoy{background:var(--yel2)}
+.dia.c1{background:#ffe0ec}.dia.c2{background:#e3e7ff}.dia.c3{background:#fff1cc}
+.dia .mini{display:flex;align-items:flex-end;justify-content:center;width:100%;height:78%}
+.dia .mini svg{height:100%;width:auto;max-width:60%}
+.dia .mas{position:absolute;top:2px;right:4px;font:700 10px 'Space Mono',monospace;color:var(--pink)}
+.diahoja .item{display:flex;align-items:center;gap:12px;border-top:2px solid var(--ink);padding:10px 0}
+.diahoja .item:last-of-type{border-bottom:2px solid var(--ink)}
+.diahoja .item svg{width:44px;height:44px;flex:none}
+.diahoja .item div{flex:1;font-size:15px}
+.diahoja .item b{font-family:'Space Mono',monospace}
+.otra{display:block;width:100%;margin-top:14px;border:2.5px solid var(--ink);border-radius:999px;padding:13px;font-weight:800;font-size:17px}
+.pasar{margin-top:26px;border-top:2px solid var(--ink);padding-top:16px}
+.pasar p{font-size:14px;line-height:1.4;margin-bottom:10px}
+.pasar button{border:2.5px solid var(--ink);border-radius:999px;padding:12px 18px;font-weight:800;font-size:16px;background:#fff}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 16px);transform:translate(-50%,-150%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:16px;font-weight:700;z-index:9;transition:transform .3s;max-width:90vw;text-align:center}
+.toast.on{transform:translate(-50%,0)}
+.petalo{position:fixed;width:12px;height:18px;border-radius:50%;z-index:8;pointer-events:none;animation:cae 1.3s ease-in forwards}
+@keyframes cae{to{transform:translate(var(--dx),70vh) rotate(540deg);opacity:0}}
+</style></head>
+<body>
+<div class="main" id="main">
+  <div class="date" id="fecha"></div>
+  <div class="count" id="cuenta"></div>
+  <div class="stage"><div class="ramo"><div class="flores" id="flores"></div><div class="vacia" id="vacia">Toca la maceta para plantar tu primera flor</div>
+    <button class="maceta" id="maceta" aria-label="Apuntar caca"></button></div></div>
+  <button class="asa" id="abrirMes"><i></i>desliza para ver el mes</button>
+</div>
+<div class="mes" id="mes">
+  <button class="asa" id="cerrarMes" style="width:100%"><i></i></button>
+  <div class="mhd"><button id="mAnt" aria-label="Mes anterior">‹</button><h2 id="mTit"></h2><button id="mSig" aria-label="Mes siguiente">›</button></div>
+  <div class="msub" id="mSub"></div>
+  <div class="dows"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div>
+  <div class="cal" id="cal" style="margin-top:5px"></div>
+  <div class="pasar"><h4 style="font:700 12px Space Mono,monospace;margin-bottom:8px">COLORES</h4><div id="temas" class="chips" style="margin-bottom:18px"></div><p>El 20/12 pasa tus cacas a «A punto». Guarda este archivo y cárgalo allí en Ajustes › Importar.</p><button id="exportar">Pasar a «A punto»</button></div>
+</div>
+<div class="velo" id="velo"></div>
+<div class="hoja" id="hoja"></div>
+<div class="toast" id="toast"></div>
+<script>
+const K='ramo.v1';
+let S={poops:[]};try{const x=JSON.parse(localStorage.getItem(K));if(x&&Array.isArray(x.poops))S=x}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const fmt=s=>{const[y,m,d]=s.split('-');return `${+d}/${+m}/${y.slice(2)}`};
+const hhmm=s=>{const d=new Date(s);return pad(d.getHours())+':'+pad(d.getMinutes())};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const TEMAS=[
+ {n:'Riso',bg:'#fff4ec',ink:'#1b2cc1',acc:'#ff4f8b',hl:'#ffd36b',a1:'#ff4f8b',a2:'#ff9cc0',b1:'#ffb000',b2:'#ffd36b',c1:'#1b2cc1',c2:'#5a6bff',g:'#1f9d55',o:'#ff6a2b',f:'#1b2cc1',pot:'#ff6a2b',pot2:'#ff9a66'},
+ {n:'Pastel',bg:'#fdf6ff',ink:'#4a3b6b',acc:'#ff8fab',hl:'#ffe7a3',a1:'#ff8fab',a2:'#ffc2d1',b1:'#ffd166',b2:'#ffe7a3',c1:'#7aa7ff',c2:'#b8d0ff',g:'#7fc8a9',o:'#ff9f68',f:'#4a3b6b',pot:'#b8d0ff',pot2:'#dbe7ff'},
+ {n:'Terracota',bg:'#f6ecdf',ink:'#3b2a20',acc:'#c8553d',hl:'#f2cc8f',a1:'#e07a5f',a2:'#f2a48c',b1:'#f2cc8f',b2:'#f7e0b5',c1:'#3d405b',c2:'#81b29a',g:'#5b8c5a',o:'#3d405b',f:'#3b2a20',pot:'#c8553d',pot2:'#e07a5f'},
+ {n:'Noche',bg:'#14213d',ink:'#f8f1e5',acc:'#ffb703',hl:'#2b4170',a1:'#ff006e',a2:'#ff7bb0',b1:'#ffb703',b2:'#ffd166',c1:'#8ecae6',c2:'#cdeaf5',g:'#2a9d8f',o:'#fb8500',f:'#14213d',pot:'#e76f51',pot2:'#f4a261'},
+ {n:'Lima',bg:'#ffffff',ink:'#111111',acc:'#111111',hl:'#F1FF8A',a1:'#ff7ab6',a2:'#ffb3d4',b1:'#F1FF8A',b2:'#f8ffc2',c1:'#111111',c2:'#8fb3ff',g:'#111111',o:'#111111',f:'#111111',pot:'#F1FF8A',pot2:'#ffffff'},
+ {n:'Tropical',bg:'#fff8e7',ink:'#0b3d2e',acc:'#ff5d3a',hl:'#ffe08a',a1:'#ff5d3a',a2:'#ff9a76',b1:'#ffc93c',b2:'#ffe08a',c1:'#00a6a6',c2:'#7fd6d6',g:'#0b8a4c',o:'#6a1b9a',f:'#0b3d2e',pot:'#d9822b',pot2:'#f0a95a'},
+ {n:'Mermelada',bg:'#fff1f1',ink:'#5a0f1c',acc:'#d62246',hl:'#ffbf69',a1:'#d62246',a2:'#f26b7a',b1:'#ff9f1c',b2:'#ffbf69',c1:'#7b2cbf',c2:'#b583e6',g:'#2d6a4f',o:'#5a0f1c',f:'#5a0f1c',pot:'#a4161a',pot2:'#d62246'},
+ {n:'Menta y coral',bg:'#effaf6',ink:'#134e4a',acc:'#ff6f61',hl:'#ffe58a',a1:'#ff6f61',a2:'#ffa69e',b1:'#ffd23f',b2:'#ffe58a',c1:'#3aa6a3',c2:'#8fd9d6',g:'#2a9d8f',o:'#134e4a',f:'#134e4a',pot:'#5bc0be',pot2:'#9ee0de'},
+ {n:'Lavanda',bg:'#f4f0ff',ink:'#3c2a7a',acc:'#7b5cff',hl:'#ffe39b',a1:'#b69cff',a2:'#d8c9ff',b1:'#ffcf56',b2:'#ffe39b',c1:'#ff8fb1',c2:'#ffc2d4',g:'#6bbf8a',o:'#3c2a7a',f:'#3c2a7a',pot:'#7b5cff',pot2:'#a994ff'},
+ {n:'Setentero',bg:'#f7e8c9',ink:'#4a2c1a',acc:'#e2711d',hl:'#ffd27f',a1:'#e2711d',a2:'#f2a65a',b1:'#ffb627',b2:'#ffd27f',c1:'#8a5a44',c2:'#c08a6e',g:'#7a8b3b',o:'#4a2c1a',f:'#4a2c1a',pot:'#b5541c',pot2:'#d9803f'},
+ {n:'Blanco, negro y rojo',bg:'#fafafa',ink:'#111111',acc:'#ff2e2e',hl:'#ffd0d0',a1:'#111111',a2:'#444444',b1:'#ff2e2e',b2:'#ff7070',c1:'#111111',c2:'#999999',g:'#111111',o:'#ff2e2e',f:'#ffffff',pot:'#111111',pot2:'#444444'},
+ {n:'Chicle neón',bg:'#fff0fb',ink:'#2b0a3d',acc:'#ff2bd6',hl:'#b6ff00',a1:'#ff2bd6',a2:'#ff8ae8',b1:'#00e5ff',b2:'#8ff4ff',c1:'#7a00ff',c2:'#b980ff',g:'#00b37a',o:'#ffe600',f:'#2b0a3d',pot:'#b6ff00',pot2:'#ddff80'},
+];
+let TEMA=0;try{const q=new URLSearchParams(location.search).get('tema');TEMA=q!=null?+q:+(localStorage.getItem('ramo.tema')||0)}catch(e){}
+const T=TEMAS[TEMA]||TEMAS[0];
+const C={P:T.a1,P2:T.a2,B:T.c1,B2:T.c2,Y:T.b1,Y2:T.b2,G:T.g,O:T.o,F:T.f,R:'#e0262b'};
+{const r=document.documentElement.style;r.setProperty('--bg',T.bg);r.setProperty('--ink',T.ink);r.setProperty('--pink',T.acc);r.setProperty('--yel2',T.hl);document.querySelector('meta[name=theme-color]').content=T.bg}
+const NOM={1:'Cactus',2:'Capullo',3:'Tulipán',4:'Girasol',5:'Despeinada',6:'Diente de león',7:'Nenúfar'};
+const DESC={1:'bolitas duras',2:'con bultos',3:'con grietas',4:'lisa',5:'trozos blandos',6:'pastosa',7:'líquida'};
+const face=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><circle cx="-4" cy="-1" r="1.7" fill="${C.F}"/><circle cx="4" cy="-1" r="1.7" fill="${C.F}"/><path d="M-4 3 Q0 7 4 3" stroke="${C.F}" stroke-width="1.7" fill="none" stroke-linecap="round"/></g>`;
+function petals(n,len,w,c1,c2,cx,cy,blood,jit){let g='';for(let i=0;i<n;i++){const a=360/n*i+(jit?((i*37)%23)-11:0);g+=`<ellipse cx="${cx}" cy="${cy-len/2-3}" rx="${w}" ry="${len/2}" fill="${blood&&i==1?C.R:(i%2?c1:c2)}" transform="rotate(${a} ${cx} ${cy})"/>`}return g}
+// cabeza centrada en (50,40)
+function head(t,o){const b=o.blood;switch(+t){
+ case 1:return `<circle cx="50" cy="42" r="21" fill="${C.G}"/>${[0,60,120,180,240,300].map(a=>`<path d="M50 18 l-3.5 -7 l7 0z" fill="${C.B}" transform="rotate(${a} 50 42)"/>`).join('')}<circle cx="50" cy="21" r="6" fill="${b?C.R:C.P}"/>${face(50,44)}`;
+ case 2:return `<path d="M37 52 Q37 22 50 16 Q63 22 63 52 Q50 60 37 52z" fill="${b?C.R:C.Y}"/><path d="M44 52 Q46 30 50 24 Q54 30 56 52" fill="${C.Y2}"/><path d="M38 52 Q50 66 62 52 L58 62 Q50 68 42 62z" fill="${C.G}"/>`;
+ case 3:return `<path d="M32 50 L32 24 L41 33 L50 18 L59 33 L68 24 L68 50 Q50 64 32 50z" fill="${b?C.R:C.P}"/><path d="M41 33 L50 18 L59 33 Q50 40 41 33z" fill="${C.P2}"/>${face(50,44,.95)}`;
+ case 4:return `${petals(12,24,7.5,C.Y,C.Y2,50,40,b)}<circle cx="50" cy="40" r="12.5" fill="${C.O}"/>${face(50,40)}`;
+ case 5:return `${petals(7,24,9,C.B,C.B2,50,40,b,1)}<circle cx="50" cy="40" r="8" fill="${C.Y}"/>`;
+ case 6:return Array.from({length:16},(_,i)=>{const a=i*22.5*Math.PI/180;return `<line x1="50" y1="40" x2="${50+19*Math.cos(a)}" y2="${40+19*Math.sin(a)}" stroke="${C.B}" stroke-width="1.6"/><circle cx="${50+20*Math.cos(a)}" cy="${40+20*Math.sin(a)}" r="2.8" fill="${b&&i==2?C.R:T.bg}" stroke="${C.B}" stroke-width="1.3"/>`}).join('')+`<circle cx="50" cy="40" r="4.5" fill="${C.B}"/>`;
+ case 7:return `<ellipse cx="50" cy="52" rx="30" ry="9" fill="${C.G}"/><path d="M50 52 L80 48 L80 56z" fill="${T.bg}"/>${petals(8,17,6.5,C.P,C.P2,50,40,b)}<circle cx="50" cy="40" r="5.5" fill="${C.Y}"/>`;
+}}
+// flor de ramo: viewBox 0 0 100 260, cabeza arriba, tallo largo
+function florRamo(p){const thin=p.thin;return `<svg viewBox="0 0 100 260"><path d="M50 260 L50 56" stroke="${C.G}" stroke-width="${thin?2.2:5.5}" stroke-linecap="round"/><path d="M50 150 Q34 138 26 146 Q36 158 50 152z" fill="${C.G}"/><path d="M50 190 Q66 178 74 186 Q64 198 50 192z" fill="${C.G}"/>${head(p.bristol,p)}</svg>`}
+// icono pequeño: viewBox 0 0 100 100 con tallo corto
+function icono(t,o={}){return `<svg viewBox="0 0 100 100"><path d="M50 100 L50 56" stroke="${C.G}" stroke-width="${o.thin?2.2:5}" stroke-linecap="round"/><path d="M50 84 Q38 76 32 82 Q40 90 50 86z" fill="${C.G}"/>${head(t,o)}</svg>`}
+function macetaSVG(){return `<svg viewBox="0 0 190 190"><ellipse cx="95" cy="182" rx="62" ry="7" fill="#0001"/><path d="M34 52 L156 52 L138 176 Q137 182 130 182 L60 182 Q53 182 52 176z" fill="${T.pot}"/><rect x="20" y="26" width="150" height="34" rx="10" fill="${T.pot2}"/><rect x="20" y="26" width="150" height="34" rx="10" fill="none" stroke="${T.pot}" stroke-width="3"/><ellipse cx="95" cy="28" rx="70" ry="7" fill="#5a3a22" opacity=".85"/><g transform="translate(95 112)"><circle cx="-18" cy="-4" r="5" fill="${C.F==='#ffffff'?'#fff':T.ink}"/><circle cx="18" cy="-4" r="5" fill="${C.F==='#ffffff'?'#fff':T.ink}"/><path d="M-12 10 Q0 22 12 10" stroke="${C.F==='#ffffff'?'#fff':T.ink}" stroke-width="4.5" fill="none" stroke-linecap="round"/><ellipse cx="-32" cy="8" rx="8" ry="5" fill="${T.a2}" opacity=".8"/><ellipse cx="32" cy="8" rx="8" ry="5" fill="${T.a2}" opacity=".8"/></g></svg>`}
+// semana actual (lunes a domingo)
+function lunes(d){const x=new Date(d);const k=(x.getDay()+6)%7;x.setDate(x.getDate()-k);x.setHours(0,0,0,0);return x}
+function semana(){const l=lunes(new Date());const f=new Date(l);f.setDate(f.getDate()+6);return [iso(l),iso(f)]}
+let nuevaId=null;
+function pintar(){
+  const hoy=iso(new Date());
+  document.getElementById('fecha').textContent=fmt(hoy);
+  const [a,b]=semana();
+  const ps=S.poops.filter(p=>p.date>=a&&p.date<=b).sort((x,y)=>x.at.localeCompare(y.at));
+  document.getElementById('cuenta').textContent=`${ps.length} ${ps.length==1?'FLOR':'FLORES'} ESTA SEMANA`;
+  document.getElementById('vacia').style.display=ps.length?'none':'block';
+  const n=ps.length, spread=Math.min(90,16+n*10);
+  document.getElementById('flores').innerHTML=ps.map((p,i)=>{
+    const r=n==1?0:-spread/2+spread*i/(n-1);
+    const h=1-((i*7)%5)*0.06;
+    return `<div class="flor${p.id===nuevaId?' nueva':''}" style="--r:${r}deg;transform:rotate(${r}deg);height:${250*h}px;z-index:${10-Math.abs(Math.round(r/8))}" data-id="${p.id}">${florRamo(p)}</div>`}).join('');
+  nuevaId=null;
+  if(document.getElementById('mes').classList.contains('on'))pintarMes();
+}
+document.getElementById('maceta').innerHTML=macetaSVG();
+// hoja de registro
+const hoja=document.getElementById('hoja'),velo=document.getElementById('velo');
+function cerrarHoja(){hoja.classList.remove('on');velo.classList.remove('on')}
+velo.onclick=cerrarHoja;
+function chips(name,opts,val){return `<div class="chips" data-k="${name}">${opts.map(([v,l])=>`<button class="chip${val===v?' on':''}" data-v="${v}">${l}</button>`).join('')}</div>`}
+function abrirRegistro(edit,fecha){
+  const now=new Date();
+  const p=edit?{...edit}:{id:uid(),at:(fecha&&fecha!==iso(now)?new Date(fecha+'T12:00'):now).toISOString(),date:fecha||iso(now),bristol:null,thin:false,effort:false,blood:'ninguno',pain:'ninguno',notes:''};
+  const render=()=>{
+    hoja.innerHTML=`<div class="tir"></div><h2>${edit?'Tu flor':'¿Qué ha salido?'}</h2><div class="hora">${fmt(p.date)} · ${hhmm(p.at)}</div>
+    <div class="tipos">${[1,2,3,4,5,6,7].map(t=>`<button class="tipo${p.bristol==t?' on':''}" data-t="${t}">${icono(t)}<b>${t}</b>${DESC[t]}</button>`).join('')}</div>
+    <div class="fila"><h4>¿Muy fina, tipo chorrito?</h4>${chips('thin',[['false','No'],['true','Sí']],String(!!p.thin))}</div>
+    <div class="fila"><h4>¿Esfuerzo?</h4>${chips('effort',[['false','No'],['true','Sí']],String(!!p.effort))}</div>
+    <div class="fila"><h4>Sangre</h4>${chips('blood',[['ninguno','No'],['leve','Un poco'],['abundante','Bastante']],p.blood)}</div>
+    <div class="fila"><h4>Dolor</h4>${chips('pain',[['ninguno','No'],['leve','Leve'],['moderado','Moderado'],['intenso','Fuerte']],p.pain)}</div>
+    ${p.blood==='abundante'||p.pain==='intenso'?'<div class="aviso">Si sangras bastante o el dolor es fuerte y no cede, consulta hoy con tu médico.</div>':''}
+    <button class="plantar" id="ok" ${p.bristol?'':'disabled'}>${edit?'Guardar':'Plantar 🌱'}</button>
+    ${edit?'<button class="borrar" id="del">Quitar esta flor</button>':''}`;
+    hoja.querySelectorAll('.tipo').forEach(b=>b.onclick=()=>{p.bristol=+b.dataset.t;render()});
+    hoja.querySelectorAll('.chips').forEach(c=>c.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const k=c.dataset.k,v=b.dataset.v;p[k]=(k==='thin'||k==='effort')?v==='true':v;render()}));
+    hoja.querySelector('#ok').onclick=()=>{
+      S.poops=S.poops.filter(x=>x.id!==p.id).concat([p]);save();cerrarHoja();
+      if(!edit){nuevaId=p.id;fiesta();aviso(`¡Ha salido un ${NOM[p.bristol].toLowerCase()}!`)}
+      pintar();if(diaAbierto)abrirDia(diaAbierto);
+    };
+    const d=hoja.querySelector('#del');if(d)d.onclick=()=>{S.poops=S.poops.filter(x=>x.id!==p.id);save();cerrarHoja();pintar();if(diaAbierto)abrirDia(diaAbierto)};
+  };
+  render();hoja.classList.add('on');velo.classList.add('on');hoja.scrollTop=0;
+}
+document.getElementById('maceta').onclick=()=>{diaAbierto=null;abrirRegistro()};
+document.getElementById('flores').onclick=e=>{const f=e.target.closest('.flor');if(f){const p=S.poops.find(x=>x.id===f.dataset.id);if(p){diaAbierto=null;abrirRegistro(p)}}};
+function aviso(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('on');clearTimeout(aviso.t);aviso.t=setTimeout(()=>el.classList.remove('on'),2200)}
+function fiesta(){const cols=[C.P,C.P2,C.Y,C.Y2,C.B2];for(let i=0;i<26;i++){const e=document.createElement('div');e.className='petalo';e.style.left=(20+Math.random()*60)+'vw';e.style.top=(10+Math.random()*20)+'vh';e.style.background=cols[i%5];e.style.setProperty('--dx',(Math.random()*120-60)+'px');e.style.animationDelay=(Math.random()*.3)+'s';document.body.appendChild(e);setTimeout(()=>e.remove(),1800)}}
+// mes
+let mesVista=new Date();mesVista.setDate(1);let diaAbierto=null;
+const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function pintarMes(){
+  const y=mesVista.getFullYear(),m=mesVista.getMonth();
+  document.getElementById('mTit').textContent=MESES[m];
+  const pre=`${y}-${pad(m+1)}`;const del=S.poops.filter(p=>p.date.startsWith(pre));
+  document.getElementById('mSub').textContent=`${del.length} ${del.length==1?'FLOR':'FLORES'} · ${y}`;
+  const first=new Date(y,m,1),off=(first.getDay()+6)%7,dias=new Date(y,m+1,0).getDate(),hoy=iso(new Date());
+  let h='';for(let i=0;i<off;i++)h+='<div class="dia f"></div>';
+  for(let d=1;d<=dias;d++){const ds=`${pre}-${pad(d)}`;const ps=del.filter(p=>p.date===ds).sort((a,b)=>a.at.localeCompare(b.at));
+    h+=`<button class="dia ${ds===hoy?'hoy':ps.length?'c'+(d%3+1):''}" data-d="${ds}"><small>${d}</small>${ps.length?`<div class="mini">${ps.slice(0,2).map(p=>icono(p.bristol,p)).join('')}</div>`:''}${ps.length>2?`<span class="mas">+${ps.length-2}</span>`:''}</button>`}
+  document.getElementById('cal').innerHTML=h;
+}
+document.getElementById('cal').onclick=e=>{const b=e.target.closest('.dia');if(b&&b.dataset.d)abrirDia(b.dataset.d)};
+function abrirDia(ds){
+  diaAbierto=ds;const ps=S.poops.filter(p=>p.date===ds).sort((a,b)=>a.at.localeCompare(b.at));
+  hoja.className='hoja diahoja on';velo.classList.add('on');
+  hoja.innerHTML=`<div class="tir"></div><h2>${fmt(ds)}</h2><div class="hora">${ps.length} ${ps.length==1?'flor':'flores'}</div>
+  ${ps.map(p=>`<button class="item" data-id="${p.id}" style="width:100%;text-align:left">${icono(p.bristol,p)}<div><b>${hhmm(p.at)}</b> · ${NOM[p.bristol]} (tipo ${p.bristol})${p.thin?' · fina':''}${p.effort?' · esfuerzo':''}${p.blood&&p.blood!=='ninguno'?' · sangre':''}${p.pain&&p.pain!=='ninguno'?' · dolor '+p.pain:''}</div></button>`).join('')}
+  <button class="otra" id="otra">+ Plantar una flor este día</button>`;
+  hoja.querySelectorAll('.item').forEach(b=>b.onclick=()=>{hoja.className='hoja';abrirRegistro(S.poops.find(x=>x.id===b.dataset.id))});
+  hoja.querySelector('#otra').onclick=()=>{hoja.className='hoja';abrirRegistro(null,ds)};
+}
+const mes=document.getElementById('mes');
+function abrirMes(){mesVista=new Date();mesVista.setDate(1);pintarMes();mes.classList.add('on');mes.scrollTop=0}
+function cerrarMes(){mes.classList.remove('on');diaAbierto=null}
+document.getElementById('abrirMes').onclick=abrirMes;document.getElementById('cerrarMes').onclick=cerrarMes;
+document.getElementById('mAnt').onclick=()=>{mesVista.setMonth(mesVista.getMonth()-1);pintarMes()};
+document.getElementById('mSig').onclick=()=>{mesVista.setMonth(mesVista.getMonth()+1);pintarMes()};
+// gestos
+let y0=null;const main=document.getElementById('main');
+main.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});
+main.addEventListener('touchend',e=>{if(y0!=null&&y0-e.changedTouches[0].clientY>60)abrirMes();y0=null});
+let y1=null;mes.addEventListener('touchstart',e=>{y1=mes.scrollTop<=0?e.touches[0].clientY:null},{passive:true});
+mes.addEventListener('touchend',e=>{if(y1!=null&&e.changedTouches[0].clientY-y1>80)cerrarMes();y1=null});
+main.addEventListener('wheel',e=>{if(e.deltaY>30)abrirMes()},{passive:true});
+// exportar a A punto
+document.getElementById('exportar').onclick=async()=>{
+  const data=JSON.stringify({app:'ramo',version:1,poops:S.poops},null,1);
+  const name=`ramo-cacas-${iso(new Date())}.json`;
+  try{const f=new File([data],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Cacas para A punto'});return}}catch(e){if(e&&e.name==='AbortError')return}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download=name;a.click();
+};
+document.getElementById('temas').innerHTML=TEMAS.map((x,i)=>`<button class="chip${i===TEMA?' on':''}" data-i="${i}">${i+1} · ${x.n}</button>`).join('');
+document.getElementById('temas').onclick=e=>{const b=e.target.closest('[data-i]');if(b){try{localStorage.setItem('ramo.tema',b.dataset.i)}catch(_){}location.href=location.pathname}};
+pintar();
+setInterval(()=>{const f=document.getElementById('fecha');if(f.textContent!==fmt(iso(new Date())))pintar()},60000);
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body></html>
