@@ -19,12 +19,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .count{font:700 14px 'Space Mono',monospace;margin-top:8px;letter-spacing:.02em}
 .stage{flex:1;position:relative;isolation:isolate;display:flex;align-items:flex-end;justify-content:center;min-height:0}
 .ramo{position:relative;width:300px;height:min(470px,62dvh);max-width:100%}
-.flores{position:absolute;left:50%;bottom:158px;width:0;height:0}
+.flores{position:absolute;left:50%;bottom:160px;width:0;height:0}
 .flor{position:absolute;left:-50px;bottom:-20px;width:100px;height:250px;transform-origin:50% 100%;transition:transform .5s}
 .flor svg{width:100%;height:100%;overflow:visible}
 .flor.nueva{animation:crece .9s cubic-bezier(.3,1.6,.5,1) both}
 @keyframes crece{from{transform:rotate(var(--r)) scale(.1)}to{transform:rotate(var(--r)) scale(1)}}
-.maceta{position:absolute;left:50%;bottom:0;z-index:20;width:190px;height:190px;transform:translateX(-50%);display:block}
+.maceta{position:absolute;left:50%;bottom:0;z-index:20;width:170px;height:188px;transform:translateX(-50%);display:block}
 .maceta svg{width:100%;height:100%;overflow:visible}
 .maceta:active{transform:translateX(-50%) scale(.96)}
 .vacia{position:absolute;left:0;right:0;bottom:210px;text-align:center;font-weight:600;font-size:18px;opacity:.7}
@@ -130,26 +130,39 @@ let TEMA=0;try{const q=new URLSearchParams(location.search).get('tema');TEMA=q!=
 const T=TEMAS[TEMA]||TEMAS[0];
 const C={P:T.a1,P2:T.a2,B:T.c1,B2:T.c2,Y:T.b1,Y2:T.b2,G:T.g,O:T.o,F:T.f,R:'#e0262b'};
 {const r=document.documentElement.style;r.setProperty('--bg',T.bg);r.setProperty('--ink',T.ink);r.setProperty('--pink',T.acc);r.setProperty('--yel2',T.hl);document.querySelector('meta[name=theme-color]').content=T.bg}
-const NOM={1:'Cactus',2:'Capullo',3:'Tulipán',4:'Girasol',5:'Despeinada',6:'Diente de león',7:'Nenúfar'};
+const NOM={1:'Capullo de rosa',2:'Tulipán rosa',3:'Tulipán',4:'Rosa',5:'Lirio',6:'Clavel',7:'Lavanda'};const ART={1:'un capullo de rosa',2:'un tulipán rosa',3:'un tulipán',4:'una rosa',5:'un lirio',6:'un clavel',7:'una lavanda'};
 const DESC={1:'bolitas duras',2:'con bultos',3:'con grietas',4:'lisa',5:'trozos blandos',6:'pastosa',7:'líquida'};
 const face=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><circle cx="-4" cy="-1" r="1.7" fill="${C.F}"/><circle cx="4" cy="-1" r="1.7" fill="${C.F}"/><path d="M-4 3 Q0 7 4 3" stroke="${C.F}" stroke-width="1.7" fill="none" stroke-linecap="round"/></g>`;
 function petals(n,len,w,c1,c2,cx,cy,blood,jit){let g='';for(let i=0;i<n;i++){const a=360/n*i+(jit?((i*37)%23)-11:0);g+=`<ellipse cx="${cx}" cy="${cy-len/2-3}" rx="${w}" ry="${len/2}" fill="${blood&&i==1?C.R:(i%2?c1:c2)}" transform="rotate(${a} ${cx} ${cy})"/>`}return g}
-// cabeza centrada en (50,40)
-function head(t,o){const b=o.blood;switch(+t){
- case 1:return `<circle cx="50" cy="42" r="21" fill="${C.G}"/>${[0,60,120,180,240,300].map(a=>`<path d="M50 18 l-3.5 -7 l7 0z" fill="${C.B}" transform="rotate(${a} 50 42)"/>`).join('')}<circle cx="50" cy="21" r="6" fill="${b?C.R:C.P}"/>${face(50,44)}`;
- case 2:return `<path d="M37 52 Q37 22 50 16 Q63 22 63 52 Q50 60 37 52z" fill="${b?C.R:C.Y}"/><path d="M44 52 Q46 30 50 24 Q54 30 56 52" fill="${C.Y2}"/><path d="M38 52 Q50 66 62 52 L58 62 Q50 68 42 62z" fill="${C.G}"/>`;
- case 3:return `<path d="M32 50 L32 24 L41 33 L50 18 L59 33 L68 24 L68 50 Q50 64 32 50z" fill="${b?C.R:C.P}"/><path d="M41 33 L50 18 L59 33 Q50 40 41 33z" fill="${C.P2}"/>${face(50,44,.95)}`;
- case 4:return `${petals(12,24,7.5,C.Y,C.Y2,50,40,b)}<circle cx="50" cy="40" r="12.5" fill="${C.O}"/>${face(50,40)}`;
- case 5:return `${petals(7,24,9,C.B,C.B2,50,40,b,1)}<circle cx="50" cy="40" r="8" fill="${C.Y}"/>`;
- case 6:return Array.from({length:16},(_,i)=>{const a=i*22.5*Math.PI/180;return `<line x1="50" y1="40" x2="${50+19*Math.cos(a)}" y2="${40+19*Math.sin(a)}" stroke="${C.B}" stroke-width="1.6"/><circle cx="${50+20*Math.cos(a)}" cy="${40+20*Math.sin(a)}" r="2.8" fill="${b&&i==2?C.R:T.bg}" stroke="${C.B}" stroke-width="1.3"/>`}).join('')+`<circle cx="50" cy="40" r="4.5" fill="${C.B}"/>`;
- case 7:return `<ellipse cx="50" cy="52" rx="30" ry="9" fill="${C.G}"/><path d="M50 52 L80 48 L80 56z" fill="${T.bg}"/>${petals(8,17,6.5,C.P,C.P2,50,40,b)}<circle cx="50" cy="40" r="5.5" fill="${C.Y}"/>`;
-}}
+// cabeza centrada en (50,40) · pack Floristería
+function head(t,o){const b=o.blood&&o.blood!=='ninguno',R=C.P,R2=C.P2,V=C.B,V2=C.B2,O=C.Y;let g='';switch(+t){
+ case 1:g=`<path d="M40 46 Q40 26 50 22 Q60 26 60 46 Q50 52 40 46z" fill="${R}"/><path d="M44 30 Q50 20 56 30" stroke="${R2}" stroke-width="3" fill="none"/><path d="M40 46 Q50 56 60 46 L56 54 Q50 58 44 54z" fill="${C.G}"/>`;break;
+ case 2:g=`<path d="M34 34 Q36 58 50 58 Q64 58 66 34 Q58 40 50 28 Q42 40 34 34z" fill="${R2}"/>`;break;
+ case 3:g=`<path d="M30 30 Q34 60 50 60 Q66 60 70 30 Q60 42 50 24 Q40 42 30 30z" fill="${R}"/><path d="M42 44 Q50 34 58 44" stroke="${R2}" stroke-width="2.5" fill="none"/>`;break;
+ case 4:g=`${pet(6,20,10,R,R2)}${pet(6,13,7,R2,R,30)}<circle cx="50" cy="40" r="6" fill="${O}"/>`;break;
+ case 5:g=`<path d="M50 20 Q30 30 34 50 Q42 46 50 52 Q58 46 66 50 Q70 30 50 20z" fill="${V}"/><path d="M50 26 L50 50" stroke="${V2}" stroke-width="2"/>`;break;
+ case 6:g=Array.from({length:10},(_,i)=>`<path d="M50 40 l${16*Math.cos(i*.63)} ${16*Math.sin(i*.63)} l${3*Math.cos(i*.63+1.6)} ${3*Math.sin(i*.63+1.6)}z" fill="${R2}" stroke="${R}" stroke-width="3" stroke-linejoin="round"/>`).join('')+`<circle cx="50" cy="40" r="5" fill="${R}"/>`;break;
+ case 7:g=[0,1,2,3,4,5].map(i=>`<ellipse cx="${46+(i%2)*8}" cy="${22+i*6}" rx="5" ry="4" fill="${i%2?V:V2}"/>`).join('');break;}
+ if(b)g+=`<path d="M70 22 Q74 30 70 33 Q66 30 70 22z" fill="${C.R}"/>`;return g}
+function pet(n,len,w,c1,c2,rot=0){let g='';for(let i=0;i<n;i++)g+=`<ellipse cx="50" cy="${40-len/2-3}" rx="${w}" ry="${len/2}" fill="${i%2?c1:c2}" transform="rotate(${360/n*i+rot} 50 40)"/>`;return g}
 // flor de ramo: viewBox 0 0 100 260, cabeza arriba, tallo largo
 function florRamo(p){const thin=p.thin;return `<svg viewBox="0 0 100 260"><path d="M50 260 L50 56" stroke="${C.G}" stroke-width="${thin?2.2:5.5}" stroke-linecap="round"/><path d="M50 150 Q34 138 26 146 Q36 158 50 152z" fill="${C.G}"/><path d="M50 190 Q66 178 74 186 Q64 198 50 192z" fill="${C.G}"/>${head(p.bristol,p)}</svg>`}
 // icono pequeño: viewBox 0 0 100 100 con tallo corto
 function icono(t,o={}){return `<svg viewBox="0 0 100 100"><path d="M50 100 L50 56" stroke="${C.G}" stroke-width="${o.thin?2.2:5}" stroke-linecap="round"/><path d="M50 84 Q38 76 32 82 Q40 90 50 86z" fill="${C.G}"/>${head(t,o)}</svg>`}
 function bri(n){const c='currentColor',bg='var(--bg)';const s={1:[5,10,15,19].map((x,k)=>`<circle cx="${x}" cy="${12+(k%2?-2:2)}" r="2.2" fill="${c}"/>`).join(''),2:`<path d="M3 12c2-4 4 4 6 0s4 4 6 0 4 4 6 0" stroke="${c}" stroke-width="4" fill="none" stroke-linecap="round"/>`,3:`<rect x="3" y="9" width="18" height="6" rx="3" fill="${c}"/><path d="M8 9v2M12 13v2M16 9v2" stroke="#fff"/>`,4:`<rect x="3" y="9" width="18" height="6" rx="3" fill="${c}"/>`,5:`<g fill="${c}"><ellipse cx="6" cy="12" rx="3" ry="2.5"/><ellipse cx="12.5" cy="11" rx="3" ry="2.5"/><ellipse cx="18.5" cy="13" rx="2.5" ry="2"/></g>`,6:`<path d="M3 13c2-3 5 2 8-1s5 2 10-1v4H3z" fill="${c}" opacity=".7"/>`,7:`<path d="M3 14c3-2 6 2 9 0s6 2 9 0" stroke="${c}" stroke-width="2" fill="none"/>`};return `<svg viewBox="0 0 24 24" class="bri">${s[n]}</svg>`}
-function macetaSVG(){return `<svg viewBox="0 0 190 190"><ellipse cx="95" cy="182" rx="62" ry="7" fill="#0001"/><path d="M34 52 L156 52 L138 176 Q137 182 130 182 L60 182 Q53 182 52 176z" fill="${T.pot}"/><rect x="20" y="26" width="150" height="34" rx="10" fill="${T.pot2}"/><rect x="20" y="26" width="150" height="34" rx="10" fill="none" stroke="${T.pot}" stroke-width="3"/><ellipse cx="95" cy="28" rx="70" ry="7" fill="#5a3a22" opacity=".85"/><g transform="translate(95 112)"><circle cx="-18" cy="-4" r="5" fill="${C.F==='#ffffff'?'#fff':T.ink}"/><circle cx="18" cy="-4" r="5" fill="${C.F==='#ffffff'?'#fff':T.ink}"/><path d="M-12 10 Q0 22 12 10" stroke="${C.F==='#ffffff'?'#fff':T.ink}" stroke-width="4.5" fill="none" stroke-linecap="round"/><ellipse cx="-32" cy="8" rx="8" ry="5" fill="${T.a2}" opacity=".8"/><ellipse cx="32" cy="8" rx="8" ry="5" fill="${T.a2}" opacity=".8"/></g></svg>`}
+function macetaSVG(){const red='#d7262e',gold='#c9a227',ink='#1a1a1a';return `<svg viewBox="0 0 190 210"><ellipse cx="95" cy="204" rx="64" ry="6" fill="#0002"/>
+<path d="M32 30 L158 30 L158 186 Q158 198 95 198 Q32 198 32 186z" fill="#fff"/>
+<path d="M32 30 L158 30 L158 104 L32 104z" fill="${red}"/>
+<path d="M32 104 Q60 112 95 112 Q130 112 158 104 L158 104" fill="none"/>
+<path d="M32 186 Q32 198 95 198 Q158 198 158 186" fill="none" stroke="#bdbdbd" stroke-width="6"/>
+<rect x="32" y="182" width="126" height="5" fill="#d6d6d6"/>
+<ellipse cx="95" cy="30" rx="63" ry="10" fill="#cfcfcf" stroke="#9e9e9e" stroke-width="3"/><ellipse cx="95" cy="30" rx="54" ry="6.5" fill="#5a3a22"/>
+<text x="95" y="68" text-anchor="middle" font-family="'Brush Script MT','Snell Roundhand',cursive" font-style="italic" font-weight="700" font-size="29" fill="#fff">Soriano's</text>
+<text x="95" y="90" text-anchor="middle" font-family="Georgia,serif" font-size="11" letter-spacing="3" fill="#fff">CONDENSADA</text>
+<circle cx="95" cy="112" r="15" fill="${gold}" stroke="#8a6d10" stroke-width="2"/><circle cx="95" cy="112" r="9" fill="none" stroke="#8a6d10" stroke-width="1.5"/>
+<text x="95" y="150" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="25" fill="${red}">TOMATE</text>
+<text x="95" y="176" text-anchor="middle" font-family="Georgia,serif" font-weight="900" font-size="24" letter-spacing="2" fill="${ink}">SOPA</text>
+<path d="M44 158 h14 M132 158 h14" stroke="${gold}" stroke-width="3" stroke-dasharray="3 3"/></svg>`}
 // semana actual (lunes a domingo)
 function lunes(d){const x=new Date(d);const k=(x.getDay()+6)%7;x.setDate(x.getDate()-k);x.setHours(0,0,0,0);return x}
 function semana(){const l=lunes(new Date());const f=new Date(l);f.setDate(f.getDate()+6);return [iso(l),iso(f)]}
@@ -192,7 +205,7 @@ function abrirRegistro(edit,fecha){
     hoja.querySelectorAll('.chips').forEach(c=>c.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const k=c.dataset.k,v=b.dataset.v;p[k]=(k==='thin'||k==='effort')?v==='true':v;render()}));
     hoja.querySelector('#ok').onclick=()=>{
       S.poops=S.poops.filter(x=>x.id!==p.id).concat([p]);save();cerrarHoja();
-      if(!edit){nuevaId=p.id;fiesta();aviso(`¡Ha salido un ${NOM[p.bristol].toLowerCase()}!`)}
+      if(!edit){nuevaId=p.id;fiesta();aviso(`¡Ha salido ${ART[p.bristol]}!`)}
       pintar();if(diaAbierto)abrirDia(diaAbierto);
     };
     const d=hoja.querySelector('#del');if(d)d.onclick=()=>{S.poops=S.poops.filter(x=>x.id!==p.id);save();cerrarHoja();pintar();if(diaAbierto)abrirDia(diaAbierto)};
