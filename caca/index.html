@@ -8,7 +8,7 @@
 <title>Ramo</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Space+Mono:wght@400;700&family=Yellowtail&family=Abril+Fatface&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#fff4ec;--ink:#1b2cc1;--pink:#ff4f8b;--pink2:#ff9cc0;--yel:#ffb000;--yel2:#ffd36b;--blue2:#5a6bff;--green:#1f9d55;--org:#ff6a2b}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
@@ -17,14 +17,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .main{height:100dvh;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 22px) 22px calc(env(safe-area-inset-bottom) + 10px);user-select:none;-webkit-user-select:none}
 .date{font-size:clamp(54px,17vw,76px);font-weight:800;letter-spacing:-.05em;line-height:.9;color:var(--pink)}
 .count{font:700 14px 'Space Mono',monospace;margin-top:8px;letter-spacing:.02em}
-.stage{flex:1;position:relative;isolation:isolate;display:flex;align-items:flex-end;justify-content:center;min-height:0}
+.stage{flex:1;position:relative;isolation:isolate;display:flex;align-items:center;padding-bottom:6dvh;justify-content:center;min-height:0}
 .ramo{position:relative;width:300px;height:min(470px,62dvh);max-width:100%}
-.flores{position:absolute;left:50%;bottom:160px;width:0;height:0}
+.flores{position:absolute;left:50%;bottom:178px;width:0;height:0}
 .flor{position:absolute;left:-50px;bottom:-20px;width:100px;height:250px;transform-origin:50% 100%;transition:transform .5s}
-.flor svg{width:100%;height:100%;overflow:visible}
+.flor svg{width:100%;height:100%;overflow:visible;transform-origin:50% 100%;animation:mece 3.6s ease-in-out var(--d,0s) infinite alternate}@keyframes mece{from{transform:rotate(calc(var(--a,2deg) * -1))}to{transform:rotate(var(--a,2deg))}}@media (prefers-reduced-motion:reduce){.flor svg{animation:none}}
 .flor.nueva{animation:crece .9s cubic-bezier(.3,1.6,.5,1) both}
 @keyframes crece{from{transform:rotate(var(--r)) scale(.1)}to{transform:rotate(var(--r)) scale(1)}}
-.maceta{position:absolute;left:50%;bottom:0;z-index:20;width:170px;height:188px;transform:translateX(-50%);display:block}
+.maceta{position:absolute;left:50%;bottom:0;z-index:20;width:150px;height:203px;transform:translateX(-50%);display:block}
 .maceta svg{width:100%;height:100%;overflow:visible}
 .maceta:active{transform:translateX(-50%) scale(.96)}
 .vacia{position:absolute;left:0;right:0;bottom:210px;text-align:center;font-weight:600;font-size:18px;opacity:.7}
@@ -67,8 +67,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .dia small{position:absolute;top:3px;left:5px;font:700 10px 'Space Mono',monospace}
 .dia.hoy{background:var(--yel2)}
 .dia.c1{background:#ffe0ec}.dia.c2{background:#e3e7ff}.dia.c3{background:#fff1cc}
-.dia .mini{display:flex;align-items:flex-end;justify-content:center;width:100%;height:78%}
-.dia .mini svg{height:100%;width:auto;max-width:60%}
+.dia .mini{display:flex;align-items:center;justify-content:center;width:100%;height:80%;flex-wrap:wrap}
+.dia .mini svg{width:92%;height:auto}
 .dia .mas{position:absolute;top:2px;right:4px;font:700 10px 'Space Mono',monospace;color:var(--pink)}
 .diahoja .item{display:flex;align-items:center;gap:12px;border-top:2px solid var(--ink);padding:10px 0}
 .diahoja .item:last-of-type{border-bottom:2px solid var(--ink)}
@@ -135,7 +135,7 @@ const DESC={1:'bolitas duras',2:'con bultos',3:'con grietas',4:'lisa',5:'trozos 
 const face=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><circle cx="-4" cy="-1" r="1.7" fill="${C.F}"/><circle cx="4" cy="-1" r="1.7" fill="${C.F}"/><path d="M-4 3 Q0 7 4 3" stroke="${C.F}" stroke-width="1.7" fill="none" stroke-linecap="round"/></g>`;
 function petals(n,len,w,c1,c2,cx,cy,blood,jit){let g='';for(let i=0;i<n;i++){const a=360/n*i+(jit?((i*37)%23)-11:0);g+=`<ellipse cx="${cx}" cy="${cy-len/2-3}" rx="${w}" ry="${len/2}" fill="${blood&&i==1?C.R:(i%2?c1:c2)}" transform="rotate(${a} ${cx} ${cy})"/>`}return g}
 // cabeza centrada en (50,40) · pack Floristería
-function head(t,o){const b=o.blood&&o.blood!=='ninguno',R=C.P,R2=C.P2,V=C.B,V2=C.B2,O=C.Y;let g='';switch(+t){
+function head(t,o){const b=o.blood&&o.blood!=='ninguno',R=o.c1||C.P,R2=o.c2||C.P2,V=o.c1||C.B,V2=o.c2||C.B2,O=o.c3||C.Y;let g='';switch(+t){
  case 1:g=`<path d="M40 46 Q40 26 50 22 Q60 26 60 46 Q50 52 40 46z" fill="${R}"/><path d="M44 30 Q50 20 56 30" stroke="${R2}" stroke-width="3" fill="none"/><path d="M40 46 Q50 56 60 46 L56 54 Q50 58 44 54z" fill="${C.G}"/>`;break;
  case 2:g=`<path d="M34 34 Q36 58 50 58 Q64 58 66 34 Q58 40 50 28 Q42 40 34 34z" fill="${R2}"/>`;break;
  case 3:g=`<path d="M30 30 Q34 60 50 60 Q66 60 70 30 Q60 42 50 24 Q40 42 30 30z" fill="${R}"/><path d="M42 44 Q50 34 58 44" stroke="${R2}" stroke-width="2.5" fill="none"/>`;break;
@@ -143,26 +143,45 @@ function head(t,o){const b=o.blood&&o.blood!=='ninguno',R=C.P,R2=C.P2,V=C.B,V2=C
  case 5:g=`<path d="M50 20 Q30 30 34 50 Q42 46 50 52 Q58 46 66 50 Q70 30 50 20z" fill="${V}"/><path d="M50 26 L50 50" stroke="${V2}" stroke-width="2"/>`;break;
  case 6:g=Array.from({length:10},(_,i)=>`<path d="M50 40 l${16*Math.cos(i*.63)} ${16*Math.sin(i*.63)} l${3*Math.cos(i*.63+1.6)} ${3*Math.sin(i*.63+1.6)}z" fill="${R2}" stroke="${R}" stroke-width="3" stroke-linejoin="round"/>`).join('')+`<circle cx="50" cy="40" r="5" fill="${R}"/>`;break;
  case 7:g=[0,1,2,3,4,5].map(i=>`<ellipse cx="${46+(i%2)*8}" cy="${22+i*6}" rx="5" ry="4" fill="${i%2?V:V2}"/>`).join('');break;}
- if(b)g+=`<path d="M70 22 Q74 30 70 33 Q66 30 70 22z" fill="${C.R}"/>`;return g}
+ return g}
 function pet(n,len,w,c1,c2,rot=0){let g='';for(let i=0;i<n;i++)g+=`<ellipse cx="50" cy="${40-len/2-3}" rx="${w}" ry="${len/2}" fill="${i%2?c1:c2}" transform="rotate(${360/n*i+rot} 50 40)"/>`;return g}
+const FLC=[['#e63946','#ff8fa3','#ffd166'],['#ff8fab','#ffc2d1','#ffd166'],['#f4a261','#ffd6a5','#e76f51'],['#ffd166','#fff1b8','#e76f51'],['#9d4edd','#c77dff','#ffd166'],['#ffffff','#f1e3d3','#ffb703'],['#e76f51','#f4a261','#ffd166'],['#c1121f','#ff6b6b','#ffd166'],['#7b9acc','#bcd0f0','#ffd166'],['#ff70a6','#ff9770','#ffd670']];
+function colores(p){let h=0;for(const ch of p.id)h=(h*31+ch.charCodeAt(0))>>>0;let c=FLC[h%FLC.length];if(+p.bristol===7)c=[['#9d4edd','#c77dff'],['#7b2cbf','#e0aaff'],['#b388eb','#dec9ff']][h%3];if(+p.bristol===5&&c[0]==='#ffffff')c=FLC[4];let bend=((h>>4)%41)-20;if(p.effort)bend=bend>=0?bend+26:bend-26;
+ if(p.blood==='leve')c=['#d62828','#f28482',c[2]];if(p.blood==='abundante')c=['#7d0a0a','#bf1e2e','#3d0000'];
+ return {c1:c[0],c2:c[1],c3:c[2]||'#ffd166',bend}}
 // flor de ramo: viewBox 0 0 100 260, cabeza arriba, tallo largo
-function florRamo(p){const thin=p.thin;return `<svg viewBox="0 0 100 260"><path d="M50 260 L50 56" stroke="${C.G}" stroke-width="${thin?2.2:5.5}" stroke-linecap="round"/><path d="M50 150 Q34 138 26 146 Q36 158 50 152z" fill="${C.G}"/><path d="M50 190 Q66 178 74 186 Q64 198 50 192z" fill="${C.G}"/>${head(p.bristol,p)}</svg>`}
+function hojas(p,bd){const n=2+({leve:1,moderado:2,intenso:4}[p.pain]||0);let g='';for(let i=0;i<n;i++){const y=210-i*(150/n),s=i%2?1:-1,x=bd*(1-(y-56)/204)*0.9;g+=`<g transform="translate(${x} ${y})"><path d="M50 0 Q${50+s*16} -12 ${50+s*26} -4 Q${50+s*14} 8 50 2z" fill="${C.G}"/></g>`}return g}
+function florRamo(p){const thin=p.thin,k=colores(p),bd=k.bend;return `<svg viewBox="0 0 100 260" style="--d:${-(Math.abs(bd)%7)*0.6}s;--a:${bd>0?2.5:-2.5}deg"><path d="M50 260 Q${50+bd} 160 50 56" stroke="${C.G}" stroke-width="${thin?2.2:5}" fill="none" stroke-linecap="round"/>${hojas(p,bd)}${head(p.bristol,{...p,...k})}</svg>`}
 // icono pequeño: viewBox 0 0 100 100 con tallo corto
-function icono(t,o={}){return `<svg viewBox="0 0 100 100"><path d="M50 100 L50 56" stroke="${C.G}" stroke-width="${o.thin?2.2:5}" stroke-linecap="round"/><path d="M50 84 Q38 76 32 82 Q40 90 50 86z" fill="${C.G}"/>${head(t,o)}</svg>`}
+function cabeza(t,o={}){const k=o.id?colores(o):{};return `<svg viewBox="16 10 68 60">${head(t,{...o,...k})}</svg>`}
+function icono(t,o={}){const k=o.id?colores(o):{};return `<svg viewBox="0 0 100 100"><path d="M50 100 L50 56" stroke="${C.G}" stroke-width="${o.thin?2.2:5}" stroke-linecap="round"/><path d="M50 84 Q38 76 32 82 Q40 90 50 86z" fill="${C.G}"/>${head(t,{...o,...k})}</svg>`}
 function bri(n){const c='currentColor',bg='var(--bg)';const s={1:[5,10,15,19].map((x,k)=>`<circle cx="${x}" cy="${12+(k%2?-2:2)}" r="2.2" fill="${c}"/>`).join(''),2:`<path d="M3 12c2-4 4 4 6 0s4 4 6 0 4 4 6 0" stroke="${c}" stroke-width="4" fill="none" stroke-linecap="round"/>`,3:`<rect x="3" y="9" width="18" height="6" rx="3" fill="${c}"/><path d="M8 9v2M12 13v2M16 9v2" stroke="#fff"/>`,4:`<rect x="3" y="9" width="18" height="6" rx="3" fill="${c}"/>`,5:`<g fill="${c}"><ellipse cx="6" cy="12" rx="3" ry="2.5"/><ellipse cx="12.5" cy="11" rx="3" ry="2.5"/><ellipse cx="18.5" cy="13" rx="2.5" ry="2"/></g>`,6:`<path d="M3 13c2-3 5 2 8-1s5 2 10-1v4H3z" fill="${c}" opacity=".7"/>`,7:`<path d="M3 14c3-2 6 2 9 0s6 2 9 0" stroke="${c}" stroke-width="2" fill="none"/>`};return `<svg viewBox="0 0 24 24" class="bri">${s[n]}</svg>`}
-function macetaSVG(){const red='#d7262e',gold='#c9a227',ink='#1a1a1a';return `<svg viewBox="0 0 190 210"><ellipse cx="95" cy="204" rx="64" ry="6" fill="#0002"/>
-<path d="M32 30 L158 30 L158 186 Q158 198 95 198 Q32 198 32 186z" fill="#fff"/>
-<path d="M32 30 L158 30 L158 104 L32 104z" fill="${red}"/>
-<path d="M32 104 Q60 112 95 112 Q130 112 158 104 L158 104" fill="none"/>
-<path d="M32 186 Q32 198 95 198 Q158 198 158 186" fill="none" stroke="#bdbdbd" stroke-width="6"/>
-<rect x="32" y="182" width="126" height="5" fill="#d6d6d6"/>
-<ellipse cx="95" cy="30" rx="63" ry="10" fill="#cfcfcf" stroke="#9e9e9e" stroke-width="3"/><ellipse cx="95" cy="30" rx="54" ry="6.5" fill="#5a3a22"/>
-<text x="95" y="68" text-anchor="middle" font-family="'Brush Script MT','Snell Roundhand',cursive" font-style="italic" font-weight="700" font-size="29" fill="#fff">Soriano's</text>
-<text x="95" y="90" text-anchor="middle" font-family="Georgia,serif" font-size="11" letter-spacing="3" fill="#fff">CONDENSADA</text>
-<circle cx="95" cy="112" r="15" fill="${gold}" stroke="#8a6d10" stroke-width="2"/><circle cx="95" cy="112" r="9" fill="none" stroke="#8a6d10" stroke-width="1.5"/>
-<text x="95" y="150" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="25" fill="${red}">TOMATE</text>
-<text x="95" y="176" text-anchor="middle" font-family="Georgia,serif" font-weight="900" font-size="24" letter-spacing="2" fill="${ink}">SOPA</text>
-<path d="M44 158 h14 M132 158 h14" stroke="${gold}" stroke-width="3" stroke-dasharray="3 3"/></svg>`}
+function macetaSVG(){const red='#d71f26',ink='#1d1d1b';return `<svg viewBox="0 0 170 230">
+<defs>
+<linearGradient id="cil" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".18" stop-color="#000" stop-opacity="0"/><stop offset=".32" stop-color="#fff" stop-opacity=".35"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".85" stop-color="#000" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
+<linearGradient id="met" x1="0" x2="1"><stop offset="0" stop-color="#8d8d8d"/><stop offset=".3" stop-color="#f2f2f2"/><stop offset=".55" stop-color="#b5b5b5"/><stop offset="1" stop-color="#7a7a7a"/></linearGradient>
+<clipPath id="cuerpo"><rect x="18" y="22" width="134" height="190"/></clipPath>
+</defs>
+<ellipse cx="85" cy="222" rx="70" ry="6" fill="#000" opacity=".12"/>
+<g clip-path="url(#cuerpo)">
+<rect x="18" y="22" width="134" height="190" fill="#fbfaf6"/>
+<path d="M18 22 H152 V112 Q118 120 85 120 Q52 120 18 112z" fill="${red}"/>
+<path d="M18 112 Q52 120 85 120 Q118 120 152 112" stroke="#fff" stroke-width="1.5" fill="none" opacity=".6"/>
+<text x="85" y="66" text-anchor="middle" font-family="Yellowtail,cursive" font-size="33" fill="#fff" transform="rotate(-6 85 60)">Soriano's</text>
+<text x="85" y="96" text-anchor="middle" font-family="Georgia,serif" font-size="9.5" letter-spacing="3.5" fill="#fff">CONDENSADA</text>
+<circle cx="85" cy="128" r="16" fill="#d4a72c" stroke="#9c7712" stroke-width="2"/><circle cx="85" cy="128" r="11" fill="none" stroke="#9c7712" stroke-width="1"/><path d="M78 130 q7 -12 14 0" stroke="#9c7712" stroke-width="1.6" fill="none"/>
+<text x="85" y="170" text-anchor="middle" font-family="'Abril Fatface',Georgia,serif" font-size="25" letter-spacing="1" fill="${red}">TOMATE</text>
+<text x="85" y="196" text-anchor="middle" font-family="'Abril Fatface',Georgia,serif" font-size="22" letter-spacing="2" fill="${ink}">SOPA</text>
+${[0,1,2,3].map(i=>`<text x="${24+i*6}" y="190" font-size="7" fill="#d4a72c">✦</text><text x="${126+i*6}" y="190" font-size="7" fill="#d4a72c">✦</text>`).join('')}
+<rect x="18" y="22" width="134" height="190" fill="url(#cil)"/>
+</g>
+<path d="M14 206 H156 V212 Q156 220 85 220 Q14 220 14 212z" fill="url(#met)"/>
+<rect x="16" y="200" width="138" height="7" fill="url(#met)"/>
+<rect x="15" y="18" width="140" height="9" rx="2" fill="url(#met)"/>
+<ellipse cx="85" cy="18" rx="70" ry="9" fill="url(#met)"/>
+<ellipse cx="85" cy="18" rx="62" ry="6.5" fill="#4a2f1d"/>
+<ellipse cx="85" cy="17" rx="62" ry="4" fill="#5e3c25"/>
+</svg>`}
 // semana actual (lunes a domingo)
 function lunes(d){const x=new Date(d);const k=(x.getDay()+6)%7;x.setDate(x.getDate()-k);x.setHours(0,0,0,0);return x}
 function semana(){const l=lunes(new Date());const f=new Date(l);f.setDate(f.getDate()+6);return [iso(l),iso(f)]}
@@ -227,7 +246,7 @@ function pintarMes(){
   const first=new Date(y,m,1),off=(first.getDay()+6)%7,dias=new Date(y,m+1,0).getDate(),hoy=iso(new Date());
   let h='';for(let i=0;i<off;i++)h+='<div class="dia f"></div>';
   for(let d=1;d<=dias;d++){const ds=`${pre}-${pad(d)}`;const ps=del.filter(p=>p.date===ds).sort((a,b)=>a.at.localeCompare(b.at));
-    h+=`<button class="dia ${ds===hoy?'hoy':ps.length?'c'+(d%3+1):''}" data-d="${ds}"><small>${d}</small>${ps.length?`<div class="mini">${ps.slice(0,2).map(p=>icono(p.bristol,p)).join('')}</div>`:''}${ps.length>2?`<span class="mas">+${ps.length-2}</span>`:''}</button>`}
+    h+=`<button class="dia ${ds===hoy?'hoy':ps.length?'c'+(d%3+1):''}" data-d="${ds}"><small>${d}</small>${ps.length?`<div class="mini">${ps.slice(-1).map(p=>cabeza(p.bristol,p)).join('')}</div>`:''}${ps.length>1?`<span class="mas">×${ps.length}</span>`:''}</button>`}
   document.getElementById('cal').innerHTML=h;
 }
 document.getElementById('cal').onclick=e=>{const b=e.target.closest('.dia');if(b&&b.dataset.d)abrirDia(b.dataset.d)};
