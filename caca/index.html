@@ -85,6 +85,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes cae{to{transform:translate(var(--dx),70vh) rotate(540deg);opacity:0}}
 </style></head>
 <body>
+<svg width="0" height="0" style="position:absolute"><defs><filter id="sombra" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1.2" stdDeviation="1" flood-color="#000" flood-opacity=".18"/></filter></defs></svg>
 <div class="main" id="main">
   <div class="date" id="fecha"></div>
   <div class="count" id="cuenta"></div>
@@ -98,7 +99,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <div class="msub" id="mSub"></div>
   <div class="dows"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div>
   <div class="cal" id="cal" style="margin-top:5px"></div>
-  <div class="pasar"><h4 style="font:700 12px Space Mono,monospace;margin-bottom:8px">COLORES</h4><div id="temas" class="chips" style="margin-bottom:18px"></div><p>El 20/12 pasa tus cacas a «A punto». Guarda este archivo y cárgalo allí en Ajustes › Importar.</p><button id="exportar">Pasar a «A punto»</button></div>
+  <div class="pasar"><p>El 20/12 pasa tus cacas a «A punto». Guarda este archivo y cárgalo allí en Ajustes › Importar.</p><button id="exportar">Pasar a «A punto»</button></div>
 </div>
 <div class="velo" id="velo"></div>
 <div class="hoja" id="hoja"></div>
@@ -126,7 +127,7 @@ const TEMAS=[
  {n:'Blanco, negro y rojo',bg:'#fafafa',ink:'#111111',acc:'#ff2e2e',hl:'#ffd0d0',a1:'#111111',a2:'#444444',b1:'#ff2e2e',b2:'#ff7070',c1:'#111111',c2:'#999999',g:'#111111',o:'#ff2e2e',f:'#ffffff',pot:'#111111',pot2:'#444444'},
  {n:'Chicle neón',bg:'#fff0fb',ink:'#2b0a3d',acc:'#ff2bd6',hl:'#b6ff00',a1:'#ff2bd6',a2:'#ff8ae8',b1:'#00e5ff',b2:'#8ff4ff',c1:'#7a00ff',c2:'#b980ff',g:'#00b37a',o:'#ffe600',f:'#2b0a3d',pot:'#b6ff00',pot2:'#ddff80'},
 ];
-let TEMA=0;try{const q=new URLSearchParams(location.search).get('tema');TEMA=q!=null?+q:+(localStorage.getItem('ramo.tema')||2)}catch(e){}
+let TEMA=0;try{const q=new URLSearchParams(location.search).get('tema');TEMA=q!=null?+q:2}catch(e){}
 const T=TEMAS[TEMA]||TEMAS[0];
 const C={P:T.a1,P2:T.a2,B:T.c1,B2:T.c2,Y:T.b1,Y2:T.b2,G:T.g,O:T.o,F:T.f,R:'#e0262b'};
 {const r=document.documentElement.style;r.setProperty('--bg',T.bg);r.setProperty('--ink',T.ink);r.setProperty('--pink',T.acc);r.setProperty('--yel2',T.hl);document.querySelector('meta[name=theme-color]').content=T.bg}
@@ -142,8 +143,10 @@ function head(t,o){const b=o.blood&&o.blood!=='ninguno',R=o.c1||C.P,R2=o.c2||C.P
  case 4:g=`${pet(6,20,10,R,R2)}${pet(6,13,7,R2,R,30)}<circle cx="50" cy="40" r="6" fill="${O}"/>`;break;
  case 5:g=`<path d="M50 20 Q30 30 34 50 Q42 46 50 52 Q58 46 66 50 Q70 30 50 20z" fill="${V}"/><path d="M50 26 L50 50" stroke="${V2}" stroke-width="2"/>`;break;
  case 6:g=Array.from({length:10},(_,i)=>`<path d="M50 40 l${16*Math.cos(i*.63)} ${16*Math.sin(i*.63)} l${3*Math.cos(i*.63+1.6)} ${3*Math.sin(i*.63+1.6)}z" fill="${R2}" stroke="${R}" stroke-width="3" stroke-linejoin="round"/>`).join('')+`<circle cx="50" cy="40" r="5" fill="${R}"/>`;break;
- case 7:g=[0,1,2,3,4,5].map(i=>`<ellipse cx="${46+(i%2)*8}" cy="${22+i*6}" rx="5" ry="4" fill="${i%2?V:V2}"/>`).join('');break;}
- return g}
+ case 7:g=[0,1,2,3,4,5,6].map(i=>`<ellipse cx="${46.5+(i%2)*7}" cy="${16+i*6}" rx="${5-i*0.25}" ry="4" fill="${i%2?V:V2}" transform="rotate(${i%2?25:-25} ${46.5+(i%2)*7} ${16+i*6})"/>`).join('')+`<ellipse cx="50" cy="12" rx="3" ry="3.5" fill="${V2}"/>`;break;}
+ const GL={1:[46,32,3,7,-15],2:[42,42,3,7,-20],3:[40,40,3.5,8,-15],4:[44,32,4,2.5,-30],5:[44,32,3,8,-25],6:[45,35,3,2,-30],7:[45,24,1.8,1.4,0]}[+t];
+ if(GL)g+=`<ellipse cx="${GL[0]}" cy="${GL[1]}" rx="${GL[2]}" ry="${GL[3]}" fill="#fff" opacity=".55" transform="rotate(${GL[4]} ${GL[0]} ${GL[1]})"/>`+(+t===4||+t===6?`<circle cx="47" cy="37" r="1.6" fill="#fff" opacity=".8"/>`:'');
+ g=`<g filter="url(#sombra)">${g}</g>`;return g}
 function pet(n,len,w,c1,c2,rot=0){let g='';for(let i=0;i<n;i++)g+=`<ellipse cx="50" cy="${40-len/2-3}" rx="${w}" ry="${len/2}" fill="${i%2?c1:c2}" transform="rotate(${360/n*i+rot} 50 40)"/>`;return g}
 const FLC=[['#e63946','#ff8fa3','#ffd166'],['#ff8fab','#ffc2d1','#ffd166'],['#f4a261','#ffd6a5','#e76f51'],['#ffd166','#fff1b8','#e76f51'],['#9d4edd','#c77dff','#ffd166'],['#ffffff','#f1e3d3','#ffb703'],['#e76f51','#f4a261','#ffd166'],['#c1121f','#ff6b6b','#ffd166'],['#7b9acc','#bcd0f0','#ffd166'],['#ff70a6','#ff9770','#ffd670']];
 function colores(p){let h=0;for(const ch of p.id)h=(h*31+ch.charCodeAt(0))>>>0;let c=FLC[h%FLC.length];if(+p.bristol===7)c=[['#9d4edd','#c77dff'],['#7b2cbf','#e0aaff'],['#b388eb','#dec9ff']][h%3];if(+p.bristol===5&&c[0]==='#ffffff')c=FLC[4];let bend=((h>>4)%41)-20;if(p.effort)bend=bend>=0?bend+26:bend-26;
@@ -151,12 +154,14 @@ function colores(p){let h=0;for(const ch of p.id)h=(h*31+ch.charCodeAt(0))>>>0;l
  return {c1:c[0],c2:c[1],c3:c[2]||'#ffd166',bend}}
 // flor de ramo: viewBox 0 0 100 260, cabeza arriba, tallo largo
 function hojas(p,bd){const n=2+({leve:1,moderado:2,intenso:4}[p.pain]||0);let g='';for(let i=0;i<n;i++){const y=210-i*(150/n),s=i%2?1:-1,x=bd*(1-(y-56)/204)*0.9;g+=`<g transform="translate(${x} ${y})"><path d="M50 0 Q${50+s*16} -12 ${50+s*26} -4 Q${50+s*14} 8 50 2z" fill="${C.G}"/></g>`}return g}
-function florRamo(p){const thin=p.thin,k=colores(p),bd=k.bend;return `<svg viewBox="0 0 100 260" style="--d:${-(Math.abs(bd)%7)*0.6}s;--a:${bd>0?2.5:-2.5}deg"><path d="M50 260 Q${50+bd} 160 50 56" stroke="${C.G}" stroke-width="${thin?2.2:5}" fill="none" stroke-linecap="round"/>${hojas(p,bd)}${head(p.bristol,{...p,...k})}</svg>`}
+const TOPE={1:50,2:54,3:56,4:44,5:46,6:44,7:24};
+const CALIZ={1:0,2:1,3:1,4:0,5:1,6:0,7:0};
+function florRamo(p){const thin=p.thin,k=colores(p),bd=k.bend,tp=TOPE[p.bristol]||56;return `<svg viewBox="0 0 100 260" style="--d:${-(Math.abs(bd)%7)*0.6}s;--a:${bd>0?2.5:-2.5}deg"><path d="M50 260 Q${50+bd} 160 50 ${tp}" stroke="${C.G}" stroke-width="${thin?2.2:5}" fill="none" stroke-linecap="round"/>${hojas(p,bd)}<g transform="translate(50 ${tp}) scale(1.3) translate(-50 -${tp})">${head(p.bristol,{...p,...k})}${CALIZ[p.bristol]?`<path d="M43 ${tp-3} Q50 ${tp+9} 57 ${tp-3} Q50 ${tp+2} 43 ${tp-3}z" fill="${C.G}"/>`:""}</g></svg>`}
 // icono pequeño: viewBox 0 0 100 100 con tallo corto
 function cabeza(t,o={}){const k=o.id?colores(o):{};return `<svg viewBox="16 10 68 60">${head(t,{...o,...k})}</svg>`}
-function icono(t,o={}){const k=o.id?colores(o):{};return `<svg viewBox="0 0 100 100"><path d="M50 100 L50 56" stroke="${C.G}" stroke-width="${o.thin?2.2:5}" stroke-linecap="round"/><path d="M50 84 Q38 76 32 82 Q40 90 50 86z" fill="${C.G}"/>${head(t,{...o,...k})}</svg>`}
+function icono(t,o={}){const k=o.id?colores(o):{};return `<svg viewBox="0 0 100 100"><path d="M50 100 L50 ${TOPE[t]||56}" stroke="${C.G}" stroke-width="${o.thin?2.2:5}" stroke-linecap="round"/><path d="M50 84 Q38 76 32 82 Q40 90 50 86z" fill="${C.G}"/>${head(t,{...o,...k})}</svg>`}
 function bri(n){const c='currentColor',bg='var(--bg)';const s={1:[5,10,15,19].map((x,k)=>`<circle cx="${x}" cy="${12+(k%2?-2:2)}" r="2.2" fill="${c}"/>`).join(''),2:`<path d="M3 12c2-4 4 4 6 0s4 4 6 0 4 4 6 0" stroke="${c}" stroke-width="4" fill="none" stroke-linecap="round"/>`,3:`<rect x="3" y="9" width="18" height="6" rx="3" fill="${c}"/><path d="M8 9v2M12 13v2M16 9v2" stroke="#fff"/>`,4:`<rect x="3" y="9" width="18" height="6" rx="3" fill="${c}"/>`,5:`<g fill="${c}"><ellipse cx="6" cy="12" rx="3" ry="2.5"/><ellipse cx="12.5" cy="11" rx="3" ry="2.5"/><ellipse cx="18.5" cy="13" rx="2.5" ry="2"/></g>`,6:`<path d="M3 13c2-3 5 2 8-1s5 2 10-1v4H3z" fill="${c}" opacity=".7"/>`,7:`<path d="M3 14c3-2 6 2 9 0s6 2 9 0" stroke="${c}" stroke-width="2" fill="none"/>`};return `<svg viewBox="0 0 24 24" class="bri">${s[n]}</svg>`}
-function macetaSVG(parte){const red='#d71f26',ink='#1d1d1b';const defsM=`<defs><linearGradient id="met${parte}" x1="0" x2="1"><stop offset="0" stop-color="#8d8d8d"/><stop offset=".3" stop-color="#f2f2f2"/><stop offset=".55" stop-color="#b5b5b5"/><stop offset="1" stop-color="#7a7a7a"/></linearGradient></defs>`;if(parte==='fondo')return `<svg viewBox="0 0 170 230">${defsM}<ellipse cx="85" cy="18" rx="70" ry="9" fill="url(#metfondo)"/><ellipse cx="85" cy="18" rx="62" ry="6.5" fill="#3a2416"/></svg>`;return `<svg viewBox="0 0 170 230">
+function macetaSVG(parte){const red='#d71f26',ink='#1d1d1b';const defsM=`<defs><linearGradient id="met${parte}" x1="0" x2="1"><stop offset="0" stop-color="#8d8d8d"/><stop offset=".3" stop-color="#f2f2f2"/><stop offset=".55" stop-color="#b5b5b5"/><stop offset="1" stop-color="#7a7a7a"/></linearGradient></defs>`;if(parte==='fondo')return `<svg viewBox="0 0 170 230">${defsM}<ellipse cx="85" cy="18" rx="70" ry="9" fill="url(#metfondo)"/><ellipse cx="85" cy="18" rx="66" ry="7.7" fill="none" stroke="#777" stroke-width=".7"/><ellipse cx="85" cy="18" rx="62" ry="6.5" fill="#2e1c10"/><ellipse cx="85" cy="19.5" rx="56" ry="4.5" fill="#4a2f1d"/></svg>`;return `<svg viewBox="0 0 170 230">
 <defs>
 <linearGradient id="cil" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".18" stop-color="#000" stop-opacity="0"/><stop offset=".32" stop-color="#fff" stop-opacity=".35"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".85" stop-color="#000" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
 <linearGradient id="met" x1="0" x2="1"><stop offset="0" stop-color="#8d8d8d"/><stop offset=".3" stop-color="#f2f2f2"/><stop offset=".55" stop-color="#b5b5b5"/><stop offset="1" stop-color="#7a7a7a"/></linearGradient>
@@ -167,17 +172,25 @@ function macetaSVG(parte){const red='#d71f26',ink='#1d1d1b';const defsM=`<defs><
 <rect x="18" y="22" width="134" height="190" fill="#fbfaf6"/>
 <path d="M18 22 H152 V112 Q118 120 85 120 Q52 120 18 112z" fill="${red}"/>
 <path d="M18 112 Q52 120 85 120 Q118 120 152 112" stroke="#fff" stroke-width="1.5" fill="none" opacity=".6"/>
+<rect x="18" y="31" width="134" height="2" fill="#fff" opacity=".85"/><rect x="18" y="35" width="134" height="1" fill="#fff" opacity=".5"/>
+<path d="M30 79 Q85 74 140 79" stroke="#fff" stroke-width="1.2" fill="none" opacity=".8"/>
+<rect x="18" y="198" width="134" height="3" fill="${red}"/>
 <text x="85" y="66" text-anchor="middle" font-family="Yellowtail,cursive" font-size="33" fill="#fff" transform="rotate(-6 85 60)">Soriano's</text>
 <text x="85" y="96" text-anchor="middle" font-family="Georgia,serif" font-size="9.5" letter-spacing="3.5" fill="#fff">CONDENSADA</text>
-<circle cx="85" cy="128" r="16" fill="#d4a72c" stroke="#9c7712" stroke-width="2"/><circle cx="85" cy="128" r="11" fill="none" stroke="#9c7712" stroke-width="1"/><path d="M78 130 q7 -12 14 0" stroke="#9c7712" stroke-width="1.6" fill="none"/>
+<defs><radialGradient id="oro" cx=".35" cy=".3"><stop offset="0" stop-color="#ffe9a3"/><stop offset=".5" stop-color="#d9ab33"/><stop offset="1" stop-color="#8f6a10"/></radialGradient></defs>
+<circle cx="85" cy="128" r="16.5" fill="url(#oro)" stroke="#7d5c0c" stroke-width="1.2"/>
+${Array.from({length:20},(_,i)=>{const a=i*18*Math.PI/180;return `<circle cx="${85+13.5*Math.cos(a)}" cy="${128+13.5*Math.sin(a)}" r=".9" fill="#7d5c0c"/>`}).join('')}
+<circle cx="85" cy="128" r="10" fill="none" stroke="#7d5c0c" stroke-width=".8"/>
+<path d="M79 131 q2 -9 6 -9 q4 0 6 9 M82 126 h6" stroke="#7d5c0c" stroke-width="1.3" fill="none" stroke-linecap="round"/>
 <text x="85" y="170" text-anchor="middle" font-family="'Abril Fatface',Georgia,serif" font-size="25" letter-spacing="1" fill="${red}">TOMATE</text>
 <text x="85" y="196" text-anchor="middle" font-family="'Abril Fatface',Georgia,serif" font-size="22" letter-spacing="2" fill="${ink}">SOPA</text>
 ${[0,1,2,3].map(i=>`<text x="${24+i*6}" y="190" font-size="7" fill="#d4a72c">✦</text><text x="${126+i*6}" y="190" font-size="7" fill="#d4a72c">✦</text>`).join('')}
 <rect x="18" y="22" width="134" height="190" fill="url(#cil)"/>
 </g>
 <path d="M14 206 H156 V212 Q156 220 85 220 Q14 220 14 212z" fill="url(#met)"/>
-<rect x="16" y="200" width="138" height="7" fill="url(#met)"/>
-<g clip-path="url(#abajo)"><path fill-rule="evenodd" fill="url(#met)" d="M15 18 a70 9 0 1 0 140 0 a70 9 0 1 0 -140 0z M23 18 a62 6.5 0 1 0 124 0 a62 6.5 0 1 0 -124 0z"/><path d="M15 18 v5 a70 9 0 0 0 140 0 v-5 a70 9 0 0 1 -140 0z" fill="url(#met)"/></g>
+<rect x="16" y="200" width="138" height="7" fill="url(#met)"/><path d="M16 203.5 H154" stroke="#6f6f6f" stroke-width=".7"/><path d="M14 210 a71 9 0 0 0 142 0" stroke="#fff" stroke-width=".8" fill="none" opacity=".6"/>
+<g clip-path="url(#abajo)"><path fill-rule="evenodd" fill="url(#met)" d="M15 18 a70 9 0 1 0 140 0 a70 9 0 1 0 -140 0z M23 18 a62 6.5 0 1 0 124 0 a62 6.5 0 1 0 -124 0z"/><path d="M15 18 v5 a70 9 0 0 0 140 0 v-5 a70 9 0 0 1 -140 0z" fill="url(#met)"/><path d="M15 21 a70 9 0 0 0 140 0" stroke="#6f6f6f" stroke-width=".8" fill="none"/><path d="M19 19 a66 8 0 0 0 132 0" stroke="#fff" stroke-width=".8" fill="none" opacity=".7"/></g>
+<path d="M18 30 a67 8 0 0 0 134 0" stroke="#000" stroke-opacity=".18" stroke-width="2" fill="none"/>
 </svg>`}
 // semana actual (lunes a domingo)
 function lunes(d){const x=new Date(d);const k=(x.getDay()+6)%7;x.setDate(x.getDate()-k);x.setHours(0,0,0,0);return x}
@@ -190,7 +203,7 @@ function pintar(){
   const ps=S.poops.filter(p=>p.date>=a&&p.date<=b).sort((x,y)=>x.at.localeCompare(y.at));
   document.getElementById('cuenta').textContent=`${ps.length} ${ps.length==1?'FLOR':'FLORES'} ESTA SEMANA`;
   document.getElementById('vacia').style.display=ps.length?'none':'block';
-  const n=ps.length, spread=Math.min(90,16+n*10);
+  const n=ps.length, spread=Math.min(76,14+n*9);
   document.getElementById('flores').innerHTML=ps.map((p,i)=>{
     const r=n==1?0:-spread/2+spread*i/(n-1);
     const h=1-((i*7)%5)*0.06;
@@ -276,8 +289,6 @@ document.getElementById('exportar').onclick=async()=>{
   try{const f=new File([data],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Cacas para A punto'});return}}catch(e){if(e&&e.name==='AbortError')return}
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download=name;a.click();
 };
-document.getElementById('temas').innerHTML=TEMAS.map((x,i)=>`<button class="chip${i===TEMA?' on':''}" data-i="${i}">${i+1} · ${x.n}</button>`).join('');
-document.getElementById('temas').onclick=e=>{const b=e.target.closest('[data-i]');if(b){try{localStorage.setItem('ramo.tema',b.dataset.i)}catch(_){}location.href=location.pathname}};
 pintar();
 setInterval(()=>{const f=document.getElementById('fecha');if(f.textContent!==fmt(iso(new Date())))pintar()},60000);
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
