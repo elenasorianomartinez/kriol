@@ -23,7 +23,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .flor{position:absolute;left:-50px;bottom:-20px;width:100px;height:250px;transform-origin:50% 100%;transition:transform .5s}
 .flor svg{width:100%;height:100%;overflow:visible;transform-origin:50% 100%;animation:mece 3.6s ease-in-out var(--d,0s) infinite alternate}@keyframes mece{from{transform:rotate(calc(var(--a,2deg) * -1))}to{transform:rotate(var(--a,2deg))}}@media (prefers-reduced-motion:reduce){.flor svg{animation:none}}
 .flor.nueva{animation:crece .9s cubic-bezier(.3,1.6,.5,1) both}
-@keyframes crece{from{transform:rotate(var(--r)) scale(.1)}to{transform:rotate(var(--r)) scale(1)}}
+.brillo{animation:titila 1.6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}@keyframes titila{from{opacity:.2;transform:scale(.5)}to{opacity:1;transform:scale(1.1)}}@keyframes crece{from{transform:rotate(var(--r)) scale(.1)}to{transform:rotate(var(--r)) scale(1)}}
 .maceta{position:absolute;left:50%;bottom:0;z-index:20;padding:0;width:150px;height:203px;transform:translateX(-50%);display:block}
 .maceta svg{width:100%;height:100%;overflow:visible}
 .maceta.fondo{z-index:0;pointer-events:none}.flores{z-index:5}.maceta:active{transform:translateX(-50%) scale(.96)}
@@ -85,7 +85,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes cae{to{transform:translate(var(--dx),70vh) rotate(540deg);opacity:0}}
 </style></head>
 <body>
-<svg width="0" height="0" style="position:absolute"><defs><filter id="sombra" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1.2" stdDeviation="1" flood-color="#000" flood-opacity=".18"/></filter></defs></svg>
+<svg width="0" height="0" style="position:absolute"><defs><filter id="sombra" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="1.2" stdDeviation="1" flood-color="#000" flood-opacity=".18"/></filter><filter id="dorado"><feColorMatrix type="matrix" values=".35 .7 .12 0 .28  .25 .5 .08 0 .1  .05 .1 .02 0 0  0 0 0 1 0"/></filter><filter id="sangreL"><feColorMatrix type="matrix" values=".55 1 .25 0 .12  .08 .15 .04 0 .02  .1 .18 .05 0 .03  0 0 0 1 0"/></filter><filter id="sangreA"><feColorMatrix type="matrix" values=".32 .6 .12 0 .06  .02 .05 .01 0 0  .03 .06 .02 0 .01  0 0 0 1 0"/></filter><filter id="tono1"><feColorMatrix type="hueRotate" values="28"/></filter><filter id="tono2"><feColorMatrix type="hueRotate" values="-30"/></filter></defs></svg>
 <div class="main" id="main">
   <div class="date" id="fecha"></div>
   <div class="count" id="cuenta"></div>
@@ -135,18 +135,44 @@ const NOM={1:'Capullo de rosa',2:'Tulipán rosa',3:'Tulipán',4:'Rosa',5:'Lirio'
 const DESC={1:'bolitas duras',2:'con bultos',3:'con grietas',4:'lisa',5:'trozos blandos',6:'pastosa',7:'líquida'};
 const face=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><circle cx="-4" cy="-1" r="1.7" fill="${C.F}"/><circle cx="4" cy="-1" r="1.7" fill="${C.F}"/><path d="M-4 3 Q0 7 4 3" stroke="${C.F}" stroke-width="1.7" fill="none" stroke-linecap="round"/></g>`;
 function petals(n,len,w,c1,c2,cx,cy,blood,jit){let g='';for(let i=0;i<n;i++){const a=360/n*i+(jit?((i*37)%23)-11:0);g+=`<ellipse cx="${cx}" cy="${cy-len/2-3}" rx="${w}" ry="${len/2}" fill="${blood&&i==1?C.R:(i%2?c1:c2)}" transform="rotate(${a} ${cx} ${cy})"/>`}return g}
-// cabeza centrada en (50,40) · pack Floristería
-function head(t,o){const b=o.blood&&o.blood!=='ninguno',R=o.c1||C.P,R2=o.c2||C.P2,V=o.c1||C.B,V2=o.c2||C.B2,O=o.c3||C.Y;let g='';switch(+t){
- case 1:g=`<path d="M40 46 Q40 26 50 22 Q60 26 60 46 Q50 52 40 46z" fill="${R}"/><path d="M44 30 Q50 20 56 30" stroke="${R2}" stroke-width="3" fill="none"/><path d="M40 46 Q50 56 60 46 L56 54 Q50 58 44 54z" fill="${C.G}"/>`;break;
- case 2:g=`<path d="M34 34 Q36 58 50 58 Q64 58 66 34 Q58 40 50 28 Q42 40 34 34z" fill="${R2}"/>`;break;
- case 3:g=`<path d="M30 30 Q34 60 50 60 Q66 60 70 30 Q60 42 50 24 Q40 42 30 30z" fill="${R}"/><path d="M42 44 Q50 34 58 44" stroke="${R2}" stroke-width="2.5" fill="none"/>`;break;
- case 4:g=`${pet(6,20,10,R,R2)}${pet(6,13,7,R2,R,30)}<circle cx="50" cy="40" r="6" fill="${O}"/>`;break;
- case 5:g=`<path d="M50 20 Q30 30 34 50 Q42 46 50 52 Q58 46 66 50 Q70 30 50 20z" fill="${V}"/><path d="M50 26 L50 50" stroke="${V2}" stroke-width="2"/>`;break;
- case 6:g=Array.from({length:10},(_,i)=>`<path d="M50 40 l${16*Math.cos(i*.63)} ${16*Math.sin(i*.63)} l${3*Math.cos(i*.63+1.6)} ${3*Math.sin(i*.63+1.6)}z" fill="${R2}" stroke="${R}" stroke-width="3" stroke-linejoin="round"/>`).join('')+`<circle cx="50" cy="40" r="5" fill="${R}"/>`;break;
- case 7:g=[0,1,2,3,4,5,6].map(i=>`<ellipse cx="${46.5+(i%2)*7}" cy="${16+i*6}" rx="${5-i*0.25}" ry="4" fill="${i%2?V:V2}" transform="rotate(${i%2?25:-25} ${46.5+(i%2)*7} ${16+i*6})"/>`).join('')+`<ellipse cx="50" cy="12" rx="3" ry="3.5" fill="${V2}"/>`;break;}
- const GL={1:[46,32,3,7,-15],2:[42,42,3,7,-20],3:[40,40,3.5,8,-15],4:[44,32,4,2.5,-30],5:[44,32,3,8,-25],6:[45,35,3,2,-30],7:[45,24,1.8,1.4,0]}[+t];
- if(GL)g+=`<ellipse cx="${GL[0]}" cy="${GL[1]}" rx="${GL[2]}" ry="${GL[3]}" fill="#fff" opacity=".55" transform="rotate(${GL[4]} ${GL[0]} ${GL[1]})"/>`+(+t===4||+t===6?`<circle cx="47" cy="37" r="1.6" fill="#fff" opacity=".8"/>`:'');
- g=`<g filter="url(#sombra)">${g}</g>`;return g}
+// ===== 14 flores elegidas · centradas en (50,45) =====
+let _u=0;const fid=()=>'f'+(_u++);
+const rg=(c1,c2,cx=.5,cy=.5,r=.6)=>{const i=fid();return [i,`<radialGradient id="${i}" cx="${cx}" cy="${cy}" r="${r}"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient>`]};
+const lg=(c1,c2,x2=0,y2=1)=>{const i=fid();return [i,`<linearGradient id="${i}" x1="0" y1="0" x2="${x2}" y2="${y2}"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>`]};
+const ring=(n,d,fill,cx=50,cy=45,rot=0,extra='')=>Array.from({length:n},(_,i)=>`<path d="${d}" fill="${fill}" ${extra} transform="translate(${cx} ${cy}) rotate(${rot+i*360/n})"/>`).join('');
+const hl=(x,y,rx,ry,r=-30,o=.5)=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="#fff" opacity="${o}" transform="rotate(${r} ${x} ${y})"/>`;
+const dots=(n,r,cx,cy,c,s=1.2)=>Array.from({length:n},(_,i)=>{const a=i*2.399,rr=r*Math.sqrt((i+.5)/n);return `<circle cx="${(cx+rr*Math.cos(a)).toFixed(1)}" cy="${(cy+rr*Math.sin(a)).toFixed(1)}" r="${s}" fill="${c}"/>`}).join('');
+const P={round:(l,w)=>`M0 0 C${w*1.2} ${-l*.2} ${w*1.1} ${-l} 0 ${-l} C${-w*1.1} ${-l} ${-w*1.2} ${-l*.2} 0 0z`,
+ pointy:(l,w)=>`M0 0 Q${w} ${-l*.5} 0 ${-l} Q${-w} ${-l*.5} 0 0z`,notch:(l,w)=>`M0 0 C${w} ${-l*.3} ${w} ${-l} ${w*.35} ${-l} L0 ${-l*.88} L${-w*.35} ${-l} C${-w} ${-l} ${-w} ${-l*.3} 0 0z`,
+ frill:(l,w)=>`M0 0 C${w} ${-l*.3} ${w*1.1} ${-l*.8} ${w*.6} ${-l} Q${w*.3} ${-l*.9} 0 ${-l*1.02} Q${-w*.3} ${-l*.9} ${-w*.6} ${-l} C${-w*1.1} ${-l*.8} ${-w} ${-l*.3} 0 0z`,
+ tube:(l,w)=>`M${-w*.3} 0 L${-w*.5} ${-l*.8} Q0 ${-l*1.1} ${w*.5} ${-l*.8} L${w*.3} 0z`};
+// [nombre, artículo, y de unión con el tallo, viewBox del calendario, dibujo(colorTallo)]
+const FL={
+ranunculo:['Ranúnculo','un ranúnculo',48,'18 13 64 64',()=>{let s='';for(let k=0;k<6;k++){const r=26-k*4;s+=`<circle cx="50" cy="${45-k*.6}" r="${r}" fill="${['#ff9e00','#ff8500','#ffa94d','#ffb703','#ffc971','#fff1c1'][k]}" stroke="#e85d04" stroke-width=".6"/>`}return s+`<circle cx="50" cy="42" r="3" fill="#6a994e"/>`+hl(40,32,5,2.5)}],
+girasol:['Girasol','un girasol',48,'16 11 68 68',()=>{const [a,da]=rg('#6f4518','#3e1f00');return `<defs>${da}</defs>`+ring(16,P.pointy(30,6),'#ffb703')+ring(16,P.pointy(26,5),'#ffd60a',50,45,11)+`<circle cx="50" cy="45" r="13" fill="url(#${a})"/>`+dots(60,12,50,45,'#b08968',.7)+hl(45,38,4,2)}],
+amapola:['Amapola','una amapola',48,'18 13 64 64',()=>{const [a,da]=rg('#ff4d4d','#9d0208',.5,.4,.7);return `<defs>${da}</defs>`+ring(4,P.round(26,16),`url(#${a})`,50,45,45)+`<circle cx="50" cy="45" r="8" fill="#1b1b1b"/>`+ring(12,'M0 0 L0 -10','#1b1b1b',50,45,0,'stroke="#1b1b1b" stroke-width="1"')+`<circle cx="50" cy="45" r="4" fill="#6a994e"/>`+hl(38,30,6,3)}],
+cala:['Cala','una cala',66,'24 10 54 60',()=>{const [a,da]=lg('#ffffff','#e9edc9',1,1);return `<defs>${da}</defs><path d="M50 66 C38 58 30 40 36 22 C44 26 62 22 70 16 C70 38 62 58 50 66z" fill="url(#${a})" stroke="#ccd5ae" stroke-width="1"/><path d="M50 60 C48 50 50 40 54 34" stroke="#ffb703" stroke-width="4" stroke-linecap="round"/>`+hl(42,36,3,9,-15,.6)}],
+hibisco:['Hibisco','un hibisco',48,'16 11 68 68',()=>{const [a,da]=rg('#ffd6a5','#ff006e',.5,.5,.6);return `<defs>${da}</defs>`+ring(5,P.frill(28,16),`url(#${a})`,50,45,0,'stroke="#c9184a" stroke-width=".6"')+`<circle cx="50" cy="45" r="5" fill="#9d0208"/><path d="M50 45 C56 36 62 30 66 24" stroke="#ffd60a" stroke-width="2"/>`+dots(6,3,66,24,'#ffd60a',1.3)}],
+pompon:['Dalia pompón','una dalia pompón',48,'20 15 60 60',()=>{let s='';for(let k=0;k<5;k++)s+=ring(14-k*2,P.tube(22-k*4,9-k),['#9d0208','#d00000','#dc2f02','#e85d04','#f48c06'][k],50,45,k*9,'stroke="#6a040f" stroke-width=".5"');return s+hl(42,34,4,2)}],
+cactus:['Dalia cactus','una dalia cactus',48,'16 11 68 68',()=>ring(20,P.pointy(30,4),'#f15bb5')+ring(16,P.pointy(22,3.5),'#fee440',50,45,10)+ring(12,P.pointy(13,3),'#f15bb5',50,45,4)+`<circle cx="50" cy="45" r="3" fill="#9b5de5"/>`],
+crisantemo:['Crisantemo','un crisantemo',48,'18 13 64 64',()=>{let s='';for(let k=0;k<4;k++)s+=ring(22,P.pointy(28-k*6,3.4),['#9a031e','#c1121f','#e36414','#fb8b24'][k],50,45,k*5);return s+hl(44,36,3,1.6)}],
+cosmos:['Cosmos','un cosmos',48,'20 15 60 60',()=>ring(8,P.notch(26,10),'#f72585',50,45,0,'stroke="#b5179e" stroke-width=".5"')+ring(8,'M0 -6 L0 -18','#b5179e',50,45,0,'stroke="#b5179e" stroke-width=".8" opacity=".5"')+`<circle cx="50" cy="45" r="6" fill="#ffd60a"/>`+dots(14,5,50,45,'#f48c06',.9)+hl(40,30,5,2.5)],
+gerbera:['Gerbera','una gerbera',48,'18 13 64 64',()=>ring(22,P.round(28,3.6),'#fb5607')+ring(22,P.round(18,2.6),'#ff9e00',50,45,8)+`<circle cx="50" cy="45" r="8" fill="#386641"/><circle cx="50" cy="45" r="4" fill="#132a13"/>`+hl(47,42,2,1.2,-30,.6)],
+lavanda:['Lavanda','una lavanda',80,'22 14 56 70',t=>`<path d="M50 82 L50 20" stroke="${t}" stroke-width="2.2" stroke-linecap="round"/>`+Array.from({length:12},(_,i)=>{const y=20+i*5,x=i%2?54:46,r=i%2?25:-25;return `<ellipse cx="${x}" cy="${y}" rx="${(4.2-i*.12).toFixed(2)}" ry="3.2" fill="${['#9d4edd','#c77dff','#7b2cbf'][i%3]}" transform="rotate(${r} ${x} ${y})"/>`}).join('')+hl(45,24,1.3,2.2,-25,.6)],
+narciso:['Narciso','un narciso',48,'18 13 64 64',()=>ring(6,P.pointy(28,11),'#fff3b0',50,45,0,'stroke="#e9c46a" stroke-width=".6"')+`<circle cx="50" cy="45" r="11" fill="#f4a261" stroke="#e76f51" stroke-width="1.5"/><circle cx="50" cy="45" r="7" fill="#e76f51"/><path d="M39 45 l2 -2 l2 2 l2 -2 l2 2 l2 -2 l2 2 l2 -2 l2 2 l2 -2 l2 2" stroke="#e76f51" stroke-width="1" fill="none"/>`+hl(46,40,2.5,1.4)],
+pensamiento:['Pensamiento','un pensamiento',50,'20 14 60 60',()=>`<path d="${P.round(26,14)}" fill="#7209b7" transform="translate(50 46) rotate(-30)"/><path d="${P.round(26,14)}" fill="#7209b7" transform="translate(50 46) rotate(30)"/><path d="${P.round(22,12)}" fill="#ffd60a" transform="translate(50 46) rotate(-110)"/><path d="${P.round(22,12)}" fill="#ffd60a" transform="translate(50 46) rotate(110)"/><path d="${P.round(22,14)}" fill="#ffd60a" transform="translate(50 46) rotate(180)"/><path d="M50 46 C44 52 44 60 50 64 C56 60 56 52 50 46z" fill="#3c096c"/><circle cx="50" cy="46" r="3" fill="#fff"/>`+hl(40,28,4,2,-50,.4)],
+ave:['Ave del paraíso','un ave del paraíso',72,'30 14 60 62',t=>`<path d="M50 74 C50 68 48 62 44 56" stroke="${t}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M44 56 C56 54 72 52 84 56 C70 60 56 60 44 56z" fill="#386641"/>`+[[-70,30],[-55,34],[-40,30],[-25,26]].map(([r,l],i)=>`<path d="${P.pointy(l,5)}" fill="${['#ff9e00','#ffb703','#fb8500','#ffd60a'][i]}" transform="translate(${56+i*4} 55) rotate(${r+40})"/>`).join('')+`<path d="M62 55 l18 -16 l2 6z" fill="#3a0ca3"/>`+hl(64,40,1.5,4,40,.5)]};
+// dos flores por tipo de Bristol
+const POR={1:['ranunculo','pompon'],2:['lavanda','ave'],3:['cala','pensamiento'],4:['girasol','gerbera'],5:['amapola','cosmos'],6:['crisantemo','cactus'],7:['hibisco','narciso']};
+function hsh(s){let h=0;for(const ch of String(s||''))h=(h*31+ch.charCodeAt(0))>>>0;return h}
+function cual(p){const v=POR[+p.bristol]||POR[4];return FL[v[(hsh(p.id)>>>2)%2]]}
+const nombre=p=>p.oro?cual(p)[0]+' dorado/a':cual(p)[0];
+function head(t,o){const f=cual({bristol:t,id:o.id}),tg=(o.tg||['#4f7d4a'])[0];let art=f[4](tg);
+ const fi=o.oro?'dorado':o.blood==='abundante'?'sangreA':o.blood==='leve'?'sangreL':['','','','tono1','tono2'][hsh(o.id)%5];
+ if(fi)art=`<g filter="url(#${fi})">${art}</g>`;
+ if(o.oro)art+=[[24,22,4],[78,28,3],[74,70,3.5],[22,62,2.5]].map(([x,y,s],i)=>`<path class="brillo" style="animation-delay:${i*.4}s" d="M${x} ${y-s*2}Q${x} ${y} ${x+s*2} ${y}Q${x} ${y} ${x} ${y+s*2}Q${x} ${y} ${x-s*2} ${y}Q${x} ${y} ${x} ${y-s*2}z" fill="#fff6c2"/>`).join('');
+ return `<g filter="url(#sombra)">${art}</g>`}
+
 function pet(n,len,w,c1,c2,rot=0){let g='';for(let i=0;i<n;i++)g+=`<ellipse cx="50" cy="${40-len/2-3}" rx="${w}" ry="${len/2}" fill="${i%2?c1:c2}" transform="rotate(${360/n*i+rot} 50 40)"/>`;return g}
 const FLC=[['#e63946','#ff8fa3','#ffd166'],['#ff8fab','#ffc2d1','#ffd166'],['#f4a261','#ffd6a5','#e76f51'],['#ffd166','#fff1b8','#e76f51'],['#9d4edd','#c77dff','#ffd166'],['#ffffff','#f1e3d3','#ffb703'],['#e76f51','#f4a261','#ffd166'],['#c1121f','#ff6b6b','#ffd166'],['#7b9acc','#bcd0f0','#ffd166'],['#ff70a6','#ff9770','#ffd670']];
 function colores(p){let h=0;for(const ch of p.id)h=(h*31+ch.charCodeAt(0))>>>0;let c=FLC[h%FLC.length];if(+p.bristol===7)c=[['#9d4edd','#c77dff'],['#7b2cbf','#e0aaff'],['#b388eb','#dec9ff']][h%3];if(+p.bristol===5&&c[0]==='#ffffff')c=FLC[4];let bend=((h>>4)%41)-20;if(p.effort)bend=bend>=0?bend+26:bend-26;
@@ -161,13 +187,15 @@ function hojas(p,k,tp){const n=2+({leve:1,moderado:2,intenso:4}[p.pain]||0),f=k.
  g+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${s*sc} ${sc}) rotate(${rot})"><path d="${HOJA[f%5]}" fill="${k.tg[0]}" stroke="${k.tg[1]}" stroke-width="1" stroke-linejoin="round"/><path d="${VENA[f%5]}" stroke="${k.tg[2]}" stroke-width="1.1" fill="none" stroke-linecap="round"/></g>`}return g}
 const TOPE={1:50,2:54,3:56,4:44,5:46,6:44,7:24};
 const CALIZ={1:0,2:1,3:1,4:0,5:1,6:0,7:0};
-function florRamo(p){const thin=p.thin,k=colores(p),bd=k.bend,tp=TOPE[p.bristol]||56;const d=`M50 260 C${50+bd+k.s1} 200 ${50+k.s2} 110 50 ${tp}`,w=(thin?2.2:4.2+(k.hf%3)*0.8);
- return `<svg viewBox="0 0 100 260" style="--d:${-(Math.abs(bd)%7)*0.6}s;--a:${bd>0?2.5:-2.5}deg"><path d="${d}" stroke="${k.tg[1]}" stroke-width="${w+1.6}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="${k.tg[0]}" stroke-width="${w}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="${k.tg[2]}" stroke-width="${thin?.7:w*0.35}" fill="none" stroke-linecap="round" transform="translate(-${(w*0.22).toFixed(1)} 0)" opacity=".45"/>${hojas(p,k,tp)}<g transform="translate(50 ${tp}) scale(1.3) translate(-50 -${tp})">${head(p.bristol,{...p,...k})}${CALIZ[p.bristol]?`<path d="M43 ${tp-3} Q50 ${tp+9} 57 ${tp-3} Q50 ${tp+2} 43 ${tp-3}z" fill="${k.tg[0]}"/>`:""}</g></svg>`}
+function florRamo(p){const thin=p.thin,k=colores(p),bd=k.bend,f=cual(p),jy=f[2],tp=58+(k.hf%3)*5;const d=`M50 260 C${50+bd+k.s1} 200 ${50+k.s2} 110 50 ${tp}`,w=(thin?2.2:4.2+(k.hf%3)*0.8);
+ return `<svg viewBox="0 0 100 260" style="--d:${-(Math.abs(bd)%7)*0.6}s;--a:${bd>0?2.5:-2.5}deg"><path d="${d}" stroke="${k.tg[1]}" stroke-width="${w+1.6}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="${k.tg[0]}" stroke-width="${w}" fill="none" stroke-linecap="round"/><path d="${d}" stroke="${k.tg[2]}" stroke-width="${thin?.7:w*0.35}" fill="none" stroke-linecap="round" transform="translate(-${(w*0.22).toFixed(1)} 0)" opacity=".45"/>${hojas(p,k,tp)}<g transform="translate(50 ${tp}) scale(1.05) translate(-50 -${jy})">${head(p.bristol,{...p,...k})}</g></svg>`}
 // icono pequeño: viewBox 0 0 100 100 con tallo corto
-function cabeza(t,o={}){const k=o.id?colores(o):{};return `<svg viewBox="16 10 68 60">${head(t,{...o,...k})}</svg>`}
-function icono(t,o={}){const k=o.id?colores(o):{};return `<svg viewBox="0 0 100 100"><path d="M50 100 L50 ${TOPE[t]||56}" stroke="${C.G}" stroke-width="${o.thin?2.2:5}" stroke-linecap="round"/><path d="M50 84 Q38 76 32 82 Q40 90 50 86z" fill="${C.G}"/>${head(t,{...o,...k})}</svg>`}
+function cabeza(t,o={}){const k=o.id?colores(o):{};return `<svg viewBox="${cual({bristol:t,id:o.id})[3]}">${head(t,{...o,...k})}</svg>`}
+function icono(t,o={}){const k=o.id?colores(o):{};return `<svg viewBox="0 0 100 100"><path d="M50 100 L50 ${cual({bristol:t,id:o.id})[2]}" stroke="${C.G}" stroke-width="${o.thin?2.2:5}" stroke-linecap="round"/><path d="M50 84 Q38 76 32 82 Q40 90 50 86z" fill="${C.G}"/>${head(t,{...o,...k})}</svg>`}
 function bri(n){const c='currentColor',bg='var(--bg)';const s={1:[5,10,15,19].map((x,k)=>`<circle cx="${x}" cy="${12+(k%2?-2:2)}" r="2.2" fill="${c}"/>`).join(''),2:`<path d="M3 12c2-4 4 4 6 0s4 4 6 0 4 4 6 0" stroke="${c}" stroke-width="4" fill="none" stroke-linecap="round"/>`,3:`<rect x="3" y="9" width="18" height="6" rx="3" fill="${c}"/><path d="M8 9v2M12 13v2M16 9v2" stroke="#fff"/>`,4:`<rect x="3" y="9" width="18" height="6" rx="3" fill="${c}"/>`,5:`<g fill="${c}"><ellipse cx="6" cy="12" rx="3" ry="2.5"/><ellipse cx="12.5" cy="11" rx="3" ry="2.5"/><ellipse cx="18.5" cy="13" rx="2.5" ry="2"/></g>`,6:`<path d="M3 13c2-3 5 2 8-1s5 2 10-1v4H3z" fill="${c}" opacity=".7"/>`,7:`<path d="M3 14c3-2 6 2 9 0s6 2 9 0" stroke="${c}" stroke-width="2" fill="none"/>`};return `<svg viewBox="0 0 24 24" class="bri">${s[n]}</svg>`}
-function macetaSVG(parte){const red='#d71f26',ink='#1d1d1b';const defsM=`<defs><linearGradient id="met${parte}" x1="0" x2="1"><stop offset="0" stop-color="#8d8d8d"/><stop offset=".3" stop-color="#f2f2f2"/><stop offset=".55" stop-color="#b5b5b5"/><stop offset="1" stop-color="#7a7a7a"/></linearGradient></defs>`;if(parte==='fondo')return `<svg viewBox="0 0 170 230">${defsM}<ellipse cx="85" cy="18" rx="70" ry="9" fill="url(#metfondo)"/><ellipse cx="85" cy="18" rx="66" ry="7.7" fill="none" stroke="#777" stroke-width=".7"/><ellipse cx="85" cy="18" rx="62" ry="6.5" fill="#2e1c10"/><ellipse cx="85" cy="19.5" rx="56" ry="4.5" fill="#4a2f1d"/></svg>`;return `<svg viewBox="0 0 170 230">
+const SABORES=[['TOMATE','#d71f26'],['POLLO','#e39b12'],['VERDURAS','#2f8a3c'],['CHAMPIÑÓN','#8a5a3b'],['CEBOLLA','#7b3fa0'],['CALABAZA','#ea6a12'],['MARISCO','#1f63b0']];
+function sabor(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-(d.getDay()+6)%7);const w=Math.round((d-new Date(2026,10,23,12))/6048e5);return SABORES[((w%7)+7)%7]}
+function macetaSVG(parte){const [SAB,red]=sabor(),ink='#1d1d1b',fs=SAB.length<=6?27:Math.round(27*6.4/SAB.length);const defsM=`<defs><linearGradient id="met${parte}" x1="0" x2="1"><stop offset="0" stop-color="#8d8d8d"/><stop offset=".3" stop-color="#f2f2f2"/><stop offset=".55" stop-color="#b5b5b5"/><stop offset="1" stop-color="#7a7a7a"/></linearGradient></defs>`;if(parte==='fondo')return `<svg viewBox="0 0 170 230">${defsM}<ellipse cx="85" cy="18" rx="70" ry="9" fill="url(#metfondo)"/><ellipse cx="85" cy="18" rx="66" ry="7.7" fill="none" stroke="#777" stroke-width=".7"/><ellipse cx="85" cy="18" rx="62" ry="6.5" fill="#2e1c10"/><ellipse cx="85" cy="19.5" rx="56" ry="4.5" fill="#4a2f1d"/></svg>`;return `<svg viewBox="0 0 170 230">
 <defs>
 <linearGradient id="cil" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".18" stop-color="#000" stop-opacity="0"/><stop offset=".32" stop-color="#fff" stop-opacity=".35"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset=".85" stop-color="#000" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></linearGradient>
 <linearGradient id="met" x1="0" x2="1"><stop offset="0" stop-color="#8d8d8d"/><stop offset=".3" stop-color="#f2f2f2"/><stop offset=".55" stop-color="#b5b5b5"/><stop offset="1" stop-color="#7a7a7a"/></linearGradient>
@@ -193,8 +221,8 @@ function macetaSVG(parte){const red='#d71f26',ink='#1d1d1b';const defsM=`<defs><
 ${Array.from({length:24},(_,i)=>{const a=i*15*Math.PI/180;return `<circle cx="${85+14.6*Math.cos(a)}" cy="${118+14.6*Math.sin(a)}" r=".95" fill="#5c430c"/>`}).join('')}
 <circle cx="85" cy="118" r="11.5" fill="none" stroke="#5c430c" stroke-width=".9"/>
 <path d="M77 122 q3 -12 8 -12 q5 0 8 12 M80 116 q5 -3 10 0 M78 124 h14" stroke="#5c430c" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-<text x="85.8" y="164.8" text-anchor="middle" font-family="'Abril Fatface',Georgia,serif" font-size="27" letter-spacing="1" fill="#000" opacity=".12">TOMATE</text>
-<text x="85" y="164" text-anchor="middle" font-family="'Abril Fatface',Georgia,serif" font-size="27" letter-spacing="1" fill="${red}">TOMATE</text>
+<text x="85.8" y="164.8" text-anchor="middle" font-family="'Abril Fatface',Georgia,serif" font-size="${fs}" letter-spacing="1" fill="#000" opacity=".12">${SAB}</text>
+<text x="85" y="164" text-anchor="middle" font-family="'Abril Fatface',Georgia,serif" font-size="${fs}" letter-spacing="1" fill="${red}">${SAB}</text>
 <text x="85" y="190" text-anchor="middle" font-family="'Abril Fatface',Georgia,serif" font-size="25" letter-spacing="3" fill="${ink}">SOPA</text>
 ${[0,1].map(i=>`<use href="#flor-lis" transform="translate(${30+i*9} 183) scale(.55)" fill="#c9982a"/><use href="#flor-lis" transform="translate(${131+i*9} 183) scale(.55)" fill="#c9982a"/>`).join('')}
 <rect x="18" y="194" width="134" height="1" fill="${red}"/>
@@ -236,7 +264,7 @@ velo.onclick=cerrarHoja;
 function chips(name,opts,val){return `<div class="chips" data-k="${name}">${opts.map(([v,l])=>`<button class="chip${val===v?' on':''}" data-v="${v}">${l}</button>`).join('')}</div>`}
 function abrirRegistro(edit,fecha){
   const now=new Date();
-  const p=edit?{...edit}:{id:uid(),at:(fecha&&fecha!==iso(now)?new Date(fecha+'T12:00'):now).toISOString(),date:fecha||iso(now),bristol:null,thin:false,effort:false,blood:'ninguno',pain:'ninguno',notes:''};
+  const p=edit?{...edit}:{id:uid(),at:(fecha&&fecha!==iso(now)?new Date(fecha+'T12:00'):now).toISOString(),date:fecha||iso(now),bristol:null,thin:false,effort:false,blood:'ninguno',pain:'ninguno',notes:'',oro:Math.random()<1/15};
   const render=()=>{
     hoja.innerHTML=`<div class="tir"></div><h2>${edit?'Tu caca':'¿Qué tal?'}</h2><div class="hora">${fmt(p.date)} · ${hhmm(p.at)}</div>
     <div class="tipos">${[1,2,3,4,5,6,7].map(t=>`<button class="tipo${p.bristol==t?' on':''}" data-t="${t}" aria-label="Tipo ${t}, ${DESC[t]}">${bri(t)}<b>${t}</b></button>`).join('')}</div><div class="desc">${p.bristol?`Tipo ${p.bristol} · ${DESC[p.bristol]}`:'Elige el tipo'}</div>
@@ -251,7 +279,7 @@ function abrirRegistro(edit,fecha){
     hoja.querySelectorAll('.chips').forEach(c=>c.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const k=c.dataset.k,v=b.dataset.v;p[k]=(k==='thin'||k==='effort')?v==='true':v;render()}));
     hoja.querySelector('#ok').onclick=()=>{
       S.poops=S.poops.filter(x=>x.id!==p.id).concat([p]);save();cerrarHoja();
-      if(!edit){nuevaId=p.id;fiesta();aviso(`¡Ha salido ${ART[p.bristol]}!`)}
+      if(!edit){nuevaId=p.id;fiesta();aviso(`¡Ha salido ${p.oro?'¡una flor dorada!':cual(p)[1]}!`)}
       pintar();if(diaAbierto)abrirDia(diaAbierto);
     };
     const d=hoja.querySelector('#del');if(d)d.onclick=()=>{S.poops=S.poops.filter(x=>x.id!==p.id);save();cerrarHoja();pintar();if(diaAbierto)abrirDia(diaAbierto)};
@@ -281,7 +309,7 @@ function abrirDia(ds){
   diaAbierto=ds;const ps=S.poops.filter(p=>p.date===ds).sort((a,b)=>a.at.localeCompare(b.at));
   hoja.className='hoja diahoja on';velo.classList.add('on');
   hoja.innerHTML=`<div class="tir"></div><h2>${fmt(ds)}</h2><div class="hora">${ps.length} ${ps.length==1?'flor':'flores'}</div>
-  ${ps.map(p=>`<button class="item" data-id="${p.id}" style="width:100%;text-align:left">${icono(p.bristol,p)}<div><b>${hhmm(p.at)}</b> · ${NOM[p.bristol]} (tipo ${p.bristol})${p.thin?' · fina':''}${p.effort?' · esfuerzo':''}${p.blood&&p.blood!=='ninguno'?' · sangre':''}${p.pain&&p.pain!=='ninguno'?' · dolor '+p.pain:''}</div></button>`).join('')}
+  ${ps.map(p=>`<button class="item" data-id="${p.id}" style="width:100%;text-align:left">${icono(p.bristol,p)}<div><b>${hhmm(p.at)}</b> · ${nombre(p)} (tipo ${p.bristol})${p.thin?' · fina':''}${p.effort?' · esfuerzo':''}${p.blood&&p.blood!=='ninguno'?' · sangre':''}${p.pain&&p.pain!=='ninguno'?' · dolor '+p.pain:''}</div></button>`).join('')}
   <button class="otra" id="otra">+ Plantar una flor este día</button>`;
   hoja.querySelectorAll('.item').forEach(b=>b.onclick=()=>{hoja.className='hoja';abrirRegistro(S.poops.find(x=>x.id===b.dataset.id))});
   hoja.querySelector('#otra').onclick=()=>{hoja.className='hoja';abrirRegistro(null,ds)};
